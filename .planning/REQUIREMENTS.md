@@ -127,57 +127,57 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| FORK-01 | Pendente | Pending |
-| FORK-02 | Pendente | Pending |
-| FORK-03 | Pendente | Pending |
-| FORK-04 | Pendente | Pending |
-| FORK-05 | Pendente | Pending |
-| INFRA-01 | Pendente | Pending |
-| INFRA-02 | Pendente | Pending |
-| INFRA-03 | Pendente | Pending |
-| INFRA-04 | Pendente | Pending |
-| INFRA-05 | Pendente | Pending |
-| INFRA-06 | Pendente | Pending |
-| DB-01 | Pendente | Pending |
-| DB-02 | Pendente | Pending |
-| DB-03 | Pendente | Pending |
-| DB-04 | Pendente | Pending |
-| DB-05 | Pendente | Pending |
-| AUTH-01 | Pendente | Pending |
-| AUTH-02 | Pendente | Pending |
-| AUTH-03 | Pendente | Pending |
-| AUTH-04 | Pendente | Pending |
-| AUTH-05 | Pendente | Pending |
-| TEAM-01 | Pendente | Pending |
-| TEAM-02 | Pendente | Pending |
-| TEAM-03 | Pendente | Pending |
-| TEAM-04 | Pendente | Pending |
-| TEAM-05 | Pendente | Pending |
-| SPIKE-01 | Pendente | Pending |
-| SPIKE-02 | Pendente | Pending |
-| SPIKE-03 | Pendente | Pending |
-| SPIKE-04 | Pendente | Pending |
-| SPIKE-05 | Pendente | Pending |
-| MULTI-01 | Pendente | Pending |
-| MULTI-02 | Pendente | Pending |
-| MULTI-03 | Pendente | Pending |
-| MULTI-04 | Pendente | Pending |
-| MULTI-05 | Pendente | Pending |
-| MULTI-06 | Pendente | Pending |
-| MULTI-07 | Pendente | Pending |
-| MULTI-08 | Pendente | Pending |
-| MULTI-09 | Pendente | Pending |
-| MULTI-10 | Pendente | Pending |
-| MULTI-11 | Pendente | Pending |
-| PROJ-01 | Pendente | Pending |
-| PROJ-02 | Pendente | Pending |
-| PROJ-03 | Pendente | Pending |
+| FORK-01 | Phase 1 | Pending |
+| FORK-02 | Phase 1 | Pending |
+| FORK-03 | Phase 1 | Pending |
+| FORK-04 | Phase 1 | Pending |
+| FORK-05 | Phase 1 | Pending |
+| INFRA-01 | Phase 2 | Pending |
+| INFRA-02 | Phase 2 | Pending |
+| INFRA-03 | Phase 2 | Pending |
+| INFRA-04 | Phase 2 | Pending |
+| INFRA-05 | Phase 2 | Pending |
+| INFRA-06 | Phase 2 | Pending |
+| DB-01 | Phase 2 | Pending |
+| DB-02 | Phase 2 | Pending |
+| DB-03 | Phase 2 | Pending |
+| DB-04 | Phase 2 | Pending |
+| DB-05 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Pending |
+| TEAM-01 | Phase 3 | Pending |
+| TEAM-02 | Phase 3 | Pending |
+| TEAM-03 | Phase 3 | Pending |
+| TEAM-04 | Phase 3 | Pending |
+| TEAM-05 | Phase 3 | Pending |
+| SPIKE-01 | Phase 4 | Pending |
+| SPIKE-02 | Phase 4 | Pending |
+| SPIKE-03 | Phase 4 | Pending |
+| SPIKE-04 | Phase 4 | Pending |
+| SPIKE-05 | Phase 4 | Pending |
+| MULTI-01 | Phase 5 | Pending |
+| MULTI-02 | Phase 5 | Pending |
+| MULTI-03 | Phase 5 | Pending |
+| MULTI-04 | Phase 5 | Pending |
+| MULTI-05 | Phase 5 | Pending |
+| MULTI-06 | Phase 5 | Pending |
+| MULTI-07 | Phase 5 | Pending |
+| MULTI-08 | Phase 5 | Pending |
+| MULTI-09 | Phase 5 | Pending |
+| MULTI-10 | Phase 5 | Pending |
+| MULTI-11 | Phase 5 | Pending |
+| PROJ-01 | Phase 6 | Pending |
+| PROJ-02 | Phase 6 | Pending |
+| PROJ-03 | Phase 6 | Pending |
 
 **Cobertura:**
 - Requisitos v1: 44 total
-- Mapeados para fases: 0 (preenchido pelo roadmapper)
-- Não mapeados: 44 ⚠️ (rastreabilidade preenchida na criação do roadmap)
+- Mapeados para fases: 44
+- Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos: 2026-04-25*
-*Última atualização: 2026-04-25 após definição inicial*
+*Última atualização: 2026-04-25 após criação do roadmap*
