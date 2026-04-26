@@ -30,15 +30,22 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - ✓ Protótipo descartável `detect-quota-exhausted` com 6 fixtures stub e suite vitest standalone (8/8 testes passando) — Fase 4
 - ✓ Harness empírico (`capture-fixture.sh` + `test-multi-account-resume.sh`) preparado para HUMAN-UAT com 2 contas — Fase 4
 - ✓ Findings da Fase 4 mapeados a MULTI-01/04/05/06/08 (`FINDINGS-FOR-PHASE-5.md`): regex existente reusável, `CLAUDE_CONFIG_DIR` passthrough já presente em `execute.ts:253`, schema `lastQuotaWindowsJson` deve refletir taxonomia — Fase 4
+- ✓ 3 schemas multi-account (`claude_accounts`, `agent_account_bindings`, `agent_step_executions`) + migration `0071` gerada (não aplicada localmente — DB-03 restringe apply para CI) — Fase 5
+- ✓ Service `claudeAccountsService(db)` com 7 métodos (listAccounts, selectActiveAccount, rotateOnQuotaExhausted com W1 split, recordSwapOutcome, resolveCredentialDir, recordStepExecution, markCooldownPassed) + advisory lock; 21+ testes passando — Fase 5
+- ✓ Classifier `detectClaudeQuotaExhausted` em `parse.ts` reusando `CLAUDE_TRANSIENT_UPSTREAM_RE` existente, 6 sub-tipos (rpm/tpm/daily/weekly/5h/org_tier), 10 testes passando — Fase 5
+- ✓ `claudeConfigDir` wired em `execute.ts` → `env.CLAUDE_CONFIG_DIR` (multi-account spawning funcional) — Fase 5
+- ✓ Heartbeat integrado: `selectActiveAccount` antes de cada spawn Claude; `orchestrateClaudeSwap` Strategy A (resume) + Strategy B (full-context fallback per Plano B); `executingAccountId` rastreado para attribution correto — Fase 5
+- ✓ UI `ClaudeAccounts.tsx` (lista + register + status + history) + REST API + rota `/company/settings/claude-accounts` — Fase 5
+- ✓ Activity log emite `claude_account_rotated` com `swapStrategy` efetivo (resume/fallback_full_context) via split rotation/log emit — Fase 5
+- ✓ Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam — Fase 5 (smoke real validação UAT-05-01 pendente)
+- ✓ Persistir estado dos agentes no Supabase de forma que a troca de conta não perca progresso — Fase 5
 
 ### Ativos
 
 - [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip *(schema aplicado; RLS opcional v1 ainda pendente)*
 - [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra + procedimentos prontos; cross-machine multi-dev e 5+ devs reais pendentes em `03-HUMAN-UAT.md` — UAT-03-01, UAT-03-02)*
-- [ ] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes
-- [ ] Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam
-- [ ] Persistir estado dos agentes no Supabase de forma que a troca de conta não perca progresso
-- [ ] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe
+- [x] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes *(Fase 4 spike — `FINDINGS-FOR-PHASE-5.md`)*
+- [ ] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe *(Fase 6)*
 
 ### Fora do Escopo
 
@@ -94,4 +101,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 4 completion (UATs pendentes: Fase 3 cross-machine + 5+ devs; Fase 4 captura 429 real + smoke 2 contas)*
+*Last updated: 2026-04-26 after Phase 5 completion (UATs pendentes: Fase 3 cross-machine + 5+ devs; Fase 4 captura 429 real; Fase 5 smoke real cross-account + UI manual)*
