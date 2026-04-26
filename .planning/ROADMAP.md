@@ -40,10 +40,11 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 4. `package.json` raiz tem `"name": "ddd"` (sem traços de identidade `paperclip`).
 5. `CONTRIBUTING.md` declara explicitamente "fork hard, sem PRs upstream, port manual quando útil".
 
-**Plans**: A definir
+**Plans**: 2 plans
 
 Planos:
-- [ ] 01-01: A definir durante `/planejar-fase 1`
+- [ ] 01-01-PLAN.md — Importar paperclip, reescrever identidade para ddd, cortar upstream, documentar cerimonia (FORK-01..04)
+- [ ] 01-02-PLAN.md — Smoke test baseline: pnpm install + pnpm dev com embedded Postgres em Windows (FORK-05)
 
 ### Phase 2: Migração de Storage para Supabase
 
@@ -155,7 +156,7 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 
 | Fase | Planos Completos | Status | Concluída |
 |------|------------------|--------|-----------|
-| 1. Fork Hard + Cerimônia de Corte | 0/? | Not started | - |
+| 1. Fork Hard + Cerimônia de Corte | 0/2 | Not started | - |
 | 2. Migração de Storage para Supabase | 0/? | Not started | - |
 | 3. Workflow de Equipe + Onboarding | 0/? | Not started | - |
 | 4. Spike — Multi-Account Detection | 0/? | Not started | - |
