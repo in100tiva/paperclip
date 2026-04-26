@@ -10,7 +10,7 @@ progress:
   total_plans: 26
   completed_plans: 23
 current_phase: 5
-current_plan: 6
+current_plan: 8
 ---
 
 # Estado do Projeto
@@ -124,5 +124,7 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Plano 05-04 concluído (claudeAccountsService 7 métodos + W1 fix). Phase 5: 5/8 planos completos (05-01, 05-02, 05-03, 05-04, 05-05). Próximo: 05-06 (heartbeat integration consumindo selectActiveAccount + rotateOnQuotaExhausted/recordSwapOutcome split + Strategy A/B swap orchestration), 05-07 (UI ClaudeAccounts.tsx), 05-08 (smoke E2E + HUMAN-UAT routing).
+Parou em: Plano 05-07 concluído (UI ClaudeAccounts + REST API). Phase 5: 7/8 planos completos (05-01..05-07; 05-06 paralelo). Próximo: 05-08 (smoke E2E + HUMAN-UAT routing).
+
+- 05-07: Backing API REST + UI ClaudeAccounts.tsx entregues em ~22min (commits `496f26a` server route, `af34235` UI). server/src/routes/claude-accounts.ts (~175 linhas) expõe 4 endpoints sob `/api`: GET list (assertCompanyAccess), POST create (owner/admin via assertCompanyOwnerOrAdmin inline; 23505 unique-violation → HTTP 409), PATCH toggle status/rename, GET rotation-history (filtro activity_log por ACTIVITY_ACTION_CLAUDE_ACCOUNT_ROTATED, default limit 50 max 200). Validação Zod (slug regex `^[a-z0-9][a-z0-9-]{0,62}$`, label 1-100 chars). Mount em server/src/app.ts via `api.use(claudeAccountsRoutes(db))`. ui/src/api/claude-accounts.ts (~80 linhas) expõe `claudeAccountsApi` com helpers list/create/patch/rotationHistory tipados (ClaudeAccount + RotationHistoryEntry mirroring contrato server). ui/src/pages/ClaudeAccounts.tsx (~280 linhas) reusa shadcn Badge (variants default/destructive/secondary/outline mapeando live/exhausted/cooldown/disabled), Button, lucide-react icons (KeyRound/Power); três seções (register form, accounts table, rotation history list); permissions errors via toast e 403-aware loading state; pattern de useQuery+useMutation copiado de CompanyInvites.tsx; setBreadcrumbs com hierarquia Company→Settings→Claude Accounts. ui/src/pages/ClaudeAccounts.test.tsx (~270 linhas) 5 vitest cases passando: badges status (4 variantes com data-status), empty state, form submission (com setControlledInputValue helper para React-controlled inputs via native value setter — fix Regra 1), toggle status, history render. Rota `/:companyPrefix/company/settings/claude-accounts` em ui/src/App.tsx (D-28 ajustado para alinhar com paperclip company-prefix routing — Regra 1 deviation documentada). Desvios: **Regra 3** Express `req.params.companyId` typed `string | string[]` rejeitada por drizzle → wrap com `String(...)`. **Regra 1** input.value= em React-controlled rejeita state update → helper Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set. **Regra 1** path D-28 `/companies/:companyId/claude-accounts` literal não fits paperclip routing scheme → reroute para padrão company-prefix. server `pnpm tsc --noEmit` exit 0; ui `pnpm tsc --noEmit` exit 0; 5/5 vitest cases pass. Plano executou em paralelo com 05-06 sem conflitos (arquivos disjuntos: routes/claude-accounts.ts + ui/* vs heartbeat consumer). MULTI-09 satisfeito.
 Arquivo de retomada: Nenhum
