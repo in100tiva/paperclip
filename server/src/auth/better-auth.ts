@@ -13,6 +13,39 @@ import {
 import type { Config } from "../config.js";
 import { resolvePaperclipInstanceId } from "../home-paths.js";
 
+/**
+ * Better Auth wiring — Phase 2 (AUTH-01..04).
+ *
+ * Architecture decisions (per .planning/research/ARCHITECTURE.md):
+ *   - Better Auth is preserved in v1 (NOT migrated to Supabase Auth — text-id schema
+ *     incompatible with auth.users uuid; migration is HIGH effort with no v1 gain).
+ *   - Better Auth runs against the SAME Postgres as the rest of the app (Supabase via
+ *     drizzleAdapter). The `db` argument to `createBetterAuthInstance` is created
+ *     by `@paperclipai/db`'s `createDb(SUPABASE_URL)` which auto-applies pool config
+ *     (`prepare: false` for port 6543, `max: 5`, `idle_timeout: 20`) — see Plan 02-03.
+ *
+ * Requirement mapping:
+ *   AUTH-01: Better Auth functional against Supabase Postgres
+ *     → drizzleAdapter(db, { provider: "pg", schema: { user/session/account/verification } })
+ *       at line ~105. The `db` injection makes this Supabase-backed transparently.
+ *   AUTH-02: Cookie prefix from PAPERCLIP_INSTANCE_ID for shared session across team
+ *     → deriveAuthCookiePrefix(instanceId) returns `paperclip-${sanitized(instanceId)}`.
+ *       With PAPERCLIP_INSTANCE_ID=team-shared in .env, prefix is `paperclip-team-shared`.
+ *   AUTH-03: Mode `authenticated` enforces login on all routes except signup/login
+ *     → config.deploymentMode='authenticated' is honored by middleware/auth.ts (NOT this file).
+ *   AUTH-04: Email/password signup available
+ *     → emailAndPassword: { enabled: true, requireEmailVerification: false } at line ~115.
+ *       Disabled by config.authDisableSignUp; off by default.
+ *
+ * Anti-pattern guards:
+ *   - BETTER_AUTH_SECRET MUST be set (line ~91 throws otherwise).
+ *   - In dev (HTTP), useSecureCookies is auto-disabled to prevent cookie write failures.
+ *   - PAPERCLIP_AGENT_JWT_SECRET is an alias fallback for BETTER_AUTH_SECRET; both refer
+ *     to the same signing key.
+ *
+ * Tests covering this wiring: server/src/__tests__/better-auth-supabase-readiness.test.ts
+ */
+
 export type BetterAuthSessionUser = {
   id: string;
   email?: string | null;
