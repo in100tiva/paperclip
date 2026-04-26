@@ -110,5 +110,66 @@
     "layout": {
       "skip-to-main": "Ir para o conteúdo principal"
     }
+  },
+  "toast": {
+    "saved": "Salvo",
+    "save-failed": "Falha ao salvar",
+    "deleted": "Excluído",
+    "delete-failed": "Falha ao excluir",
+    "copied": "Copiado",
+    "copied-to-clipboard": "Copiado para a área de transferência",
+    "copy-failed": "Falha ao copiar",
+    "member-updated": "Membro atualizado",
+    "member-update-failed": "Falha ao atualizar membro",
+    "member-removed": "Membro removido",
+    "member-remove-failed": "Falha ao remover membro",
+    "member-removed-with-reassignment": "{{count}} tarefa reatribuída.",
+    "member-removed-with-reassignment_one": "{{count}} tarefa reatribuída.",
+    "member-removed-with-reassignment_other": "{{count}} tarefas reatribuídas.",
+    "join-approved": "Solicitação aprovada",
+    "join-approve-failed": "Falha ao aprovar solicitação",
+    "join-rejected": "Solicitação rejeitada",
+    "join-reject-failed": "Falha ao rejeitar solicitação",
+    "environment-created": "Ambiente criado",
+    "environment-updated": "Ambiente atualizado",
+    "environment-save-failed": "Falha ao salvar ambiente",
+    "environment-probe-passed": "Probe do ambiente passou",
+    "environment-probe-failed": "Probe do ambiente falhou",
+    "draft-probe-passed": "Probe de rascunho passou",
+    "draft-probe-failed": "Probe de rascunho falhou",
+    "environment-ready": "{{name}} está pronto.",
+    "unknown-error": "Erro desconhecido"
+  },
+  "confirm": {
+    "archive-company": {
+      "title": "Arquivar empresa?",
+      "body": "Arquivar empresa \"{{name}}\"? Ela será escondida da barra lateral.",
+      "cta-confirm": "Arquivar",
+      "cta-cancel": "Cancelar"
+    },
+    "remove-member": {
+      "title": "Remover membro?",
+      "cta-confirm": "Remover",
+      "cta-cancel": "Cancelar"
+    },
+    "delete-generic": {
+      "title": "Confirmar exclusão",
+      "body": "Esta ação não pode ser desfeita.",
+      "cta-confirm": "Excluir",
+      "cta-cancel": "Cancelar"
+    },
+    "delete-disapproved-agent": {
+      "body": "Excluir este agente reprovado? Esta ação não pode ser desfeita."
+    },
+    "clear-sessions-for-touched-issues": {
+      "body": "Limpar sessão para {{count}} tarefa tocada por esta execução?",
+      "body_one": "Limpar sessão para {{count}} tarefa tocada por esta execução?",
+      "body_other": "Limpar sessão para {{count}} tarefas tocadas por esta execução?"
+    }
+  },
+  "empty-state": {
+    "no-results": "Sem resultados.",
+    "no-data": "Sem dados.",
+    "loading": "Carregando…"
   }
 }

@@ -110,5 +110,66 @@
     "layout": {
       "skip-to-main": "Skip to Main Content"
     }
+  },
+  "toast": {
+    "saved": "Saved",
+    "save-failed": "Save failed",
+    "deleted": "Deleted",
+    "delete-failed": "Delete failed",
+    "copied": "Copied",
+    "copied-to-clipboard": "Copied to clipboard",
+    "copy-failed": "Copy failed",
+    "member-updated": "Member updated",
+    "member-update-failed": "Failed to update member",
+    "member-removed": "Member removed",
+    "member-remove-failed": "Failed to remove member",
+    "member-removed-with-reassignment": "{{count}} task reassigned.",
+    "member-removed-with-reassignment_one": "{{count}} task reassigned.",
+    "member-removed-with-reassignment_other": "{{count}} tasks reassigned.",
+    "join-approved": "Join request approved",
+    "join-approve-failed": "Failed to approve join request",
+    "join-rejected": "Join request rejected",
+    "join-reject-failed": "Failed to reject join request",
+    "environment-created": "Environment created",
+    "environment-updated": "Environment updated",
+    "environment-save-failed": "Failed to save environment",
+    "environment-probe-passed": "Environment probe passed",
+    "environment-probe-failed": "Environment probe failed",
+    "draft-probe-passed": "Draft probe passed",
+    "draft-probe-failed": "Draft probe failed",
+    "environment-ready": "{{name}} is ready.",
+    "unknown-error": "Unknown error"
+  },
+  "confirm": {
+    "archive-company": {
+      "title": "Archive company?",
+      "body": "Archive company \"{{name}}\"? It will be hidden from the sidebar.",
+      "cta-confirm": "Archive",
+      "cta-cancel": "Cancel"
+    },
+    "remove-member": {
+      "title": "Remove member?",
+      "cta-confirm": "Remove",
+      "cta-cancel": "Cancel"
+    },
+    "delete-generic": {
+      "title": "Confirm deletion",
+      "body": "This action cannot be undone.",
+      "cta-confirm": "Delete",
+      "cta-cancel": "Cancel"
+    },
+    "delete-disapproved-agent": {
+      "body": "Delete this disapproved agent? This cannot be undone."
+    },
+    "clear-sessions-for-touched-issues": {
+      "body": "Clear session for {{count}} issue touched by this run?",
+      "body_one": "Clear session for {{count}} issue touched by this run?",
+      "body_other": "Clear session for {{count}} issues touched by this run?"
+    }
+  },
+  "empty-state": {
+    "no-results": "No results.",
+    "no-data": "No data.",
+    "loading": "Loading…"
   }
 }
