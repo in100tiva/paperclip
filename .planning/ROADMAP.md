@@ -17,7 +17,7 @@ Forkar hard o paperclip, trocar Postgres embedded por Supabase compartilhado man
 Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 
 - [x] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
-- [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
+- [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
 - [x] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs (artefatos completos, complete-with-pending-UAT — TEAM-04 e TEAM-01 execução real em 03-HUMAN-UAT.md)
 - [x] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção) (completed 2026-04-26)
 - [ ] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão
@@ -121,7 +121,7 @@ Planos:
 
 ### Phase 5: Multi-Account Claude Code Swap (Implementação)
 
-**Goal**: Implementar o pool de contas Claude Code, rotação atômica em exhaustão e continuidade preservada via `issue_continuation_summary`, usando os achados validados no spike Phase 4. Esta é a feature genuinamente nova que justifica o fork existir vs paperclip vanilla.
+**Goal**: Implementar o pool de contas Claude Code, rotação atômica em exhaustão e continuidade preservada via `issue_continuation_summary` (com fallback Plano B confirmado pelo usuário), usando os achados validados no spike Phase 4. Esta é a feature genuinamente nova que justifica o fork existir vs paperclip vanilla.
 
 **Depends on**: Phase 4
 
@@ -134,10 +134,17 @@ Planos:
 4. Activity log emite evento `claude_account_rotated` com `(from, to, reason, agentId)` a cada swap, observável no painel de atividade.
 5. Swap mid-flight é race-free: `pg_advisory_xact_lock` por agent_run garante que duas requests simultâneas não escrevem com `account_id` diferente para o mesmo step.
 
-**Plans**: A definir
+**Plans**: 8 plans
 
 Planos:
-- [ ] 05-01: A definir durante `/planejar-fase 5`
+- [ ] 05-01-PLAN.md — DB schemas: claude_accounts, agent_account_bindings, agent_step_executions + drizzle migration (MULTI-01..03) [Wave 1]
+- [ ] 05-02-PLAN.md — Classifier detectClaudeQuotaExhausted em parse.ts + tests (MULTI-06) [Wave 1]
+- [ ] 05-03-PLAN.md — .env.example cooldown var + activity-log event type + claude-accounts-swap.md (MULTI-10 type registration) [Wave 1]
+- [ ] 05-05-PLAN.md — Wire config.claudeConfigDir → env.CLAUDE_CONFIG_DIR em execute.ts + tests (MULTI-05) [Wave 1]
+- [ ] 05-04-PLAN.md — claudeAccountsService factory + 6 métodos D-09 + lock advisory + tests (MULTI-04) [Wave 2; depende de 05-01, 05-03]
+- [ ] 05-06-PLAN.md — Heartbeat integration + orchestrateClaudeSwap module com Plano B (MULTI-07, MULTI-08) [Wave 3; depende de 05-04, 05-05]
+- [ ] 05-07-PLAN.md — Backing API + UI ClaudeAccounts.tsx + route + tests (MULTI-09, MULTI-10 emit via service) [Wave 3; depende de 05-04]
+- [ ] 05-08-PLAN.md — SMOKE-E2E.md + 05-HUMAN-UAT.md UAT-05-01 (MULTI-11) [Wave 4; depende de 05-06, 05-07]
 
 **UI hint**: yes
 
@@ -173,5 +180,5 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
 | 4. Spike — Multi-Account Detection | 5/5 | Complete   | 2026-04-26 |
-| 5. Multi-Account Swap (Implementação) | 0/? | Not started | - |
+| 5. Multi-Account Swap (Implementação) | 0/8 | Planned | - |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |
