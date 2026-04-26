@@ -13,6 +13,9 @@ coverage/
 data/
 .paperclip/
 .pnpm-store/
+.pnpm-install.log
+.pnpm-dev.log
+.pnpm-dev.snapshot.log
 tmp-*
 cli/tmp/
 
