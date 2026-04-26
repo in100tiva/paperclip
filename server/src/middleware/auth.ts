@@ -2,10 +2,11 @@ import { createHash } from "node:crypto";
 import type { Request, RequestHandler } from "express";
 import { and, eq, isNull } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
-import { agentApiKeys, agents, companyMemberships, instanceUserRoles } from "@paperclipai/db";
+import { agentApiKeys, agents, authUsers, companyMemberships, instanceUserRoles } from "@paperclipai/db";
 import { verifyLocalAgentJwt } from "../agent-auth-jwt.js";
 import type { DeploymentMode } from "@paperclipai/shared";
 import type { BetterAuthSessionResult } from "../auth/better-auth.js";
+import { parseAcceptLanguage } from "../lib/parse-accept-language.js";
 import { logger } from "./logger.js";
 import { boardAuthService } from "../services/board-auth.js";
 
@@ -49,7 +50,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
         }
         if (session?.user?.id) {
           const userId = session.user.id;
-          const [roleRow, memberships] = await Promise.all([
+          const [roleRow, memberships, userLocaleRow] = await Promise.all([
             db
               .select({ id: instanceUserRoles.id })
               .from(instanceUserRoles)
@@ -69,6 +70,11 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
                   eq(companyMemberships.status, "active"),
                 ),
               ),
+            db
+              .select({ locale: authUsers.locale })
+              .from(authUsers)
+              .where(eq(authUsers.id, userId))
+              .then((rows) => (rows[0]?.locale ?? null) as "pt-BR" | "en-US" | null),
           ]);
           req.actor = {
             type: "board",
@@ -81,17 +87,20 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
             runId: runIdHeader ?? undefined,
             source: "session",
           };
+          req.locale = userLocaleRow ?? parseAcceptLanguage(req) ?? "pt-BR";
           next();
           return;
         }
       }
       if (runIdHeader) req.actor.runId = runIdHeader;
+      req.locale = parseAcceptLanguage(req) ?? "pt-BR";
       next();
       return;
     }
 
     const token = authHeader.slice("bearer ".length).trim();
     if (!token) {
+      req.locale = parseAcceptLanguage(req) ?? "pt-BR";
       next();
       return;
     }
@@ -113,6 +122,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
           runId: runIdHeader || undefined,
           source: "board_key",
         };
+        req.locale = parseAcceptLanguage(req) ?? "pt-BR";
         next();
         return;
       }
@@ -128,6 +138,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
     if (!key) {
       const claims = verifyLocalAgentJwt(token);
       if (!claims) {
+        req.locale = parseAcceptLanguage(req) ?? "pt-BR";
         next();
         return;
       }
@@ -139,11 +150,13 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
         .then((rows) => rows[0] ?? null);
 
       if (!agentRecord || agentRecord.companyId !== claims.company_id) {
+        req.locale = parseAcceptLanguage(req) ?? "pt-BR";
         next();
         return;
       }
 
       if (agentRecord.status === "terminated" || agentRecord.status === "pending_approval") {
+        req.locale = parseAcceptLanguage(req) ?? "pt-BR";
         next();
         return;
       }
@@ -156,6 +169,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
         runId: runIdHeader || claims.run_id || undefined,
         source: "agent_jwt",
       };
+      req.locale = parseAcceptLanguage(req) ?? "pt-BR";
       next();
       return;
     }
@@ -172,6 +186,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
       .then((rows) => rows[0] ?? null);
 
     if (!agentRecord || agentRecord.status === "terminated" || agentRecord.status === "pending_approval") {
+      req.locale = parseAcceptLanguage(req) ?? "pt-BR";
       next();
       return;
     }
@@ -185,6 +200,7 @@ export function actorMiddleware(db: Db, opts: ActorMiddlewareOptions): RequestHa
       source: "agent_key",
     };
 
+    req.locale = parseAcceptLanguage(req) ?? "pt-BR";
     next();
   };
 }

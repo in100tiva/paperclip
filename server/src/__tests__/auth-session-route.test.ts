@@ -19,8 +19,9 @@ function createDb() {
   return {
     select: vi
       .fn()
-      .mockImplementationOnce(() => createSelectChain([]))
-      .mockImplementationOnce(() => createSelectChain([])),
+      .mockImplementationOnce(() => createSelectChain([])) // roleRow
+      .mockImplementationOnce(() => createSelectChain([])) // memberships
+      .mockImplementationOnce(() => createSelectChain([{ locale: "pt-BR" }])), // userLocaleRow
   } as any;
 }
 
