@@ -43,6 +43,7 @@ Progresso: [██████████] 100% (atualizado por update-progress
 |------|--------|-------|-------------|
 | 01-fork-hard | 2 | ~18min | ~9min |
 | 02-supabase | 6 | ~71min+ | ~12min |
+| 03-team-onboarding | 5 | ~50min | ~10min |
 
 **Tendência Recente:**
 
@@ -97,6 +98,7 @@ Decisões recentes que afetam o trabalho atual:
 - 03-02: ONBOARDING.md pt-br criado na raiz (124 linhas, 7 seções H2 numeradas seguindo D-06) com tempo-alvo <30min declarado no topo (D-07). Vars críticas em tabela markdown; PAPERCLIP_INSTANCE_ID=team-shared destacado como literal obrigatório com aviso de divergência → cookie isolado. Modo `authenticated` documentado como override explícito para invite flow (finding 02-06: pnpm dev arranca em local_trusted, Better Auth handler não montado). Bootstrap CEO vs dev #2..N split na seção 6. README.md ganhou nota DDD curta no topo apontando para ONBOARDING.md (D-08); paperclip body intocado byte-por-byte (439 linhas remanescentes). Anchor convention estabelecida para TROUBLESHOOTING.md em snake-case (#windows-ntfs, #cookie-prefix-divergente). TEAM-02 satisfeito.
 - 03-03: TROUBLESHOOTING.md pt-br criado (193 linhas, 7 seções) cobrindo Windows NTFS, stale registry, too-many-connections, cookie prefix, schema desatualizado, claude CLI, prepared statement 6543. Anchors GFM alinhados com links do ONBOARDING.md; cada causa em código cita path:linha (D-18). Satisfies TEAM-05.
 - 03-05: TEAM-SIGNUP-PROCEDURE.md (185 linhas, pt-br) documenta bootstrap CEO via `tsx packages/db/scripts/create-auth-bootstrap-invite.ts --config <path> --base-url <url>` + cadastro coletivo de 4+ devs via fluxo `company_join` existente (D-09: zero código novo). 3 SQL queries de validação literal (pre-check bootstrap_ceo, count intermediário 1user/1company, count final 5+ users na shared company). Modo `authenticated` documentado como override obrigatório (finding 02-06). Fallback `pending-team-growth` aceito explicitamente — proibido falsificar users via SQL (viola D-09 e quebra cost attribution Fase 6). Forward link para 03-HUMAN-UAT.md#uat-03-02 (será resolvido pelo plano paralelo 03-04 da Wave 2). Satisfies TEAM-01 (no que é automatizável; execução real é HUMAN-UAT).
+- 03-04: CROSS-MACHINE-SMOKE.md (142 linhas, pt-br) documenta procedimento canônico D-13 (Dev A em máquina X cria company → Dev B em máquina Y vê via Supabase remoto + cookie `paperclip-team-shared` interoperável) + fallback single-host D-14 (two-browser-profiles, com limitação explícita de não provar literalmente cross-machine) + bloco de log timestamped D-15. 03-HUMAN-UAT.md (82 linhas) com frontmatter YAML (`type: human-uat`, `status: pending`) lista 2 UATs: UAT-03-01 (TEAM-04 cross-machine smoke) e UAT-03-02 (TEAM-01 5+ devs com SQL inline pra Supabase Studio). Decisão de roteamento: TEAM-04 satisfeito como **artefato** (procedimento auto-suficiente existe), validação **empírica** explicitamente HUMAN-UAT — executor Claude não tem duas máquinas físicas distintas, fingir validação seria desonesto. Phase 3 fecha como complete-with-pending-UAT (artefatos entregues, UATs ficam como trabalho contínuo da equipe). Satisfies TEAM-04.
 
 ### Todos Pendentes
 
@@ -110,5 +112,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 03-05-PLAN.md (TEAM-SIGNUP-PROCEDURE.md, TEAM-01). Wave 2 paralelo: 03-04 (HUMAN-UAT) executando. Aguardando demais planos da Fase 3.
+Parou em: Concluído 03-04-PLAN.md (CROSS-MACHINE-SMOKE.md + 03-HUMAN-UAT.md, TEAM-04 como artefato + UAT). Wave 2 paralela completa: 03-04 + 03-05 fechados. Phase 3 complete-with-pending-UAT (5/5 planos).
 Arquivo de retomada: Nenhum

@@ -18,7 +18,7 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 
 - [x] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
 - [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
-- [ ] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs
+- [x] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs (artefatos completos, complete-with-pending-UAT — TEAM-04 e TEAM-01 execução real em 03-HUMAN-UAT.md)
 - [ ] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção)
 - [ ] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão
 - [ ] **Phase 6: Multi-Projeto + Polish** — Múltiplas companies em paralelo, cost attribution por projeto e fechamento do v1
