@@ -381,3 +381,86 @@ export function isClaudeTransientUpstreamError(input: {
   if (!haystack) return false;
   return CLAUDE_TRANSIENT_UPSTREAM_RE.test(haystack);
 }
+
+// ============================================================
+// Quota exhaustion classifier (MULTI-06, Phase 5)
+// ============================================================
+// Reusa CLAUDE_TRANSIENT_UPSTREAM_RE (linha 13) como gate top-level.
+// Sub-discriminators determinam qual tipo da taxonomia 6-tipos foi atingido.
+// Ver: .planning/phases/04-spike-multi-account-claude-code-detection/CLAUDE_429_TAXONOMY.md
+
+export type ClaudeQuotaType =
+  | "rpm_transient"
+  | "tpm_transient"
+  | "daily_quota"
+  | "weekly_quota"
+  | "session_5h"
+  | "org_tier";
+
+export interface ClaudeQuotaDetection {
+  detected: boolean;
+  type: ClaudeQuotaType | null;
+  retryAt: Date | null;
+  confidence: "high" | "medium" | "low";
+  rawMatch: string | null;
+}
+
+// Sub-discriminators — ordem MOST-SPECIFIC-FIRST conforme D-15.
+// Ambiguidade resolvida: "claude usage limit reached" mapeia para daily_quota
+// a menos que "5-hour" esteja explicitamente presente.
+const SESSION_5H_RE = /5[-\s]?hour\s+limit\s+reached/i;
+const WEEKLY_RE = /weekly\s+limit\s+reached|weekly_quota/i;
+const DAILY_RE = /(?:out\s+of\s+extra\s+usage|extra\s+usage\b|usage\s+limit\s+reached|usage\s+cap\s+reached|claude\s+usage\s+limit\s+reached|daily\s+limit|daily\s+quota)/i;
+const TPM_RE = /tokens?[-\s]?per[-\s]?minute|tokens?\s*\/\s*min(?:ute)?|input\s+tokens\s+per\s+minute|\btpm\b/i;
+const RPM_RE = /requests?[-\s]?per[-\s]?minute|requests?\s*\/\s*min(?:ute)?|\brpm\b|rate_limit_error|too\s+many\s+requests|\b429\b/i;
+const ORG_TIER_RE = /organization|organisation\s+(?:limit|quota|tier)|\borg\s+tier\b|overloaded(?:_error)?|server\s+overloaded|service\s+unavailable|\b503\b|\b529\b|high\s+demand/i;
+
+function tryParseRetryAt(input: string): Date | null {
+  const match = input.match(CLAUDE_EXTRA_USAGE_RESET_RE);
+  if (!match) return null;
+  const candidate = (match[1] || "").trim();
+  if (!candidate) return null;
+  const parsed = new Date(candidate);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+/**
+ * Classifica saída do Claude Code CLI (stdout + stderr concat) em sub-tipo de exhaustão.
+ * Ordem dos discriminators é OBRIGATÓRIA — most-specific-first evita ambiguidade.
+ * Ver D-15 em .planning/phases/05-multi-account-claude-code-swap-implementacao/05-CONTEXT.md.
+ */
+export function detectClaudeQuotaExhausted(input: {
+  stdout?: string;
+  stderr?: string;
+}): ClaudeQuotaDetection {
+  const blob = `${input.stdout ?? ""}\n${input.stderr ?? ""}`;
+  const topLevelMatch = blob.match(CLAUDE_TRANSIENT_UPSTREAM_RE);
+  if (!topLevelMatch) {
+    return { detected: false, type: null, retryAt: null, confidence: "low", rawMatch: null };
+  }
+  const rawMatch = topLevelMatch[0];
+  const retryAt = tryParseRetryAt(blob);
+
+  // Ordem most-specific-first (D-15) — NÃO ALTERAR sem atualizar tests:
+  if (SESSION_5H_RE.test(blob)) {
+    return { detected: true, type: "session_5h", retryAt, confidence: "high", rawMatch };
+  }
+  if (WEEKLY_RE.test(blob)) {
+    return { detected: true, type: "weekly_quota", retryAt, confidence: "high", rawMatch };
+  }
+  if (DAILY_RE.test(blob) && retryAt !== null) {
+    // Daily exige timestamp de reset para confidence high; sem reset, fallback p/ medium.
+    return { detected: true, type: "daily_quota", retryAt, confidence: "high", rawMatch };
+  }
+  if (TPM_RE.test(blob)) {
+    return { detected: true, type: "tpm_transient", retryAt, confidence: "medium", rawMatch };
+  }
+  if (RPM_RE.test(blob)) {
+    return { detected: true, type: "rpm_transient", retryAt, confidence: "medium", rawMatch };
+  }
+  if (ORG_TIER_RE.test(blob)) {
+    return { detected: true, type: "org_tier", retryAt, confidence: "low", rawMatch };
+  }
+  // Top-level matched mas nenhum sub — best-effort rpm_transient + log (Finding 4).
+  return { detected: true, type: "rpm_transient", retryAt, confidence: "low", rawMatch };
+}
