@@ -2,10 +2,8 @@
 state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
-status: "Phase 5 fechada como complete-with-pending-UAT. 8/8 planos completos (05-01..05-08). Plan 05-08 entregou SMOKE-E2E.md (Modo A canonical procedure 218 linhas, 6 Passos D-33) + 05-HUMAN-UAT.md (UAT-05-01 Modo B 184 linhas requer 2 contas Claude reais). MULTI-11 satisfeito como artefato. Próximo: Phase 6 (Multi-Project — PROJ-01..03) ou execução empírica de UATs Phase 4/5 pelo operador humano."
-current_phase: 6
-current_plan: 1
-last_updated: "2026-04-26T06:58:39.679Z"
+status: completed
+last_updated: "2026-04-26T08:25:06.620Z"
 progress:
   total_phases: 6
   completed_phases: 5
