@@ -19,7 +19,7 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - [ ] Clonar paperclip como base do projeto e converter em fork hard (sem upstream)
 - [ ] Substituir PostgreSQL embedded por Supabase remoto compartilhado (projeto `bxlczioxgizgvtznukwt`)
 - [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip
-- [ ] Configurar autenticação via Supabase Auth (email/senha) para 5+ devs da equipe
+- [ ] Manter Better Auth (auth atual do paperclip) rodando contra o Supabase Postgres — não trocar para Supabase Auth no v1
 - [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase
 - [ ] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes
 - [ ] Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam
@@ -32,7 +32,8 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - Manter sincronização com o upstream do paperclip — escolhemos fork hard, modificamos livremente
 - Hospedar uma única instância web pública do paperclip — cada dev roda local
 - Supabase isolado por dev — todos compartilham o mesmo backend
-- OAuth (Google/GitHub) no v1 — Supabase Auth email/senha é suficiente para começar
+- Migrar para Supabase Auth no v1 — Better Auth do paperclip funciona perfeitamente contra Postgres do Supabase, migração pode vir em milestone futuro
+- OAuth (Google/GitHub) no v1 — Better Auth email/senha herdado do paperclip é suficiente para começar
 - Mobile app — paperclip é web, mantemos web
 
 ## Contexto
@@ -47,7 +48,7 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 - **Stack de tecnologia**: Manter Node.js + React + TypeScript do paperclip — não reescrever em outra linguagem
 - **Banco de dados**: Supabase (Postgres gerenciado) — único backend de estado para a equipe
-- **Auth**: Supabase Auth nativo (email/senha) — não rolar nosso próprio
+- **Auth**: Better Auth (mantido do paperclip) — schema persiste no Supabase Postgres, sem trocar para Supabase Auth
 - **Deploy**: Cada dev roda local, sem servidor central web
 - **Compartilhamento de estado**: Todos os devs compartilham o mesmo projeto Supabase (`bxlczioxgizgvtznukwt`)
 
@@ -58,7 +59,8 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 | Fork hard (sem upstream) | Liberdade para customizar profundamente sem custo de merge contínuo | — Pendente |
 | Supabase remoto compartilhado | Estado único da equipe, qualquer dev em qualquer máquina vê o mesmo | — Pendente |
 | Local-first + Supabase remoto | Evita custo/complexidade de hospedar instância única; cada dev tem ambiente próprio mas estado central | — Pendente |
-| Supabase Auth email/senha | Suficiente para 5+ devs internos; OAuth fica para depois | — Pendente |
+| Manter Better Auth, Supabase só como Postgres | Schemas Better Auth (text id) incompatíveis com `auth.users` (uuid); migração HIGH effort sem ganho v1 | — Pendente |
+| RLS opcional no v1 | Sem `auth.uid()` resolúvel (Better Auth ≠ Supabase Auth); autorização aplicacional via membership por company_id; service-role key no servidor | — Pendente |
 
 ## Evolução
 
