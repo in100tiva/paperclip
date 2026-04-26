@@ -46,8 +46,51 @@ export type MigrationState =
     };
 
 export function createDb(url: string) {
-  const sql = postgres(url);
+  const options = buildPostgresOptions(url);
+  const sql = options ? postgres(url, options) : postgres(url);
   return drizzlePg(sql, { schema });
+}
+
+/**
+ * Build postgres-js options based on the connection target.
+ *
+ * Supabase Supavisor pooler (port 6543, transaction mode):
+ *   - `prepare: false` is REQUIRED — pooler reuses connections across transactions,
+ *     so prepared statements get orphaned. Without this, queries fail intermittently
+ *     with "prepared statement does not exist" under concurrency.
+ *   - Pool sized small (`max: 5`) because 5+ devs * 5 conns = 25, well below
+ *     Supabase free-tier limit of ~60 shared connections.
+ *
+ * Supabase direct/session pooler (port 5432):
+ *   - Pool config still applies (don't blow free-tier limit) but `prepare` can
+ *     stay default (true) — session mode keeps connection across statements.
+ *
+ * Embedded postgres (default port 54329) and any other target:
+ *   - No special options — preserve legacy behavior. Pool defaults from postgres-js
+ *     are appropriate for a localhost embedded instance.
+ *
+ * Reference: STACK.md (Supavisor pooler section); MIGRATION_AUDIT.md A.1; PITFALLS Armadilha 2.
+ */
+export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1] {
+  let port: string | null = null;
+  try {
+    port = new URL(url).port || null;
+  } catch {
+    // Malformed URL — let postgres-js error handling surface it.
+    return undefined;
+  }
+
+  if (port === "6543") {
+    // Supavisor transaction pooler.
+    return { prepare: false, max: 5, idle_timeout: 20, connect_timeout: 10 };
+  }
+  if (port === "5432") {
+    // Direct or session pooler — could be Supabase or self-hosted Postgres.
+    // Apply pool sizing but keep prepared statements (session mode supports them).
+    return { max: 5, idle_timeout: 20, connect_timeout: 10 };
+  }
+  // Embedded (54329) or anything else — preserve default behavior.
+  return undefined;
 }
 
 export async function getPostgresDataDirectory(url: string): Promise<string | null> {
