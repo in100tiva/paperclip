@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
-status: completed
-last_updated: "2026-04-26T04:55:15.669Z"
+status: in-progress
+last_updated: "2026-04-26T05:17:27Z"
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 18
+  completed_plans: 15
 ---
 
 # Estado do Projeto
@@ -18,16 +18,16 @@ progress:
 Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Fase 2 concluída — pronto para `/planejar-fase 3` (Workflow de Equipe + Onboarding)
+**Foco atual:** Phase 4 (Spike Multi-Account Detection) em execução paralela — Wave 1 planos 04-01 (taxonomia 429) + 04-02 (decisão arquitetural) completos
 
 ## Posição Atual
 
-Fase: 3 de 6 (Workflow de Equipe + Onboarding) — **NÃO INICIADA**
-Plano: Phase 2 completa em 6/6 planos. Próximo: `/planejar-fase 3`.
-Status: Phase 02 complete — Supabase remoto operacional, Better Auth signup + cookie prefix paperclip-team-shared validados E2E, 16/16 requirements satisfeitos
-Última atividade: 2026-04-25 — Plano 02-06 concluído (Wave 4): smoke E2E automatizado 7/7 PASS contra server `authenticated` apontando para Supabase pooler 6543; cookie `paperclip-team-shared.session_token` confirmado literal; signup roundtrip + Supabase SQL verification para dois usuários; human-verify aprovado pelo owner. Phase 2 declared complete (16/16 requirements: INFRA-01..06, DB-01..05, AUTH-01..05). Findings forward capturados para Phase 3 TEAM-02/TEAM-05 em SMOKE-TEST-LOG.md.
+Fase: 4 de 6 (Spike Multi-Account Claude Code Detection) — **EM EXECUÇÃO**
+Plano: 04-01 + 04-02 concluídos (2/5 planos da Phase 4). Outros planos da Wave 1 (04-03, 04-04) podem estar em execução paralela.
+Status: SPIKE-01 + SPIKE-03 satisfeitos. CLAUDE_429_TAXONOMY.md mapeia 6 tipos contra regex existente (4 yes, 2 partial — tpm_transient sem discriminator via mensagem, org_tier sem token canônico, ambos pendentes HUMAN-UAT-04-01). DECISION-DETECTION-STRATEGY.md registra decisão arquitetural (reativa primary, pré-emptiva opt, cooldown 30s, retry-after honrado). Spike permanece read-only sobre `packages/adapters/claude-local/src/server/`.
+Última atividade: 2026-04-26 — Plano 04-01 concluído em 2min (commit `7554d10`): CLAUDE_429_TAXONOMY.md em pt-br (108 linhas) com tabela de 6 tipos (rpm_transient, tpm_transient, daily_quota, weekly_quota, org_tier, session_5h) auditada contra `CLAUDE_TRANSIENT_UPSTREAM_RE` (parse.ts:13) e `CLAUDE_EXTRA_USAGE_RESET_RE` (parse.ts:14); 7 headers Anthropic referenciados. Production code untouched.
 
-Progresso: [██████████] 100% (atualizado por update-progress tool)
+Progresso: [████████░░] 83% (15/18 plans — atualizado por update-progress tool)
 
 ## Métricas de Performance
 
@@ -44,6 +44,7 @@ Progresso: [██████████] 100% (atualizado por update-progress
 | 01-fork-hard | 2 | ~18min | ~9min |
 | 02-supabase | 6 | ~71min+ | ~12min |
 | 03-team-onboarding | 5 | ~50min | ~10min |
+| 04-spike-detection | 2+ | ~3min+ | ~1.5min (artefatos documentais puros) |
 
 **Tendência Recente:**
 
@@ -99,6 +100,8 @@ Decisões recentes que afetam o trabalho atual:
 - 03-03: TROUBLESHOOTING.md pt-br criado (193 linhas, 7 seções) cobrindo Windows NTFS, stale registry, too-many-connections, cookie prefix, schema desatualizado, claude CLI, prepared statement 6543. Anchors GFM alinhados com links do ONBOARDING.md; cada causa em código cita path:linha (D-18). Satisfies TEAM-05.
 - 03-05: TEAM-SIGNUP-PROCEDURE.md (185 linhas, pt-br) documenta bootstrap CEO via `tsx packages/db/scripts/create-auth-bootstrap-invite.ts --config <path> --base-url <url>` + cadastro coletivo de 4+ devs via fluxo `company_join` existente (D-09: zero código novo). 3 SQL queries de validação literal (pre-check bootstrap_ceo, count intermediário 1user/1company, count final 5+ users na shared company). Modo `authenticated` documentado como override obrigatório (finding 02-06). Fallback `pending-team-growth` aceito explicitamente — proibido falsificar users via SQL (viola D-09 e quebra cost attribution Fase 6). Forward link para 03-HUMAN-UAT.md#uat-03-02 (será resolvido pelo plano paralelo 03-04 da Wave 2). Satisfies TEAM-01 (no que é automatizável; execução real é HUMAN-UAT).
 - 03-04: CROSS-MACHINE-SMOKE.md (142 linhas, pt-br) documenta procedimento canônico D-13 (Dev A em máquina X cria company → Dev B em máquina Y vê via Supabase remoto + cookie `paperclip-team-shared` interoperável) + fallback single-host D-14 (two-browser-profiles, com limitação explícita de não provar literalmente cross-machine) + bloco de log timestamped D-15. 03-HUMAN-UAT.md (82 linhas) com frontmatter YAML (`type: human-uat`, `status: pending`) lista 2 UATs: UAT-03-01 (TEAM-04 cross-machine smoke) e UAT-03-02 (TEAM-01 5+ devs com SQL inline pra Supabase Studio). Decisão de roteamento: TEAM-04 satisfeito como **artefato** (procedimento auto-suficiente existe), validação **empírica** explicitamente HUMAN-UAT — executor Claude não tem duas máquinas físicas distintas, fingir validação seria desonesto. Phase 3 fecha como complete-with-pending-UAT (artefatos entregues, UATs ficam como trabalho contínuo da equipe). Satisfies TEAM-04.
+- 04-02: DECISION-DETECTION-STRATEGY.md (102 linhas, pt-br) registra decisão arquitetural sobre detecção 429 Claude Code: (1) **reativa como primary** (parse stream-JSON/stderr via `CLAUDE_TRANSIENT_UPSTREAM_RE` parse.ts:13 — battle-tested, transport-agnostic, não depende de headers HTTP); (2) **pré-emptiva como enhancement opt-in** (anthropic-ratelimit-tokens-remaining, condicional a investigação empírica confirmar que CLI propaga esses headers); (3) **cooldown 30s configurável** via `CLAUDE_ACCOUNT_COOLDOWN_SECONDS` aplicando-se APÓS swap real (não bloqueia primeira detecção; `agent_account_bindings.lastRotatedAt` é o gate); (4) **retry-after honrado** — `extractClaudeRetryNotBefore` (execute.ts:640) já produz ISO timestamp utilizável diretamente como `claude_accounts.exhaustedUntil`. Tabela de trade-offs cobre 5 cenários (token-bucket reset prematuro → threshold conservador; retry-after ausente em org_tier → fallback 5min; cooldown saturando pool em rajadas → só aplica após swap real; regex change entre versões CLI → logging para auditoria; headers não expostos → fallback transparente). Mapeamento explícito para Phase 5: MULTI-06 reusa regex existente em vez de duplicar; MULTI-04 filtra por `exhaustedUntil > now AND lastRotatedAt > now - cooldown`; MULTI-01 modela `lastQuotaWindowsJson` por tipos da taxonomia (rpm/tpm/daily/weekly/5h/org). Spike NÃO modifica produção (`git diff master~1..master -- packages/adapters/claude-local/src/server/` = 0 files). Satisfies SPIKE-03.
+- 04-01: CLAUDE_429_TAXONOMY.md (108 linhas, pt-br) audita 6 tipos de 429 (rpm_transient, tpm_transient, daily_quota, weekly_quota, org_tier, session_5h) contra `CLAUDE_TRANSIENT_UPSTREAM_RE` (parse.ts:13) e `CLAUDE_EXTRA_USAGE_RESET_RE` (parse.ts:14). Cobertura: 4 yes (rpm/daily/weekly/5h cobertos diretamente pelo regex existente); 2 partial — **tpm_transient** sem discriminator de dimensão via mensagem (RPM e TPM textualmente indistinguíveis; discriminator natural vem de header `*-reset` zerado, não da string), **org_tier** sem token canônico empiricamente confirmado (cai em fallback transient_upstream genérico via `overloaded_error`/`service_unavailable`/`503`/`529`). Implicação para Phase 5 MULTI-06: classifier deve REUSAR regex existente, não duplicar; gaps `partial` são candidatos a extensão pontual quando HUMAN-UAT-04-01 capturar fixtures reais. Sub-tipo discriminator no output do classifier (`type: "rpm_transient" | "tpm_transient" | "daily_quota" | "weekly_quota" | "session_5h" | "org_tier" | "unknown"`) é design pattern recomendado mesmo quando regex de detecção compartilha match — UI/schema diferenciam políticas. Tabela de 7 headers Anthropic incluída como referência (`anthropic-ratelimit-{requests,tokens}-{limit,remaining,reset}` + `retry-after`); investigação empírica em UAT-04-01 confirma se Claude Code CLI propaga estes headers no stream-JSON (destrava decisão pré-emptiva do 04-02). Spike NÃO modifica produção. Satisfies SPIKE-01.
 
 ### Todos Pendentes
 
@@ -112,5 +115,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 03-04-PLAN.md (CROSS-MACHINE-SMOKE.md + 03-HUMAN-UAT.md, TEAM-04 como artefato + UAT). Wave 2 paralela completa: 03-04 + 03-05 fechados. Phase 3 complete-with-pending-UAT (5/5 planos).
+Parou em: Phase 4 Wave 1 paralela em execução — 04-02 concluído (DECISION-DETECTION-STRATEGY.md, SPIKE-03). Outros planos da Wave (04-01, 04-03, 04-04) podem ter sido fechados em paralelo por agentes separados — verificar arquivos `04-NN-SUMMARY.md` no diretório da fase para status atualizado.
 Arquivo de retomada: Nenhum

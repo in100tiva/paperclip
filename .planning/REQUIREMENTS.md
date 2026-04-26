@@ -52,7 +52,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 - [ ] **SPIKE-01**: `CLAUDE_429_TAXONOMY.md` mapeia tipos de 429 do Claude Code (RPM transient, TPM transient, daily quota, weekly quota, organization tier, "5h limit reached")
 - [ ] **SPIKE-02**: Protótipo de classifier `detectClaudeQuotaExhausted` testado contra fixtures reais capturadas
-- [ ] **SPIKE-03**: Decisão documentada sobre detecção pré-emptiva (via `tokens-remaining` header) vs reativa (parse de stream)
+- [x] **SPIKE-03**: Decisão documentada sobre detecção pré-emptiva (via `tokens-remaining` header) vs reativa (parse de stream)
 - [ ] **SPIKE-04**: Validação empírica: `session_id` do Claude CLI é por-conta? Mecânica de retomada via `issue_continuation_summary` confirmada
 - [ ] **SPIKE-05**: Smoke test manual com 2 contas em filesystem disparando swap em exhaustão simulada
 
@@ -155,7 +155,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | TEAM-05 | Phase 3 | Complete |
 | SPIKE-01 | Phase 4 | Pending |
 | SPIKE-02 | Phase 4 | Pending |
-| SPIKE-03 | Phase 4 | Pending |
+| SPIKE-03 | Phase 4 | Complete |
 | SPIKE-04 | Phase 4 | Pending |
 | SPIKE-05 | Phase 4 | Pending |
 | MULTI-01 | Phase 5 | Pending |
