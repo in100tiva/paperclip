@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import {
   AGENT_ADAPTER_TYPES,
   getAdapterEnvironmentSupport,
@@ -17,6 +18,7 @@ import { environmentsApi } from "../api/environments";
 import { instanceSettingsApi } from "../api/instanceSettings";
 import { secretsApi } from "../api/secrets";
 import { queryKeys } from "../lib/queryKeys";
+import { translateApiError } from "@/lib/translateApiError";
 import { Button } from "@/components/ui/button";
 import { Settings, Check, Download, Upload } from "lucide-react";
 import { CompanyPatternIcon } from "../components/CompanyPatternIcon";
@@ -159,17 +161,19 @@ function summarizeSandboxConfig(config: Record<string, unknown>): string | null 
 }
 
 function SupportMark({ supported }: { supported: boolean }) {
+  const { t } = useTranslation(["settings"]);
   return supported ? (
     <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400">
       <Check className="h-3 w-3" />
-      Yes
+      {t("settings:company.environments.support-yes")}
     </span>
   ) : (
-    <span className="text-muted-foreground">No</span>
+    <span className="text-muted-foreground">{t("settings:company.environments.support-no")}</span>
   );
 }
 
 export function CompanySettings() {
+  const { t } = useTranslation(["settings", "common"]);
   const {
     companies,
     selectedCompany,
@@ -315,7 +319,7 @@ export function CompanySettings() {
     },
     onError: (err) => {
       setInviteError(
-        err instanceof Error ? err.message : "Failed to create invite"
+        err instanceof Error ? err.message : t("settings:company.invites.create-failed-fallback")
       );
     }
   });
@@ -361,15 +365,17 @@ export function CompanySettings() {
       setEditingEnvironmentId(null);
       setEnvironmentForm(createEmptyEnvironmentForm());
       pushToast({
-        title: editingEnvironmentId ? "Environment updated" : "Environment created",
-        body: `${environment.name} is ready.`,
+        title: editingEnvironmentId
+          ? t("settings:company.environments.updated-toast-title")
+          : t("settings:company.environments.created-toast-title"),
+        body: t("settings:company.environments.ready-toast-body", { name: environment.name }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment",
-        body: error instanceof Error ? error.message : "Environment save failed.",
+        ...translateApiError(error, t),
+        title: t("settings:company.environments.save-failed-toast-title"),
         tone: "error",
       });
     },
@@ -383,7 +389,9 @@ export function CompanySettings() {
         [environmentId]: probe,
       }));
       pushToast({
-        title: probe.ok ? "Environment probe passed" : "Environment probe failed",
+        title: probe.ok
+          ? t("settings:company.environments.probe-passed-title")
+          : t("settings:company.environments.probe-failed-title"),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
@@ -395,13 +403,13 @@ export function CompanySettings() {
         [environmentId]: {
           ok: false,
           driver: failedEnvironment?.driver ?? "local",
-          summary: error instanceof Error ? error.message : "Environment probe failed.",
+          summary: error instanceof Error ? error.message : t("settings:company.environments.probe-failed-body"),
           details: null,
         },
       }));
       pushToast({
-        title: "Environment probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        ...translateApiError(error, t),
+        title: t("settings:company.environments.probe-failed-title"),
         tone: "error",
       });
     },
@@ -414,15 +422,17 @@ export function CompanySettings() {
     },
     onSuccess: (probe) => {
       pushToast({
-        title: probe.ok ? "Draft probe passed" : "Draft probe failed",
+        title: probe.ok
+          ? t("settings:company.environments.draft-probe-passed-title")
+          : t("settings:company.environments.draft-probe-failed-title"),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Draft probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        ...translateApiError(error, t),
+        title: t("settings:company.environments.draft-probe-failed-title"),
         tone: "error",
       });
     },
@@ -473,15 +483,15 @@ export function CompanySettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings" }
+      { label: selectedCompany?.name ?? t("settings:common.company-fallback"), href: "/dashboard" },
+      { label: t("settings:company.crumb") }
     ]);
-  }, [setBreadcrumbs, selectedCompany?.name]);
+  }, [setBreadcrumbs, selectedCompany?.name, t]);
 
   if (!selectedCompany) {
     return (
       <div className="text-sm text-muted-foreground">
-        No company selected. Select a company from the switcher above.
+        {t("settings:company.no-company-selected")}
       </div>
     );
   }
@@ -606,16 +616,16 @@ export function CompanySettings() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-lg font-semibold">Company Settings</h1>
+        <h1 className="text-lg font-semibold">{t("settings:company.title")}</h1>
       </div>
 
       {/* General */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          General
+          {t("settings:company.general.section")}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
-          <Field label="Company name" hint="The display name for your company.">
+          <Field label={t("settings:company.general.name-label")} hint={t("settings:company.general.name-hint")}>
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
@@ -624,14 +634,14 @@ export function CompanySettings() {
             />
           </Field>
           <Field
-            label="Description"
-            hint="Optional description shown in the company profile."
+            label={t("settings:company.general.description-label")}
+            hint={t("settings:company.general.description-hint")}
           >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
               value={description}
-              placeholder="Optional company description"
+              placeholder={t("settings:company.general.description-placeholder")}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
@@ -641,7 +651,7 @@ export function CompanySettings() {
       {/* Appearance */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Appearance
+          {t("settings:company.appearance.section")}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-start gap-4">
@@ -655,8 +665,8 @@ export function CompanySettings() {
             </div>
             <div className="flex-1 space-y-3">
               <Field
-                label="Logo"
-                hint="Upload a PNG, JPEG, WEBP, GIF, or SVG logo image."
+                label={t("settings:company.appearance.logo-label")}
+                hint={t("settings:company.appearance.logo-hint")}
               >
                 <div className="space-y-2">
                   <input
@@ -673,7 +683,9 @@ export function CompanySettings() {
                         onClick={handleClearLogo}
                         disabled={clearLogoMutation.isPending}
                       >
-                        {clearLogoMutation.isPending ? "Removing..." : "Remove logo"}
+                        {clearLogoMutation.isPending
+                          ? t("settings:company.appearance.removing-logo")
+                          : t("settings:company.appearance.remove-logo")}
                       </Button>
                     </div>
                   )}
@@ -682,7 +694,7 @@ export function CompanySettings() {
                       {logoUploadError ??
                         (logoUploadMutation.error instanceof Error
                           ? logoUploadMutation.error.message
-                          : "Logo upload failed")}
+                          : t("settings:company.appearance.logo-upload-failed"))}
                     </span>
                   )}
                   {clearLogoMutation.isError && (
@@ -691,13 +703,13 @@ export function CompanySettings() {
                     </span>
                   )}
                   {logoUploadMutation.isPending && (
-                    <span className="text-xs text-muted-foreground">Uploading logo...</span>
+                    <span className="text-xs text-muted-foreground">{t("settings:company.appearance.uploading-logo")}</span>
                   )}
                 </div>
               </Field>
               <Field
-                label="Brand color"
-                hint="Sets the hue for the company icon. Leave empty for auto-generated color."
+                label={t("settings:company.appearance.brand-color-label")}
+                hint={t("settings:company.appearance.brand-color-hint")}
               >
                 <div className="flex items-center gap-2">
                   <input
@@ -715,7 +727,7 @@ export function CompanySettings() {
                         setBrandColor(v);
                       }
                     }}
-                    placeholder="Auto"
+                    placeholder={t("settings:company.appearance.brand-color-placeholder")}
                     className="w-28 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-mono outline-none"
                   />
                   {brandColor && (
@@ -725,7 +737,7 @@ export function CompanySettings() {
                       onClick={() => setBrandColor("")}
                       className="text-xs text-muted-foreground"
                     >
-                      Clear
+                      {t("settings:company.appearance.brand-color-clear")}
                     </Button>
                   )}
                 </div>
@@ -743,16 +755,18 @@ export function CompanySettings() {
             onClick={handleSaveGeneral}
             disabled={generalMutation.isPending || !companyName.trim()}
           >
-            {generalMutation.isPending ? "Saving..." : "Save changes"}
+            {generalMutation.isPending
+              ? t("settings:company.actions.saving")
+              : t("settings:company.actions.save-changes")}
           </Button>
           {generalMutation.isSuccess && (
-            <span className="text-xs text-muted-foreground">Saved</span>
+            <span className="text-xs text-muted-foreground">{t("settings:company.actions.saved")}</span>
           )}
           {generalMutation.isError && (
             <span className="text-xs text-destructive">
               {generalMutation.error instanceof Error
                   ? generalMutation.error.message
-                  : "Failed to save"}
+                  : t("settings:company.actions.save-failed")}
             </span>
           )}
         </div>
@@ -761,25 +775,23 @@ export function CompanySettings() {
       {environmentsEnabled ? (
       <div className="space-y-4" data-testid="company-settings-environments-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Environments
+          {t("settings:company.environments.section")}
         </div>
         <div className="space-y-4 rounded-md border border-border px-4 py-4">
           <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            Environment choices use the same adapter support matrix as agent defaults. SSH is always available for
-            remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is
-            installed.
+            {t("settings:company.environments.support-info")}
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] text-left text-xs">
-              <caption className="sr-only">Environment support by adapter</caption>
+              <caption className="sr-only">{t("settings:company.environments.support-caption")}</caption>
               <thead className="border-b border-border text-muted-foreground">
                 <tr>
-                  <th className="py-2 pr-3 font-medium">Adapter</th>
-                  <th className="px-3 py-2 font-medium">Local</th>
-                  <th className="px-3 py-2 font-medium">SSH</th>
+                  <th className="py-2 pr-3 font-medium">{t("settings:company.environments.support-adapter")}</th>
+                  <th className="px-3 py-2 font-medium">{t("settings:company.environments.support-local")}</th>
+                  <th className="px-3 py-2 font-medium">{t("settings:company.environments.support-ssh")}</th>
                   {sandboxSupportVisible ? (
-                    <th className="px-3 py-2 font-medium">Sandbox</th>
+                    <th className="px-3 py-2 font-medium">{t("settings:company.environments.support-sandbox")}</th>
                   ) : null}
                 </tr>
               </thead>
@@ -814,7 +826,7 @@ export function CompanySettings() {
 
           <div className="space-y-3">
             {(environments ?? []).length === 0 ? (
-              <div className="text-sm text-muted-foreground">No environments saved for this company yet.</div>
+              <div className="text-sm text-muted-foreground">{t("settings:company.environments.empty")}</div>
             ) : (
               (environments ?? []).map((environment) => {
                 const probe = probeResults[environment.id] ?? null;
@@ -834,8 +846,8 @@ export function CompanySettings() {
                         ) : null}
                         {environment.driver === "ssh" ? (
                           <div className="text-xs text-muted-foreground">
-                            {typeof environment.config.host === "string" ? environment.config.host : "SSH host"} ·{" "}
-                            {typeof environment.config.username === "string" ? environment.config.username : "user"}
+                            {typeof environment.config.host === "string" ? environment.config.host : t("settings:company.environments.ssh-host-fallback")} ·{" "}
+                            {typeof environment.config.username === "string" ? environment.config.username : t("settings:company.environments.ssh-user-fallback")}
                           </div>
                         ) : environment.driver === "sandbox" ? (
                           <div className="text-xs text-muted-foreground">
@@ -845,11 +857,11 @@ export function CompanySettings() {
                               const displayName =
                                 environmentCapabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
                               const summary = summarizeSandboxConfig(environment.config as Record<string, unknown>);
-                              return `${displayName} sandbox provider${summary ? ` · ${summary}` : ""}`;
+                              return `${displayName} ${t("settings:company.environments.sandbox-suffix")}${summary ? ` · ${summary}` : ""}`;
                             })()}
                           </div>
                         ) : (
-                          <div className="text-xs text-muted-foreground">Runs on this Paperclip host.</div>
+                          <div className="text-xs text-muted-foreground">{t("settings:company.environments.runs-on-this-host")}</div>
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -861,10 +873,10 @@ export function CompanySettings() {
                             disabled={environmentProbeMutation.isPending}
                           >
                             {environmentProbeMutation.isPending
-                              ? "Testing..."
+                              ? t("settings:company.environments.testing")
                               : environment.driver === "ssh"
-                                ? "Test connection"
-                                : "Test provider"}
+                                ? t("settings:company.environments.test-connection")
+                                : t("settings:company.environments.test-provider")}
                           </Button>
                         ) : null}
                         <Button
@@ -872,7 +884,9 @@ export function CompanySettings() {
                           variant="ghost"
                           onClick={() => handleEditEnvironment(environment)}
                         >
-                          {isEditing ? "Editing" : "Edit"}
+                          {isEditing
+                            ? t("settings:company.environments.editing")
+                            : t("settings:company.environments.edit")}
                         </Button>
                       </div>
                     </div>
@@ -898,10 +912,12 @@ export function CompanySettings() {
 
           <div className="border-t border-border/60 pt-4">
             <div className="mb-3 text-sm font-medium">
-              {editingEnvironmentId ? "Edit environment" : "Add environment"}
+              {editingEnvironmentId
+                ? t("settings:company.environments.edit-environment")
+                : t("settings:company.environments.add-environment")}
             </div>
             <div className="space-y-3">
-              <Field label="Name" hint="Operator-facing name for this execution target.">
+              <Field label={t("settings:company.environments.field-name-label")} hint={t("settings:company.environments.field-name-hint")}>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -909,7 +925,7 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, name: e.target.value }))}
                 />
               </Field>
-              <Field label="Description" hint="Optional note about what this machine is for.">
+              <Field label={t("settings:company.environments.field-description-label")} hint={t("settings:company.environments.field-description-hint")}>
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -917,7 +933,7 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, description: e.target.value }))}
                 />
               </Field>
-              <Field label="Driver" hint="Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam.">
+              <Field label={t("settings:company.environments.field-driver-label")} hint={t("settings:company.environments.field-driver-hint")}>
                 <select
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   value={environmentForm.driver}
@@ -956,7 +972,7 @@ export function CompanySettings() {
 
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Host" hint="DNS name or IP address for the remote machine.">
+                  <Field label={t("settings:company.environments.field-host-label")} hint={t("settings:company.environments.field-host-hint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -964,7 +980,7 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field label={t("settings:company.environments.field-port-label")} hint={t("settings:company.environments.field-port-hint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -974,7 +990,7 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH login user.">
+                  <Field label={t("settings:company.environments.field-username-label")} hint={t("settings:company.environments.field-username-hint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -982,17 +998,17 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshUsername: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field label={t("settings:company.environments.field-remote-workspace-label")} hint={t("settings:company.environments.field-remote-workspace-hint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
-                      placeholder="/Users/paperclip/workspace"
+                      placeholder={t("settings:company.environments.field-remote-workspace-placeholder")}
                       value={environmentForm.sshRemoteWorkspacePath}
                       onChange={(e) =>
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field label={t("settings:company.environments.field-private-key-label")} hint={t("settings:company.environments.field-private-key-hint")}>
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -1004,7 +1020,7 @@ export function CompanySettings() {
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">{t("settings:company.environments.field-no-saved-secret")}</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -1017,7 +1033,7 @@ export function CompanySettings() {
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field label={t("settings:company.environments.field-known-hosts-label")} hint={t("settings:company.environments.field-known-hosts-hint")}>
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -1026,8 +1042,8 @@ export function CompanySettings() {
                   </Field>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label={t("settings:company.environments.field-strict-host-key-label")}
+                      hint={t("settings:company.environments.field-strict-host-key-hint")}
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -1038,7 +1054,7 @@ export function CompanySettings() {
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field label={t("settings:company.environments.field-provider-label")} hint={t("settings:company.environments.field-provider-hint")}>
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -1080,7 +1096,7 @@ export function CompanySettings() {
                       />
                     ) : (
                       <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                        This provider does not declare additional configuration fields.
+                        {t("settings:company.environments.no-config-fields")}
                       </div>
                     )}
                   </div>
@@ -1095,11 +1111,11 @@ export function CompanySettings() {
                 >
                   {environmentMutation.isPending
                     ? editingEnvironmentId
-                      ? "Saving..."
-                      : "Creating..."
+                      ? t("settings:company.environments.saving")
+                      : t("settings:company.environments.creating")
                     : editingEnvironmentId
-                      ? "Save environment"
-                      : "Create environment"}
+                      ? t("settings:company.environments.save-environment")
+                      : t("settings:company.environments.create-environment")}
                 </Button>
                 {editingEnvironmentId ? (
                   <Button
@@ -1108,7 +1124,7 @@ export function CompanySettings() {
                     onClick={handleCancelEnvironmentEdit}
                     disabled={environmentMutation.isPending}
                   >
-                    Cancel
+                    {t("settings:company.environments.cancel")}
                   </Button>
                 ) : null}
                 {environmentForm.driver !== "local" ? (
@@ -1118,14 +1134,16 @@ export function CompanySettings() {
                     onClick={() => draftEnvironmentProbeMutation.mutate(environmentForm)}
                     disabled={draftEnvironmentProbeMutation.isPending || !environmentFormValid}
                   >
-                    {draftEnvironmentProbeMutation.isPending ? "Testing..." : "Test draft"}
+                    {draftEnvironmentProbeMutation.isPending
+                      ? t("settings:company.environments.testing")
+                      : t("settings:company.environments.test-draft")}
                   </Button>
                 ) : null}
                 {environmentMutation.isError ? (
                   <span className="text-xs text-destructive">
                     {environmentMutation.error instanceof Error
                       ? environmentMutation.error.message
-                      : "Failed to save environment"}
+                      : t("settings:company.environments.save-failed-fallback")}
                   </span>
                 ) : null}
                 {draftEnvironmentProbeMutation.data ? (
@@ -1143,12 +1161,12 @@ export function CompanySettings() {
       {/* Hiring */}
       <div className="space-y-4" data-testid="company-settings-team-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Hiring
+          {t("settings:company.hiring.section")}
         </div>
         <div className="rounded-md border border-border px-4 py-3">
           <ToggleField
-            label="Require board approval for new hires"
-            hint="New agent hires stay pending until approved by board."
+            label={t("settings:company.hiring.require-approval-label")}
+            hint={t("settings:company.hiring.require-approval-hint")}
             checked={!!selectedCompany.requireBoardApprovalForNewAgents}
             onChange={(v) => settingsMutation.mutate(v)}
             toggleTestId="company-settings-team-approval-toggle"
@@ -1159,15 +1177,15 @@ export function CompanySettings() {
       {/* Phase 6 / D-04 / D-07 / PROJ-02 — Claude account pool mode */}
       <div className="space-y-4" data-testid="company-settings-claude-pool-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Claude Account Pool
+          {t("settings:company.claude-pool.section")}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <p className="text-xs text-muted-foreground">
-            Controls which Claude accounts agents in this company can rotate across.{" "}
-            <strong>per_company</strong> keeps the pool isolated to this company's own
-            accounts. <strong>shared</strong> additionally lets agents draw from accounts
-            registered with <code className="rounded bg-muted px-1">scope = shared</code>{" "}
-            in any company.
+            {t("settings:company.claude-pool.description-prefix")}{" "}
+            <strong>per_company</strong> {t("settings:company.claude-pool.per-company-explanation")}{" "}
+            <strong>shared</strong> {t("settings:company.claude-pool.shared-explanation-prefix")}{" "}
+            <code className="rounded bg-muted px-1">scope = shared</code>{" "}
+            {t("settings:company.claude-pool.shared-explanation-suffix")}
           </p>
           <div className="flex flex-col gap-2 text-sm">
             <label className="flex items-center gap-2">
@@ -1181,7 +1199,7 @@ export function CompanySettings() {
               />
               <span>
                 <span className="font-medium">per_company</span>
-                <span className="text-muted-foreground"> — default, isolated pool</span>
+                <span className="text-muted-foreground"> — {t("settings:company.claude-pool.mode-per-company-label")}</span>
               </span>
             </label>
             <label className="flex items-center gap-2">
@@ -1196,7 +1214,7 @@ export function CompanySettings() {
               <span>
                 <span className="font-medium">shared</span>
                 <span className="text-muted-foreground">
-                  {" "}— also draws from the shared pool
+                  {" "}— {t("settings:company.claude-pool.mode-shared-label")}
                 </span>
               </span>
             </label>
@@ -1207,14 +1225,14 @@ export function CompanySettings() {
       {/* Invites */}
       <div className="space-y-4" data-testid="company-settings-invites-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Invites
+          {t("settings:company.invites.section")}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">
-              Generate an OpenClaw agent invite snippet.
+              {t("settings:company.invites.generate-description")}
             </span>
-            <HintIcon text="Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." />
+            <HintIcon text={t("settings:company.invites.generate-tooltip")} />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -1224,8 +1242,8 @@ export function CompanySettings() {
               disabled={inviteMutation.isPending}
             >
               {inviteMutation.isPending
-                ? "Generating..."
-                : "Generate OpenClaw Invite Prompt"}
+                ? t("settings:company.invites.generating")
+                : t("settings:company.invites.generate-cta")}
             </Button>
           </div>
           {inviteError && (
@@ -1238,7 +1256,7 @@ export function CompanySettings() {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="text-xs text-muted-foreground">
-                  OpenClaw Invite Prompt
+                  {t("settings:company.invites.snippet-label")}
                 </div>
                 {snippetCopied && (
                   <span
@@ -1246,7 +1264,7 @@ export function CompanySettings() {
                     className="flex items-center gap-1 text-xs text-green-600 animate-pulse"
                   >
                     <Check className="h-3 w-3" />
-                    Copied
+                    {t("settings:company.invites.copied")}
                   </span>
                 )}
               </div>
@@ -1273,7 +1291,9 @@ export function CompanySettings() {
                       }
                     }}
                   >
-                    {snippetCopied ? "Copied snippet" : "Copy snippet"}
+                    {snippetCopied
+                      ? t("settings:company.invites.copied-snippet")
+                      : t("settings:company.invites.copy")}
                   </Button>
                 </div>
               </div>
@@ -1285,24 +1305,24 @@ export function CompanySettings() {
       {/* Import / Export */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Company Packages
+          {t("settings:company.packages.section")}
         </div>
         <div className="rounded-md border border-border px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Import and export have moved to dedicated pages accessible from the{" "}
-            <a href="/org" className="underline hover:text-foreground">Org Chart</a> header.
+            {t("settings:company.packages.description-prefix")}{" "}
+            <a href="/org" className="underline hover:text-foreground">{t("settings:company.packages.description-link")}</a>{t("settings:company.packages.description-suffix")}
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
               <a href="/company/export">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
-                Export
+                {t("settings:company.packages.export")}
               </a>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="/company/import">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
-                Import
+                {t("settings:company.packages.import")}
               </a>
             </Button>
           </div>
@@ -1312,12 +1332,11 @@ export function CompanySettings() {
       {/* Danger Zone */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-destructive uppercase tracking-wide">
-          Danger Zone
+          {t("settings:company.danger-zone.section")}
         </div>
         <div className="space-y-3 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Archive this company to hide it from the sidebar. This persists in
-            the database.
+            {t("settings:company.danger-zone.description")}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -1330,7 +1349,7 @@ export function CompanySettings() {
               onClick={() => {
                 if (!selectedCompanyId) return;
                 const confirmed = window.confirm(
-                  `Archive company "${selectedCompany.name}"? It will be hidden from the sidebar.`
+                  t("settings:company.danger-zone.archive-confirm", { name: selectedCompany.name }),
                 );
                 if (!confirmed) return;
                 const nextCompanyId =
@@ -1346,16 +1365,16 @@ export function CompanySettings() {
               }}
             >
               {archiveMutation.isPending
-                ? "Archiving..."
+                ? t("settings:company.danger-zone.archiving")
                 : selectedCompany.status === "archived"
-                ? "Already archived"
-                : "Archive company"}
+                ? t("settings:company.danger-zone.already-archived")
+                : t("settings:company.danger-zone.archive-cta")}
             </Button>
             {archiveMutation.isError && (
               <span className="text-xs text-destructive">
                 {archiveMutation.error instanceof Error
                   ? archiveMutation.error.message
-                  : "Failed to archive company"}
+                  : t("settings:company.danger-zone.archive-failed")}
               </span>
             )}
           </div>

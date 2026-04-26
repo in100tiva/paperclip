@@ -2,6 +2,20 @@ import type { TFunction } from "i18next";
 import { ApiError } from "@/api/client";
 
 /**
+ * TFunction shape this helper accepts. We accept any TFunction (independent of
+ * the namespace tuple parameter) since internally we always cast to a permissive
+ * signature that handles dynamic dot-segmented keys (`errors:${runtime-code}`).
+ *
+ * Components that call this helper typically declare
+ * `useTranslation(["settings", "common"])` (returning `TFunction<["settings","common"]>`)
+ * but the helper still needs to resolve `errors:*` keys. Generic parameter widens
+ * the accepted argument so all useTranslation tuples bind here without per-call
+ * casts.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyTFunction = TFunction<any, undefined>;
+
+/**
  * Result shape consumed by toast/banner components.
  *
  * - `title` is always a translated, user-facing string. Components should
@@ -33,7 +47,10 @@ export interface TranslatedError {
  */
 export function translateApiError(
   error: unknown,
-  t: TFunction,
+  // Accept any TFunction-like callable (including permissive locally-cast versions).
+  // We re-cast internally to handle dynamic dot-segmented errors:* keys that
+  // strict typed-t() augmentation cannot statically prove.
+  t: AnyTFunction | TFunction | ((key: string, options?: Record<string, unknown>) => string | null | undefined),
 ): TranslatedError {
   // Cast t to a permissive signature so we can pass dynamic, dot-segmented
   // namespaced keys (`errors:${runtime-code}`) that the strict typed-t()

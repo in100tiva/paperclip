@@ -3,7 +3,9 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { CompanyAccess } from "./CompanyAccess";
 
 const listMembersMock = vi.hoisted(() => vi.fn());
@@ -67,6 +69,12 @@ async function flushReact() {
 
 describe("CompanyAccess", () => {
   let container: HTMLDivElement;
+
+  beforeAll(async () => {
+    // Pin locale so existing English text assertions match the migrated component.
+    // Phase 9-01 Rule 1 fixture-fix (mirrors Phase 8-01/8-02/8-03/8-04 pattern).
+    await i18n.changeLanguage("en-US");
+  });
 
   beforeEach(() => {
     container = document.createElement("div");
@@ -180,9 +188,11 @@ describe("CompanyAccess", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <CompanyAccess />
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <CompanyAccess />
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -229,9 +239,11 @@ describe("CompanyAccess", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <CompanyAccess />
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <CompanyAccess />
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -276,9 +288,11 @@ describe("CompanyAccess", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <CompanyAccess />
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <CompanyAccess />
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -363,9 +377,11 @@ describe("CompanyAccess", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <CompanyAccess />
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <CompanyAccess />
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();

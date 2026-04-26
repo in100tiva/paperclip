@@ -4,7 +4,9 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AGENT_ADAPTER_TYPES, getEnvironmentCapabilities } from "@paperclipai/shared";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { CompanySettings } from "./CompanySettings";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -108,6 +110,12 @@ async function flushReact() {
 describe("CompanySettings", () => {
   let container: HTMLDivElement;
 
+  beforeAll(async () => {
+    // Pin locale so existing English text assertions match the migrated component.
+    // Phase 9-01 Rule 1 fixture-fix.
+    await i18n.changeLanguage("en-US");
+  });
+
   beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -144,11 +152,13 @@ describe("CompanySettings", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <CompanySettings />
-          </TooltipProvider>
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <CompanySettings />
+            </TooltipProvider>
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -210,11 +220,13 @@ describe("CompanySettings", () => {
 
     await act(async () => {
       root.render(
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <CompanySettings />
-          </TooltipProvider>
-        </QueryClientProvider>,
+        <I18nextProvider i18n={i18n}>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <CompanySettings />
+            </TooltipProvider>
+          </QueryClientProvider>
+        </I18nextProvider>,
       );
     });
     await flushReact();
