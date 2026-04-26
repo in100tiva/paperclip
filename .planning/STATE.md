@@ -2,8 +2,8 @@
 state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
-status: Phase 4 (Spike Multi-Account) FECHADA — 5/5 planos completos. 04-05 entregou 04-HUMAN-UAT.md (UAT-04-01 fixtures reais, UAT-04-02 session_id per-account, UAT-04-03 smoke 2-account swap) + FINDINGS-FOR-PHASE-5.md (8 findings explícitos mapeados a MULTI-01/04/05/06/08). Phase 5 redirecionada de "construir classifier" para "reusar regex existente em parse.ts:13 + CLAUDE_CONFIG_DIR existente em execute.ts:253 + integrar swap mechanic". MULTI-08 bloqueado em UAT-04-03. ROADMAP success criteria #1-#5 todos endereçados. Spike permanece read-only sobre `packages/adapters/claude-local/src/server/`.
-last_updated: "2026-04-26T05:36:54.715Z"
+status: "SPIKE-01 + SPIKE-02 + SPIKE-03 + SPIKE-04 + SPIKE-05 satisfeitos (SPIKE-04/05 via HUMAN-UAT routing — precedente Phase 3). 04-HUMAN-UAT.md lista 3 UATs com critérios pass/fail empíricos. FINDINGS-FOR-PHASE-5.md lista 8 findings explícitos mapeados para MULTI-01/04/05/06/08. ROADMAP success criteria #1-#5 todos endereçados (taxonomia, decisão, protótipo, harness, findings). Spike permanece read-only sobre `packages/adapters/claude-local/src/server/`."
+last_updated: "2026-04-26T05:43:19.336Z"
 progress:
   total_phases: 6
   completed_phases: 4
