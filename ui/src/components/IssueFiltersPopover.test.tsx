@@ -4,6 +4,8 @@ import { act } from "react";
 import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { IssueFiltersPopover } from "./IssueFiltersPopover";
 import { defaultIssueFilterState } from "../lib/issue-filters";
 
@@ -57,16 +59,18 @@ describe("IssueFiltersPopover", () => {
 
     act(() => {
       root.render(
-        <IssueFiltersPopover
-          state={defaultIssueFilterState}
-          onChange={vi.fn()}
-          activeFilterCount={0}
-          agents={[{ id: "agent-1", name: "Agent One" }]}
-          projects={[{ id: "project-1", name: "Project One" }]}
-          labels={[{ id: "label-1", name: "Bug", color: "#ff0000" }]}
-          workspaces={[{ id: "workspace-1", name: "Workspace One" }]}
-          enableRoutineVisibilityFilter
-        />,
+        <I18nextProvider i18n={i18n}>
+          <IssueFiltersPopover
+            state={defaultIssueFilterState}
+            onChange={vi.fn()}
+            activeFilterCount={0}
+            agents={[{ id: "agent-1", name: "Agent One" }]}
+            projects={[{ id: "project-1", name: "Project One" }]}
+            labels={[{ id: "label-1", name: "Bug", color: "#ff0000" }]}
+            workspaces={[{ id: "workspace-1", name: "Workspace One" }]}
+            enableRoutineVisibilityFilter
+          />
+        </I18nextProvider>,
       );
     });
 
@@ -79,6 +83,8 @@ describe("IssueFiltersPopover", () => {
       element.className.includes("md:grid-cols-3"),
     );
     expect(layoutGrid?.className).toContain("grid-cols-1");
-    expect(popoverContent?.textContent).toContain("Live runs only");
+    // i18n init defaults to pt-BR (Phase 7); assert on the pt-BR translation
+    // for the "Live runs only" filter label.
+    expect(popoverContent?.textContent).toContain("Apenas execuções ao vivo");
   });
 });

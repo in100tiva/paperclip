@@ -3,7 +3,9 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import type { Issue } from "@paperclipai/shared";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { IssueRow } from "./IssueRow";
 
 vi.mock("@/lib/router", () => ({
@@ -74,6 +76,11 @@ function createIssue(overrides: Partial<Issue> = {}): Issue {
 describe("IssueRow", () => {
   let container: HTMLDivElement;
 
+  beforeAll(async () => {
+    // Force en-US so aria-label / textContent assertions on English strings hold.
+    await i18n.changeLanguage("en-US");
+  });
+
   beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -88,7 +95,7 @@ describe("IssueRow", () => {
     const issue = createIssue();
 
     act(() => {
-      root.render(<IssueRow issue={issue} selected />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={issue} selected /></I18nextProvider>);
     });
 
     const link = container.querySelector("[data-inbox-issue-link]") as HTMLAnchorElement | null;
@@ -105,7 +112,7 @@ describe("IssueRow", () => {
     const root = createRoot(container);
 
     act(() => {
-      root.render(<IssueRow issue={createIssue()} selected unreadState="visible" />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={createIssue()} selected unreadState="visible" /></I18nextProvider>);
     });
 
     const markReadButton = container.querySelector('button[aria-label="Mark as read"]');
@@ -136,7 +143,7 @@ describe("IssueRow", () => {
     };
 
     act(() => {
-      root.render(<IssueRow issue={issue} issueLinkState={state} />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={issue} issueLinkState={state} /></I18nextProvider>);
     });
 
     const link = container.querySelector("[data-inbox-issue-link]") as HTMLAnchorElement | null;
@@ -152,7 +159,7 @@ describe("IssueRow", () => {
     const root = createRoot(container);
 
     act(() => {
-      root.render(<IssueRow issue={createIssue()} />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={createIssue()} /></I18nextProvider>);
     });
 
     const link = container.querySelector("[data-inbox-issue-link]") as HTMLAnchorElement | null;
@@ -168,7 +175,7 @@ describe("IssueRow", () => {
     const root = createRoot(container);
 
     act(() => {
-      root.render(<IssueRow issue={createIssue()} />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={createIssue()} /></I18nextProvider>);
     });
 
     const link = container.querySelector("[data-inbox-issue-link]") as HTMLAnchorElement | null;
@@ -185,10 +192,12 @@ describe("IssueRow", () => {
 
     act(() => {
       root.render(
-        <IssueRow
-          issue={issue}
-          titleSuffix={<span data-testid="suffix">(3 sub-tasks)</span>}
-        />,
+        <I18nextProvider i18n={i18n}>
+          <IssueRow
+            issue={issue}
+            titleSuffix={<span data-testid="suffix">(3 sub-tasks)</span>}
+          />
+        </I18nextProvider>,
       );
     });
 
@@ -206,7 +215,7 @@ describe("IssueRow", () => {
     const root = createRoot(container);
 
     act(() => {
-      root.render(<IssueRow issue={createIssue()} />);
+      root.render(<I18nextProvider i18n={i18n}><IssueRow issue={createIssue()} /></I18nextProvider>);
     });
 
     const titleEl = container.querySelector(".line-clamp-2, .truncate");

@@ -5,7 +5,9 @@ import { createRoot } from "react-dom/client";
 import type { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Issue } from "@paperclipai/shared";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { IssuesList } from "./IssuesList";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -201,9 +203,11 @@ function renderWithQueryClient(node: ReactNode, container: HTMLDivElement) {
   act(() => {
     root.render(
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          {node}
-        </TooltipProvider>
+        <I18nextProvider i18n={i18n}>
+          <TooltipProvider>
+            {node}
+          </TooltipProvider>
+        </I18nextProvider>
       </QueryClientProvider>,
     );
   });
@@ -213,6 +217,11 @@ function renderWithQueryClient(node: ReactNode, container: HTMLDivElement) {
 
 describe("IssuesList", () => {
   let container: HTMLDivElement;
+
+  beforeAll(async () => {
+    // Force en-US so assertions on English text content pass.
+    await i18n.changeLanguage("en-US");
+  });
 
   beforeEach(() => {
     container = document.createElement("div");

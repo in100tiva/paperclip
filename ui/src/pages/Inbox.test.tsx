@@ -4,7 +4,9 @@ import { act } from "react";
 import type { ComponentProps } from "react";
 import { createRoot } from "react-dom/client";
 import type { Issue } from "@paperclipai/shared";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import type { CompanyJoinRequest } from "../api/access";
 import {
   FailedRunInboxRow,
@@ -195,6 +197,11 @@ describe("FailedRunInboxRow", () => {
 describe("InboxIssueMetaLeading", () => {
   let container: HTMLDivElement;
 
+  beforeAll(async () => {
+    // Force en-US so 'Live' text content assertion holds.
+    await i18n.changeLanguage("en-US");
+  });
+
   beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -208,7 +215,11 @@ describe("InboxIssueMetaLeading", () => {
     const root = createRoot(container);
 
     act(() => {
-      root.render(<InboxIssueMetaLeading issue={createIssue()} isLive />);
+      root.render(
+        <I18nextProvider i18n={i18n}>
+          <InboxIssueMetaLeading issue={createIssue()} isLive />
+        </I18nextProvider>,
+      );
     });
 
     const statusIcon = container.querySelector('span[class*="border-blue-600"]');
