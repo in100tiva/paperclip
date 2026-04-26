@@ -760,6 +760,8 @@ export {
   currentUserProfileSchema,
   authSessionSchema,
   updateCurrentUserProfileSchema,
+  localeSchema,
+  type Locale,
   updateCompanyMemberSchema,
   updateCompanyMemberWithPermissionsSchema,
   archiveCompanyMemberSchema,

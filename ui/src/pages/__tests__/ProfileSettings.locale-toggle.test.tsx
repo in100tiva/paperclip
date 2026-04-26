@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { I18nextProvider } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
 import i18n from "@/i18n";
+import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
+import { CompanyProvider } from "@/context/CompanyContext";
 import { ProfileSettings } from "../ProfileSettings";
 import { authApi } from "@/api/auth";
 
@@ -25,13 +27,23 @@ vi.mock("@/api/auth", () => ({
   },
 }));
 
+vi.mock("@/api/companies", () => ({
+  companiesApi: {
+    list: vi.fn(async () => []),
+  },
+}));
+
 function renderProfile() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={qc}>
       <I18nextProvider i18n={i18n}>
         <MemoryRouter>
-          <ProfileSettings />
+          <CompanyProvider>
+            <BreadcrumbProvider>
+              <ProfileSettings />
+            </BreadcrumbProvider>
+          </CompanyProvider>
         </MemoryRouter>
       </I18nextProvider>
     </QueryClientProvider>,

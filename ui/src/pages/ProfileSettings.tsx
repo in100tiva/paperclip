@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Camera, LoaderCircle, Save, Trash2, UserRoundPen } from "lucide-react";
-import type { AuthSession, CurrentUserProfile, UpdateCurrentUserProfile } from "@paperclipai/shared";
+import type { AuthSession, CurrentUserProfile, Locale, UpdateCurrentUserProfile } from "@paperclipai/shared";
 import { authApi } from "@/api/auth";
 import { assetsApi } from "@/api/assets";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
@@ -22,6 +23,7 @@ export function ProfileSettings() {
   const { setBreadcrumbs } = useBreadcrumbs();
   const { selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
+  const { t, i18n } = useTranslation(["settings", "common"]);
   const avatarInputId = useId();
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const [name, setName] = useState("");
@@ -45,7 +47,12 @@ export function ProfileSettings() {
     if (!session) return;
     setName(session.user.name ?? "");
     setImage(session.user.image ?? "");
-  }, [sessionQuery.data]);
+    // Synchronize i18n.language with persisted user.locale (Plan 05 hydration).
+    const userLocale = session.user.locale as Locale | undefined;
+    if (userLocale && i18n.language !== userLocale) {
+      void i18n.changeLanguage(userLocale);
+    }
+  }, [sessionQuery.data, i18n]);
 
   function syncSessionProfile(profile: CurrentUserProfile) {
     queryClient.setQueryData<AuthSession | null>(queryKeys.auth.session, (current) => {
@@ -114,6 +121,33 @@ export function ProfileSettings() {
     },
     onError: (error) => {
       setActionError(error instanceof Error ? error.message : "Failed to remove avatar.");
+    },
+  });
+
+  const updateLocaleMutation = useMutation({
+    mutationFn: (newLocale: Locale) =>
+      authApi.updateProfile({ name: resolveProfileName(), locale: newLocale }),
+    onMutate: async (newLocale: Locale) => {
+      const previous = i18n.language as Locale;
+      // ORDER MATTERS (Pitfall 3): change i18n FIRST, then update query cache,
+      // so the React re-render sees both new locale strings AND new session data.
+      await i18n.changeLanguage(newLocale);
+      queryClient.setQueryData<AuthSession | null>(queryKeys.auth.session, (current) => {
+        if (!current) return current;
+        return { ...current, user: { ...current.user, locale: newLocale } };
+      });
+      return { previous };
+    },
+    onError: (error, _newLocale, ctx) => {
+      if (ctx?.previous) {
+        void i18n.changeLanguage(ctx.previous);
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.session });
+      setActionError(error instanceof Error ? error.message : "Failed to update language.");
+    },
+    onSuccess: (profile) => {
+      setActionError(null);
+      syncSessionProfile(profile);
     },
   });
 
@@ -267,6 +301,35 @@ export function ProfileSettings() {
             </Button>
           </div>
         </form>
+
+        <section className="mt-8 space-y-3">
+          <div>
+            <h2 className="text-lg font-semibold">{t("settings:language.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("settings:language.description")}</p>
+          </div>
+          <fieldset className="space-y-2" disabled={updateLocaleMutation.isPending}>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="locale"
+                value="pt-BR"
+                checked={(sessionQuery.data?.user.locale ?? i18n.language) === "pt-BR"}
+                onChange={() => updateLocaleMutation.mutate("pt-BR")}
+              />
+              <span>{t("settings:language.pt-br")}</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="locale"
+                value="en-US"
+                checked={(sessionQuery.data?.user.locale ?? i18n.language) === "en-US"}
+                onChange={() => updateLocaleMutation.mutate("en-US")}
+              />
+              <span>{t("settings:language.en-us")}</span>
+            </label>
+          </fieldset>
+        </section>
       </section>
     </div>
   );
