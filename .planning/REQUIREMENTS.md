@@ -17,7 +17,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 ### Infra
 
-- [ ] **INFRA-01**: `MIGRATION_AUDIT.md` mapeia uso de `LISTEN/NOTIFY`, `pg_advisory_lock`, `CREATE TEMP`, prepared statements e transactions long-lived no código do paperclip
+- [x] **INFRA-01**: `MIGRATION_AUDIT.md` mapeia uso de `LISTEN/NOTIFY`, `pg_advisory_lock`, `CREATE TEMP`, prepared statements e transactions long-lived no código do paperclip
 - [ ] **INFRA-02**: `packages/db/src/client.ts` usa `prepare: false` quando connection string tem porta 6543 (Supavisor pooler)
 - [ ] **INFRA-03**: `packages/db/src/runtime-config.ts` privilegia `DATABASE_URL` Supabase sobre embedded Postgres
 - [ ] **INFRA-04**: `.env.example` lista `DATABASE_URL` (pooler 6543), `SUPABASE_DB_URL` (direct 5432 para DDL), `BETTER_AUTH_SECRET`, `PAPERCLIP_INSTANCE_ID`
@@ -132,7 +132,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | FORK-03 | Phase 1 | Complete |
 | FORK-04 | Phase 1 | Complete |
 | FORK-05 | Phase 1 | Complete |
-| INFRA-01 | Phase 2 | Pending |
+| INFRA-01 | Phase 2 | Complete |
 | INFRA-02 | Phase 2 | Pending |
 | INFRA-03 | Phase 2 | Pending |
 | INFRA-04 | Phase 2 | Pending |

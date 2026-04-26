@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
-status: planning
-last_updated: "2026-04-26T02:02:34.599Z"
+status: completed
+last_updated: "2026-04-26T02:54:51.073Z"
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 8
+  completed_plans: 4
 ---
 
 # Estado do Projeto
@@ -22,31 +22,32 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 
 ## Posição Atual
 
-Fase: 1 de 6 (Fork Hard + Cerimônia de Corte) — **CONCLUÍDA**
-Plano: 2 de 2 na fase atual (01-01-PLAN + 01-02-PLAN ambos concluídos)
-Status: Phase 01 Complete — ready for Phase 02 planning
-Última atividade: 2026-04-25 — Plano 01-02 concluído: smoke test baseline validado em Windows. `pnpm install` (6m7s, exit 0) + `pnpm dev` (server@3100, embedded-pg@54329, 71 migrations, /api/health 200, UI loaded). User verificou no browser e aprovou. FORK-05 satisfeito.
+Fase: 2 de 6 (Migração de Storage para Supabase) — **EM PROGRESSO**
+Plano: 02-01 concluído (Wave 1, paralelo com 02-02). Próximo: aguardar 02-02; depois iniciar Wave 2 (02-03).
+Status: Phase 02 Wave 1 — 02-01 done (MIGRATION_AUDIT.md → INFRA-01)
+Última atividade: 2026-04-25 — Plano 02-01 concluído: audit de 11 findings em 10 categorias produzido. 71 migrations confirmed try-as-is (1 CREATE EXTENSION pg_trgm, 0 CREATE SCHEMA). pg_advisory_xact_lock confirmado compatível.
 
-Progresso: [██████████] 100% (Phase 1 / 2 plans complete)
+Progresso: [████░░░░░░] 38% (3 / 8 plans complete)
 
 ## Métricas de Performance
 
 **Velocidade:**
 
-- Total de planos concluídos: 2
-- Duração média: ~9 min
-- Tempo total de execução: 0h 18min (3min + ~15min)
+- Total de planos concluídos: 3
+- Duração média: ~8 min
+- Tempo total de execução: 0h 24min (3min + ~15min + ~6min)
 
 **Por Fase:**
 
 | Fase | Planos | Total | Média/Plano |
 |------|--------|-------|-------------|
 | 01-fork-hard | 2 | ~18min | ~9min |
+| 02-supabase | 1+ | ~6min+ | ~6min |
 
 **Tendência Recente:**
 
-- Últimos 5 planos: 01-01 (3min), 01-02 (~15min)
-- Tendência: 01-02 took longer due to user-verification checkpoint + first-run pnpm install (6m7s) — expected.
+- Últimos 5 planos: 01-01 (3min), 01-02 (~15min), 02-01 (~6min)
+- Tendência: 02-01 audit-only doc plan executou rápido — leitura/grep apenas, sem code changes.
 
 *Atualizado após cada conclusão de plano*
 
@@ -69,6 +70,11 @@ Decisões recentes que afetam o trabalho atual:
 - 01-02: Server + Vite compartilham porta 3100 via Vite dev middleware mounted in-process (paperclip pattern; não portas separadas).
 - 01-02: Stale runtime-services registry on Windows é wart conhecido — taskkill não dispara cleanup hooks. Diferido para Phase 3 (workflow + onboarding).
 - 01-02: Captured concrete baseline values (ports 3100/54329, 71 migrations, /api/health 200, UI dark-theme) — Phase 2 deve preservar fallback path contra essa referência literal.
+- 02-01: 71 migrations apply try-as-is contra Supabase (apenas 1 CREATE EXTENSION pg_trgm, zero CREATE SCHEMA custom — alta confiança ex ante).
+- 02-01: pg_advisory_xact_lock confirmado compatível com Supavisor transaction mode (xact, lock liberado no commit/rollback).
+- 02-01: auto-migrations no startup serão desabilitadas no plano 02-03 (HIGH risk em DB compartilhado por 5 devs).
+- 02-01: pool config travada — max=5, idle_timeout=20, prepare:false condicional para porta 6543.
+- 02-01: `aws-1-sa-east-1.pooler.supabase.com` confirmado como hostname Supavisor empírico (não documentado em Supabase docs públicas).
 
 ### Todos Pendentes
 
@@ -81,5 +87,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-25
-Parou em: Concluído 01-02-PLAN.md (smoke test baseline). Phase 1 inteira concluída. Pronto para `/planejar-fase 2` (Migração de Storage para Supabase).
+Parou em: Concluído 02-01-PLAN.md (MIGRATION_AUDIT.md → INFRA-01). Wave 1 paralela com 02-02 em andamento. Aguardando Wave 2 (02-03).
 Arquivo de retomada: Nenhum
