@@ -151,5 +151,51 @@ Config           C:\Users\in100\.paperclip\instances\default\config.json
 
 ## Outcome
 
-_Filled in by Task 3._
+**Status:** SUCCESS — baseline captured. Phase 1 success criterion #1 holds.
+
+**User verification (2026-04-25):**
+
+- User independently ran `pnpm dev` from `d:\projetos\ddd` in a fresh terminal.
+- UI loaded at `http://127.0.0.1:3100` — page rendered with the dark theme class applied; no white screen, no 500s in DevTools Network tab.
+- API requests reaching the Express server returned expected codes (200 for public endpoints; auth-protected endpoints reachable, not crashing).
+- No flood of Postgres connection errors observed in the dev terminal during the user's session.
+- **Approval signal:** user typed `aprovado` after browser verification.
+
+**Concrete baseline values (for future regression triage):**
+
+- Server bound: `127.0.0.1:3100` (Express + Vite dev middleware mounted in-process).
+- Embedded Postgres: `127.0.0.1:54329` (data dir `C:\Users\in100\.paperclip\instances\default\db`).
+- Migrations applied: 71 (full historical set replayed against fresh embedded cluster).
+- `/api/health` → `HTTP 200` with `{"status":"ok","authReady":true,"bootstrapStatus":"ready",...}`.
+- Boot phases observed (in order): `db:migrate` → `plugin-sdk` build → embedded Postgres ready → server listening → plugin loader (no ready plugins, expected).
+- Time-to-ready: ~80s on first run (cold cache; subsequent runs should be faster since Postgres cluster is initialized and `node_modules` is hot).
+
+**Known wart — stale service registry survives `taskkill`:**
+
+When the executor stops `pnpm dev` via `taskkill //F //T //PID <pid>`, paperclip's runtime-services registry at `~/.paperclip/instances/default/runtime-services/` does NOT get cleaned up. Symptom observed across executor runs: an orphan registry file remained pointing at a dead PID/port from the previous run. On the next `pnpm dev`, paperclip's startup either logs a stale-service warning or (worst case) tries to bind a port already considered claimed.
+
+Manual cleanup applied between runs: deleted the orphan file under `~/.paperclip/instances/default/runtime-services/` before relaunching.
+
+**Recommendation for the team going forward:**
+
+- **Prefer `scripts/kill-dev.sh`** (paperclip-provided graceful-shutdown helper) over `taskkill` whenever possible — it sends SIGTERM through the parent pnpm process, which gives paperclip's shutdown hooks a chance to deregister services.
+- On Windows specifically (`taskkill` has no equivalent of "graceful first, force after"), a Windows-aware cleanup wrapper may be needed in a later phase. Candidate options:
+  1. PowerShell wrapper that sends `Ctrl+C` to the console, waits N seconds, then escalates to `taskkill /F` only if needed.
+  2. Paperclip-side fix: register `process.on('SIGBREAK', cleanup)` in `dev-runner.ts` so Windows console-close events trigger cleanup.
+  3. Defensive cleanup at startup: delete `runtime-services/*.json` files whose PID is no longer alive before binding new services.
+- Out of scope for Phase 1 (smoke baseline only). Logged here so Phase 3 (workflow + onboarding) can pick this up as a known Windows-DX wart to address.
+
+**Pre-Phase-2 baseline contract:**
+
+This log establishes that `pnpm install && pnpm dev` works end-to-end on Windows with the embedded-postgres fallback path. Phase 2 will switch the default to Supabase, but the embedded path must remain functional as a documented fallback. Any change in Phase 2 to `runtime-config.ts`, `client.ts`, or the dev runner that breaks this baseline must be flagged immediately — re-run this smoke (Tasks 1+2) against the changed code and compare against the Step 1/Step 2 evidence above.
+
+**Phase 1 ROADMAP success criteria — verification map:**
+
+1. ✅ "Any team dev can clone and run `pnpm install && pnpm dev` on Windows successfully" → Step 1 (exit 0, 6m7s) + Step 2 (boot + UI 200) + this Outcome (user-confirmed in browser).
+2. ✅ "`git remote -v` does not list paperclipai/paperclip as upstream" → satisfied in Plan 01-01 (`ce0cc93`); see `01-01-SUMMARY.md`.
+3. ✅ "`UPSTREAM_REFERENCE.md` exists with SHA + manual-port policy" → Plan 01-01.
+4. ✅ "`package.json` root has `name: ddd`" → Plan 01-01.
+5. ✅ "`CONTRIBUTING.md` declares hard-fork policy" → Plan 01-01.
+
+All five criteria for Phase 1 hold. Phase 1 is complete; Phase 2 may proceed.
 
