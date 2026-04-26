@@ -86,6 +86,16 @@ import {
   getIssueContinuationSummaryDocument,
   refreshIssueContinuationSummary,
 } from "./issue-continuation-summary.js";
+// MULTI-07 / MULTI-08 (Phase 5): Claude account selection + automatic swap on
+// quota exhaustion. claudeAccountsService picks the eligible account and
+// resolves its credential dir; orchestrateClaudeSwap drives Strategy A/B
+// rotation when adapter returns errorFamily="transient_upstream".
+import { claudeAccountsService, type ClaudeAccount } from "./claude-accounts.js";
+import {
+  orchestrateClaudeSwap,
+  orchestrateFallbackFullContext,
+  detectResumeFailed,
+} from "./claude-accounts-swap.js";
 import { executionWorkspaceService, mergeExecutionWorkspaceConfig } from "./execution-workspaces.js";
 import { workspaceOperationService } from "./workspace-operations.js";
 import { isProcessGroupAlive, terminateLocalService } from "./local-service-supervisor.js";
@@ -5314,11 +5324,38 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
           "local agent jwt secret missing or invalid; running without injected PAPERCLIP_API_KEY",
         );
       }
-      const adapterResult = await adapter.execute({
+
+      // MULTI-07 (Phase 5): inject CLAUDE_CONFIG_DIR for claude_local adapter.
+      // selectActiveAccount picks the eligible account; resolveCredentialDir
+      // validates the dir exists. Errors fall back to ambient process.env so
+      // single-account installations keep working unchanged.
+      let selectedAccount: ClaudeAccount | null = null;
+      let augmentedConfig: Record<string, unknown> = runtimeConfig;
+      if (agent.adapterType === "claude_local") {
+        try {
+          const acctSvc = claudeAccountsService(db);
+          selectedAccount = await acctSvc.selectActiveAccount({
+            agentId: agent.id,
+            companyId: agent.companyId,
+          });
+          const credDir = await acctSvc.resolveCredentialDir(selectedAccount);
+          augmentedConfig = { ...runtimeConfig, claudeConfigDir: credDir };
+        } catch (err) {
+          // NoAccountsAvailableError or CredentialDirMissingError — log and
+          // continue with the original runtimeConfig. The adapter falls back to
+          // process.env CLAUDE_CONFIG_DIR (legacy single-account behaviour).
+          await onLog(
+            "stderr",
+            `[paperclip] Multi-account: ${err instanceof Error ? err.message : String(err)} - falling back to process env\n`,
+          );
+        }
+      }
+
+      let adapterResult = await adapter.execute({
         runId: run.id,
         agent,
         runtime: runtimeForAdapter,
-        config: runtimeConfig,
+        config: augmentedConfig,
         context,
         executionTarget,
         executionTransport: remoteExecution
@@ -5338,6 +5375,173 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
         },
         authToken: authToken ?? undefined,
       });
+
+      // MULTI-08 (Phase 5): orchestrate account swap on Claude quota exhaustion.
+      // D-19 cap: max 1 rotation per step (alreadyRotatedThisStep guard).
+      // W1: recordSwapOutcome is called AFTER Strategy A or B settles, with the
+      //     EFFECTIVE swapStrategy ('resume' or 'fallback_full_context') so
+      //     D-32 observability matches the strategy that actually produced
+      //     the final adapterResult.
+      // W2: executingAccountId tracks which account ACTUALLY produced the work
+      //     attributed in agent_step_executions (PROJ-03 cost accuracy).
+      let alreadyRotatedThisStep = false;
+      let executingAccountId: string | null = selectedAccount?.id ?? null;
+      let activeRotationId: string | null = null;
+      let effectiveSwapStrategy: "resume" | "fallback_full_context" | null = null;
+
+      if (
+        agent.adapterType === "claude_local" &&
+        selectedAccount &&
+        adapterResult.errorFamily === "transient_upstream" &&
+        !alreadyRotatedThisStep
+      ) {
+        const summaryBody = continuationSummary?.body ?? null;
+        const swapResult = await orchestrateClaudeSwap({
+          db,
+          agentId: agent.id,
+          companyId: agent.companyId,
+          runId: run.id,
+          stepId: String(seq),
+          fromAccountId: selectedAccount.id,
+          previousSessionId:
+            adapterResult.sessionDisplayId ?? adapterResult.sessionId ?? null,
+          adapterStdout: stdoutExcerpt,
+          adapterStderr: stderrExcerpt,
+          continuationSummary: summaryBody,
+          alreadyRotatedThisStep: false,
+          actorId: "system",
+        });
+
+        if (swapResult.swapped && swapResult.newCredentialDir && swapResult.newAccount) {
+          alreadyRotatedThisStep = true;
+          activeRotationId = swapResult.rotationId;
+          // W2: cost attribution now points at the account that will run the retry.
+          executingAccountId = swapResult.newAccount.id;
+
+          // Strategy A: re-spawn on new account with --resume <previousSessionId>.
+          const retryConfigA: Record<string, unknown> = {
+            ...augmentedConfig,
+            claudeConfigDir: swapResult.newCredentialDir,
+          };
+          if (swapResult.retrySessionId) {
+            retryConfigA.resumeSessionId = swapResult.retrySessionId;
+          }
+          const retryResult = await adapter.execute({
+            runId: run.id,
+            agent,
+            runtime: runtimeForAdapter,
+            config: retryConfigA,
+            context,
+            executionTarget,
+            executionTransport: remoteExecution
+              ? { remoteExecution: remoteExecution as unknown as Record<string, unknown> }
+              : undefined,
+            onLog,
+            onMeta: onAdapterMeta,
+            onSpawn: async (meta) => {
+              await persistRunProcessMetadata(run.id, {
+                pid: meta.pid,
+                processGroupId:
+                  "processGroupId" in meta && typeof meta.processGroupId === "number"
+                    ? meta.processGroupId
+                    : null,
+                startedAt: meta.startedAt,
+              });
+            },
+            authToken: authToken ?? undefined,
+          });
+
+          // D-22 detection: if --resume failed (cross-account session unknown),
+          // pivot to Strategy B (full-context re-prompt with summary embedded).
+          const aFailed =
+            swapResult.strategy === "resume" &&
+            detectResumeFailed({
+              stdout: stdoutExcerpt,
+              stderr: stderrExcerpt,
+              exitCode: retryResult.exitCode ?? null,
+            });
+
+          if (aFailed) {
+            const fallbackPlan = await orchestrateFallbackFullContext({
+              db,
+              agentId: agent.id,
+              companyId: agent.companyId,
+              newAccount: swapResult.newAccount,
+              newCredentialDir: swapResult.newCredentialDir,
+              continuationSummary: summaryBody,
+              lastInstruction: null,
+              actorId: "system",
+            });
+            const retryConfigB: Record<string, unknown> = {
+              ...augmentedConfig,
+              claudeConfigDir: swapResult.newCredentialDir,
+              initialPrompt: fallbackPlan.retryPrompt,
+            };
+            adapterResult = await adapter.execute({
+              runId: run.id,
+              agent,
+              runtime: runtimeForAdapter,
+              config: retryConfigB,
+              context,
+              executionTarget,
+              executionTransport: remoteExecution
+                ? { remoteExecution: remoteExecution as unknown as Record<string, unknown> }
+                : undefined,
+              onLog,
+              onMeta: onAdapterMeta,
+              onSpawn: async (meta) => {
+                await persistRunProcessMetadata(run.id, {
+                  pid: meta.pid,
+                  processGroupId:
+                    "processGroupId" in meta && typeof meta.processGroupId === "number"
+                      ? meta.processGroupId
+                      : null,
+                  startedAt: meta.startedAt,
+                });
+              },
+              authToken: authToken ?? undefined,
+            });
+            effectiveSwapStrategy = "fallback_full_context";
+          } else {
+            adapterResult = retryResult;
+            effectiveSwapStrategy = "resume";
+          }
+
+          // W1 (D-32): emit activity log NOW that we know which strategy resolved.
+          if (activeRotationId !== null && effectiveSwapStrategy !== null) {
+            const swapStatus: "succeeded" | "failed" =
+              adapterResult.errorFamily === "transient_upstream" ? "failed" : "succeeded";
+            try {
+              const acctSvc = claudeAccountsService(db);
+              await acctSvc.recordSwapOutcome({
+                rotationId: activeRotationId,
+                swapStrategy: effectiveSwapStrategy,
+                swapStatus,
+              });
+            } catch (err) {
+              await onLog(
+                "stderr",
+                `[paperclip] recordSwapOutcome failed (rotationId=${activeRotationId}): ${err instanceof Error ? err.message : String(err)}\n`,
+              );
+            }
+          }
+        } else if (swapResult.reason === "missing_credentials" && swapResult.rotationId) {
+          // Rotation persisted but spawn impossible — record outcome as failed.
+          try {
+            const acctSvc = claudeAccountsService(db);
+            await acctSvc.recordSwapOutcome({
+              rotationId: swapResult.rotationId,
+              swapStrategy: "resume",
+              swapStatus: "failed",
+            });
+          } catch (err) {
+            await onLog(
+              "stderr",
+              `[paperclip] recordSwapOutcome failed: ${err instanceof Error ? err.message : String(err)}\n`,
+            );
+          }
+        }
+      }
       const adapterManagedRuntimeServices = adapterResult.runtimeServices
         ? await persistAdapterManagedRuntimeServices({
             db,
@@ -5401,6 +5605,37 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
         rawUsage,
       });
       const normalizedUsage = sessionUsageResolution.normalizedUsage;
+
+      // MULTI-07 + MULTI-08 + W2 (Phase 5): append-only attribution for the
+      // claude_local step. executingAccountId reflects the account that
+      // produced the FINAL adapterResult (post-rotation if a swap fired,
+      // selectedAccount.id otherwise). PROJ-03 cost-by-account accuracy.
+      // (v2 refinement: split into two rows — failed step on A + retry on B —
+      // if granular failure attribution becomes needed.)
+      if (agent.adapterType === "claude_local" && executingAccountId) {
+        try {
+          const acctSvc = claudeAccountsService(db);
+          await acctSvc.recordStepExecution({
+            runId: run.id,
+            stepId: String(seq),
+            accountId: executingAccountId,
+            usage: {
+              inputTokens: adapterResult.usage?.inputTokens ?? 0,
+              cachedInputTokens: adapterResult.usage?.cachedInputTokens ?? 0,
+              outputTokens: adapterResult.usage?.outputTokens ?? 0,
+              costUsd: adapterResult.costUsd ?? 0,
+              startedAt: run.startedAt ?? new Date(),
+              completedAt: new Date(),
+              errorFamily: adapterResult.errorFamily ?? null,
+            },
+          });
+        } catch (err) {
+          await onLog(
+            "stderr",
+            `[paperclip] recordStepExecution failed (accountId=${executingAccountId}): ${err instanceof Error ? err.message : String(err)}\n`,
+          );
+        }
+      }
 
       let outcome: "succeeded" | "failed" | "cancelled" | "timed_out";
       const latestRun = await getRun(run.id);
