@@ -5,6 +5,10 @@ node_modules/
 dist/
 ui/storybook-static/
 .env
+.env.local
+.env.*.local
+.env.development
+.env.production
 *.tsbuildinfo
 drizzle/meta/
 .vite/
