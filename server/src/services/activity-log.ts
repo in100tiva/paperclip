@@ -10,6 +10,33 @@ import { logger } from "../middleware/logger.js";
 import type { PluginEventBus } from "./plugin-event-bus.js";
 import { instanceSettingsService } from "./instance-settings.js";
 
+/**
+ * MULTI-10 (Phase 5): event type for Claude account rotation.
+ * Emitted by claudeAccountsService.rotateOnQuotaExhausted (server/src/services/claude-accounts.ts).
+ * Payload schema (D-30 in 05-CONTEXT.md):
+ *   {
+ *     type: 'claude_account_rotated',
+ *     agentId: string,
+ *     fromAccountId: string,
+ *     toAccountId: string,
+ *     reason: 'exhausted' | 'manual' | 'cooldown_expired',
+ *     errorFamily: string | null,        // from execute.ts errorFamily classification
+ *     retryNotBefore: string | null,     // ISO timestamp
+ *     swapStrategy: 'resume' | 'fallback_full_context' | null,
+ *   }
+ */
+export const ACTIVITY_ACTION_CLAUDE_ACCOUNT_ROTATED = "claude_account_rotated" as const;
+
+export interface ClaudeAccountRotatedDetails {
+  agentId: string;
+  fromAccountId: string;
+  toAccountId: string;
+  reason: "exhausted" | "manual" | "cooldown_expired";
+  errorFamily: string | null;
+  retryNotBefore: string | null;
+  swapStrategy: "resume" | "fallback_full_context" | null;
+}
+
 const PLUGIN_EVENT_SET: ReadonlySet<string> = new Set(PLUGIN_EVENT_TYPES);
 const ACTIVITY_ACTION_TO_PLUGIN_EVENT: Readonly<Record<string, PluginEventType>> = {
   issue_comment_added: "issue.comment.created",
