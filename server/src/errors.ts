@@ -1,5 +1,6 @@
 export class HttpError extends Error {
   status: number;
+  code?: string;
   details?: unknown;
 
   constructor(status: number, message: string, details?: unknown) {
@@ -31,6 +32,56 @@ export function conflict(message: string, details?: unknown) {
 
 export function unprocessable(message: string, details?: unknown) {
   return new HttpError(422, message, details);
+}
+
+// ---------------------------------------------------------------------------
+// UI-07 (Phase 9 / Plan 09-03a): *WithCode() helpers.
+//
+// These helpers run in PARALLEL to the legacy helpers above. They attach a
+// stable, machine-readable `code` (e.g. "company.not-found", "invite.expired")
+// to the HttpError instance so the error-handler middleware can emit it in
+// the JSON response body. The client (Plan 09-03b) maps `code` →
+// `t("errors:${code}")` for deterministic translation.
+//
+// Legacy helpers (badRequest/notFound/forbidden/unauthorized/conflict/unprocessable)
+// remain byte-identical so the 130+ existing callsites keep emitting the legacy
+// `{ error, details? }` body shape — zero regression.
+// ---------------------------------------------------------------------------
+
+export function badRequestWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(400, message, details);
+  err.code = code;
+  return err;
+}
+
+export function unauthorizedWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(401, message, details);
+  err.code = code;
+  return err;
+}
+
+export function forbiddenWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(403, message, details);
+  err.code = code;
+  return err;
+}
+
+export function notFoundWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(404, message, details);
+  err.code = code;
+  return err;
+}
+
+export function conflictWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(409, message, details);
+  err.code = code;
+  return err;
+}
+
+export function unprocessableWithCode(message: string, code: string, details?: unknown) {
+  const err = new HttpError(422, message, details);
+  err.code = code;
+  return err;
 }
 
 /**
