@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: phase-pending
-last_updated: "2026-04-26T13:00:00.000Z"
+status: Fase 7 em progresso (1/5 planos). Plano 07-01 (Wave 0 RED) concluído — 16 dicionários JSON bootstrap + 5 testes RED commitados ancorando todos os 9 requisitos da fase (SETTINGS-01..04, I18N-01..05) antes de qualquer código de produção. Wave 1 (07-02 schema + 07-03 i18n init) destravada para execução paralela.
+last_updated: "2026-04-26T12:10:09.105Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 5
+  completed_plans: 1
 ---
 
 # Estado do Projeto
@@ -22,10 +22,15 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
 
 ## Posição Atual
 
-Fase: 7 de 11 (Foundation i18n + Toggle de Settings) — **PENDING**
+Fase: 7 de 11 (Foundation i18n + Toggle de Settings) — **IN PROGRESS** (1/5 plans complete)
+Plano: 07-01 → 07-02 (próximo)
+Status: Plano 07-01 (Wave 0 RED) concluído. 16 dicionários JSON bootstrap (8 namespaces × 2 locales) e 5 testes RED commitados — todos os 9 requisitos da fase (SETTINGS-01..04, I18N-01..05) ancorados por pelo menos 1 teste falhante antes de qualquer código de produção. Wave 1 (07-02 schema + 07-03 i18n init) destravada e pode rodar em paralelo (arquivos disjuntos: packages/db+shared vs ui/src/i18n).
+Última atividade: 2026-04-26 — Plano 07-01 concluído em ~4min (commits `6215174` 16 JSON dicts + `dada008` 3 UI failing tests + `0f5179a` 2 server failing tests). 3 tarefas atômicas: (1) 16 JSON dictionary scaffolds em ui/src/i18n/locales/{pt-BR,en-US}/{common,inbox,projects,settings,auth,agents,errors,activity}.json — common.json populado com app-name/loading/save/cancel; settings.json populado com language.{title,description,pt-br,en-us}; outros 6 namespaces como {} placeholders para Phases 8-11; verificação inline `node -e ...JSON.parse...` passou "OK 16 valid JSON"; (2) 3 UI failing tests — init.test.ts cobre I18N-01 (8 namespaces) + I18N-02 (16 dict files exist) + I18N-03 (en-US fallback); missing-keys.test.ts cobre I18N-04 (regex extrai t() calls; CI=true falha vs warn em dev per CONTEXT); ProfileSettings.locale-toggle.test.tsx cobre SETTINGS-01 (radio render) + SETTINGS-04 (i18n.changeLanguage + PATCH locale) com `// @vitest-environment jsdom` annotation para evitar mudar config global; (3) 2 server failing tests — auth-routes-locale.test.ts cobre SETTINGS-02 (PATCH persistence) + SETTINGS-03 (default pt-BR) + enum reject 400 espelhando fixture stubbed-drizzle de auth-routes.test.ts; middleware-locale.test.ts cobre I18N-05 (req.locale de authUsers.locale + Accept-Language fallback + final fallback pt-BR) usando assinatura real `actorMiddleware(db, opts)`. Todos os 5 arquivos confirmados RED via `npx vitest run` — módulos `../index`/`../resources`/`@/i18n` ainda não existem (Plan 03), schema/route não aceitam locale (Plans 02+04), middleware não popula req.locale (Plan 04). Sem desvios — plano executou exatamente como escrito, com adaptações documentadas em SUMMARY (signature-mirror para actorMiddleware, supertest fixture-mirror para auth-routes — ambas explicitamente instruídas pelo plano). Self-check PASSED. Próxima ação: /executar-fase ou wave-parallel-launch para Plans 02+03.
+
+Posição anterior: Fase 7 de 11 (Foundation i18n + Toggle de Settings) — **PENDING**
 Plano: — (aguardando /planejar-fase 7)
 Status: Roadmap v1.1 criado (5 fases 7-11, 26/26 requisitos mapeados, zero órfãos). Fase 7 destravada como entry point — schema de preferência de idioma, toggle UI em instance/settings, biblioteca i18n com namespaces, dicionários pt-BR/en-US, fallback en-US e detector de chaves ausentes. Sem essa fundação as fases seguintes (UI tradução, mensagens de agente, system prompts) não têm onde renderizar nem por onde propagar locale.
-Última atividade: 2026-04-26 — Roadmap v1.1 escrito por /roadmap. Continuação de numeração (v1.0 fechou em Fase 6 → v1.1 começa em Fase 7). 5 fases derivadas dos 26 requisitos das 5 categorias SETTINGS/I18N/UI/AGENT-MSG/AGENT-SKILL: Fase 7 Foundation (9 reqs SETTINGS-01..04 + I18N-01..05), Fase 8 UI Core (5 reqs UI-01/02/03/05/09), Fase 9 UI Admin+Auth+Sistêmicas (4 reqs UI-04/06/07/08), Fase 10 Mensagens dos Agentes (4 reqs AGENT-MSG-01..04), Fase 11 Skills+System Prompts (4 reqs AGENT-SKILL-01..04). Ordem ditada por dependência técnica: infra i18n + persistence antes de tradução UI; UI antes de mensagens de agente; system prompts/skills por último (precisam da preference já propagada user → agent context → spawn). Próxima ação: /planejar-fase 7.
+Última atividade anterior: 2026-04-26 — Roadmap v1.1 escrito por /roadmap. Continuação de numeração (v1.0 fechou em Fase 6 → v1.1 começa em Fase 7). 5 fases derivadas dos 26 requisitos das 5 categorias SETTINGS/I18N/UI/AGENT-MSG/AGENT-SKILL: Fase 7 Foundation (9 reqs SETTINGS-01..04 + I18N-01..05), Fase 8 UI Core (5 reqs UI-01/02/03/05/09), Fase 9 UI Admin+Auth+Sistêmicas (4 reqs UI-04/06/07/08), Fase 10 Mensagens dos Agentes (4 reqs AGENT-MSG-01..04), Fase 11 Skills+System Prompts (4 reqs AGENT-SKILL-01..04). Ordem ditada por dependência técnica: infra i18n + persistence antes de tradução UI; UI antes de mensagens de agente; system prompts/skills por último (precisam da preference já propagada user → agent context → spawn). Próxima ação: /planejar-fase 7.
 
 Fase anterior: 6 de 6 (Multi-Projeto + Polish — milestone v1.0 final) — **COMPLETE**
 Plano: 6/6 — todas waves Phase 6 concluídas. Plano 06-06 (V1-READINESS.md + REQUIREMENTS.md closure) entregue.
