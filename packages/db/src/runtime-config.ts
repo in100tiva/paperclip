@@ -217,6 +217,13 @@ export function resolveDatabaseTarget(): ResolvedDatabaseTarget {
   const envPath = resolvePaperclipEnvPath(configPath);
   const envEntries = readEnvEntries(envPath);
 
+  // Phase 2: Supabase is the canonical backend. Embedded postgres remains as
+  // an opt-in fallback (INFRA-06) — explicit `PAPERCLIP_DB_MODE=embedded-postgres`
+  // is required to use it. Without that env var AND without DATABASE_URL,
+  // surface a hard error pointing at .env.example so devs know what to do.
+  const dbMode = process.env.PAPERCLIP_DB_MODE?.trim();
+  const allowEmbeddedFallback = dbMode === "embedded-postgres";
+
   const envUrl = process.env.DATABASE_URL?.trim();
   if (envUrl) {
     return {
@@ -251,17 +258,27 @@ export function resolveDatabaseTarget(): ResolvedDatabaseTarget {
     };
   }
 
-  const port = config?.database?.embeddedPostgresPort ?? 54329;
-  const dataDir = resolveHomeAwarePath(
-    config?.database?.embeddedPostgresDataDir ?? resolveDefaultEmbeddedPostgresDir(),
-  );
+  // Embedded fallback: only if explicitly opted-in via PAPERCLIP_DB_MODE.
+  if (allowEmbeddedFallback) {
+    const port = config?.database?.embeddedPostgresPort ?? 54329;
+    const dataDir = resolveHomeAwarePath(
+      config?.database?.embeddedPostgresDataDir ?? resolveDefaultEmbeddedPostgresDir(),
+    );
 
-  return {
-    mode: "embedded-postgres",
-    dataDir,
-    port,
-    source: `embedded-postgres@${port}`,
-    configPath,
-    envPath,
-  };
+    return {
+      mode: "embedded-postgres",
+      dataDir,
+      port,
+      source: `embedded-postgres@${port}`,
+      configPath,
+      envPath,
+    };
+  }
+
+  // Neither DATABASE_URL nor embedded fallback configured — fail with actionable message.
+  throw new Error(
+    "No database target configured. Set DATABASE_URL in .env.local (Supabase pooler URL) " +
+      "OR set PAPERCLIP_DB_MODE=embedded-postgres to use the local fallback. " +
+      "See .env.example for the canonical template.",
+  );
 }
