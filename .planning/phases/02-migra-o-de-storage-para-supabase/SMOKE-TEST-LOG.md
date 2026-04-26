@@ -90,9 +90,46 @@ set-cookie: paperclip-team-shared.session_token=YhOkTpvNlIfJkr06JQu9ZV6qNXD0jjWc
 - **No "Wart" stale runtime-services symptom observed during this run.** Server killed cleanly via `taskkill /F /T /PID` after smoke; subsequent restart did not collide. (Wart still tracked for Phase 3 TEAM-05 — single-run not a representative sample.)
 - **Latency (rough):** Better Auth signup → Supabase commit measured at ~640ms (signup-a started 03:56:33.248Z, ended 03:56:33.884Z including network roundtrip). Acceptable for dev experience.
 
-## User verification (Pending — see Tarefa 3)
+## User Verification Outcome
 
-To be completed at the human-verify checkpoint — see this plan's Tarefa 3.
+**Status:** approved (user response: `aprovado`)
+**Approved at:** 2026-04-25T00:00:00Z
+**Approver:** repo owner (iep.in100tiva@gmail.com)
+
+### Visual confirmations
+
+- http://localhost:3100 carrega tela de login (dark theme paperclip)
+- Signup com email/password real funciona; redireciona para dashboard
+- Cookie `paperclip-team-shared.session_token` presente em DevTools (HttpOnly, SameSite=Lax, Path=/)
+- Row do user signup visível na tabela `public.user` do Supabase Studio (projeto `bxlczioxgizgvtznukwt`)
+- Dashboard renderiza após signup (companies vazias na criação inicial — comportamento documentado em `## Empirical findings`)
+
+### Multi-dev confirmation
+
+Single-dev validation only nesta fase. Multi-dev cross-machine (Success Criterion #1 do ROADMAP Phase 2) deferido para Phase 3 TEAM-04, que cobre o fluxo completo de invite/board-claim com 5+ devs reais. A infraestrutura validada aqui (Supabase remoto + Better Auth + cookie prefix `paperclip-team-shared`) é pré-requisito satisfeito — falta apenas exercitar o fluxo team-shared real com mais de um humano.
+
+### Findings worth carrying forward (input para Phase 3 TEAM-02/TEAM-05)
+
+1. **`pnpm dev`/`pnpm dev:once` não exercita `authenticated` mode por default.** Para reproduzir o smoke, usar `PAPERCLIP_DEPLOYMENT_MODE=authenticated pnpm --filter @paperclipai/server dev` (bypassa `dev-runner.ts` para preservar loopback bind). Documentar isto em onboarding (TEAM-02) e/ou adicionar flag intermediária ao runner.
+2. **Better Auth `MISSING_OR_NULL_ORIGIN` 403 sem header Origin.** Clientes (testes, scripts, integrações) precisam enviar `Origin: http://localhost:3100` ou hostname no `BETTER_AUTH_TRUSTED_ORIGINS`. Adicionar à seção de troubleshooting (TEAM-05).
+3. **`postgres` package só resolve a partir de `packages/db/`.** Scripts em root precisam de `createRequire` rooted em `packages/db/package.json`. Mesmo wart já capturado em `02-04-SUMMARY.md`; reusar pattern.
+4. **Default-company auto-create é gated por `local_trusted` mode.** Em `authenticated`, novos signups não recebem company default — `GET /api/companies` retorna `[]`. Esperado e correto; flow de criação/invite vira responsabilidade da Phase 3 (TEAM-01).
+5. **Wart Windows herdado da Phase 1 não reproduzido nesta corrida.** Server killed cleanly via `taskkill /F /T /PID`; restart subsequente sem colisão. Single-run não é amostra representativa — wart segue rastreado para TEAM-05.
+6. **Latência signup→Supabase ~640ms.** Aceitável para dev experience; saudável para baseline futura.
+
+## Phase 2 Status
+
+**Complete.** All 16 requirements satisfied (Todos os 16 requisitos da Phase 2 satisfeitos):
+
+- INFRA-01..06: Plans 02-01 (audit), 02-03 (driver patches, runtime-config, env, fallback opt-in)
+- DB-01..05: Plans 02-04 (apply migrations + GitHub Actions pipeline + governance), 02-03 (DB-02 disable auto-migrate)
+- AUTH-01..05: Plans 02-05 (wiring validation), 02-02 (AUTH-05 pre-commit hook)
+
+E2E integrado funciona: server arranca contra Supabase pooler 6543 (transaction mode, `prepare:false`), Better Auth signup grava em `public.user` no Supabase, cookie `paperclip-team-shared.session_token` permite roundtrip de sessão, smoke automatizado 7/7 PASS, validação humana visual aprovada.
+
+Wart Windows (stale `~/.paperclip/instances/default/runtime-services/` após `taskkill`) segue rastreado e diferido para Phase 3 TEAM-05 (troubleshooting doc + possíveis fixes: PowerShell wrapper, SIGBREAK handler, defensive PID-alive check).
+
+Próxima fase: **Phase 3 — Workflow de Equipe + Onboarding** (TEAM-01..05).
 
 ## References
 
@@ -103,3 +140,4 @@ To be completed at the human-verify checkpoint — see this plan's Tarefa 3.
 
 ___END_LOG___
 *Smoke complete: 2026-04-26T03:56:36Z*
+*Phase 2 verification complete: 2026-04-25*
