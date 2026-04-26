@@ -51,13 +51,22 @@ export function errorHandler(
     }
     res.status(err.status).json({
       error: err.message,
+      ...(err.code ? { code: err.code } : {}),
       ...(err.details ? { details: err.details } : {}),
     });
     return;
   }
 
   if (err instanceof ZodError) {
-    res.status(400).json({ error: "Validation error", details: err.errors });
+    res.status(400).json({
+      error: "Validation error",
+      code: "validation.error",
+      details: err.errors.map((issue) => ({
+        path: issue.path.join("."),
+        code: `validation.${issue.code}`,
+        message: issue.message,
+      })),
+    });
     return;
   }
 
