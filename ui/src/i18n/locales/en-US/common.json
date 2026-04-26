@@ -2,5 +2,14 @@
   "app-name": "Team Paperclip",
   "loading": "Loading…",
   "save": "Save",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "actions": {
+    "select-all": "Select all",
+    "deselect-all": "Deselect all",
+    "apply": "Apply",
+    "clear": "Clear",
+    "filter": "Filter",
+    "close": "Close",
+    "remove": "Remove"
+  }
 }

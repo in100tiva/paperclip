@@ -1,1 +1,199 @@
-{}
+{
+  "title": "Inbox",
+  "tabs": {
+    "mine": "Meus",
+    "recent": "Recentes",
+    "unread": "Não lidos",
+    "all": "Todos"
+  },
+  "search": {
+    "placeholder": "Buscar inbox…",
+    "issues-placeholder": "Buscar tarefas...",
+    "issues-aria": "Buscar tarefas",
+    "assignees-placeholder": "Buscar responsáveis...",
+    "creators-placeholder": "Buscar criadores..."
+  },
+  "categories": {
+    "everything": "Todas as categorias",
+    "issues-i-touched": "Minhas tarefas recentes",
+    "join-requests": "Pedidos de entrada",
+    "approvals": "Aprovações",
+    "failed-runs": "Execuções falhadas",
+    "alerts": "Alertas",
+    "trigger-placeholder": "Categoria"
+  },
+  "approval-status": {
+    "all": "Todos os status",
+    "actionable": "Requer ação",
+    "resolved": "Resolvido",
+    "trigger-placeholder": "Status de aprovação"
+  },
+  "filters": {
+    "title": "Filtros",
+    "trigger": "Filtrar",
+    "trigger-with-count": "Filtros: {{count}}",
+    "clear": "Limpar",
+    "quick-filters": "Filtros rápidos",
+    "status": "Status",
+    "priority": "Prioridade",
+    "assignee": "Responsável",
+    "no-assignee": "Sem responsável",
+    "me": "Eu",
+    "creator": "Criador",
+    "no-creators-match": "Nenhum criador corresponde.",
+    "remove-creator": "Remover criador {{label}}",
+    "project": "Projeto",
+    "labels": "Etiquetas",
+    "workspace": "Workspace",
+    "visibility": "Visibilidade",
+    "live-runs-only": "Apenas execuções ao vivo",
+    "hide-routine-runs": "Ocultar execuções rotineiras"
+  },
+  "actions": {
+    "mark-as-read": "Marcar como lido",
+    "mark-all-as-read": "Marcar tudo como lido",
+    "mark-all-as-read-confirm-title": "Marcar tudo como lido?",
+    "mark-all-as-read-confirm-description": "Isso marcará {{count}} item não lido como lido.",
+    "mark-all-as-read-confirm-description_plural": "Isso marcará {{count}} itens não lidos como lidos.",
+    "marking": "Marcando…",
+    "dismiss": "Dispensar",
+    "dismiss-from-inbox": "Dispensar do inbox",
+    "approve": "Aprovar",
+    "reject": "Rejeitar",
+    "retry": "Tentar novamente",
+    "retrying": "Tentando…",
+    "archive": "Arquivar"
+  },
+  "toolbar": {
+    "group": "Agrupar",
+    "group-none": "Nenhum",
+    "group-type": "Tipo",
+    "group-workspace": "Workspace",
+    "nesting-disable": "Desativar aninhamento pai-filho",
+    "nesting-enable": "Ativar aninhamento pai-filho",
+    "columns-title": "Escolha quais colunas do inbox ficam visíveis"
+  },
+  "empty-state": {
+    "select-company": "Selecione uma empresa para ver o inbox.",
+    "no-search-results": "Nenhum item do inbox corresponde à sua busca.",
+    "inbox-zero": "Inbox zero.",
+    "no-new-items": "Nenhum item novo no inbox.",
+    "no-recent-items": "Nenhum item recente no inbox.",
+    "no-items-match-filters": "Nenhum item do inbox corresponde a estes filtros."
+  },
+  "failed-run": {
+    "label-with-agent": "Execução falhada — {{agentName}}",
+    "label": "Execução falhada",
+    "exit-error-fallback": "Execução encerrou com erro."
+  },
+  "join-request": {
+    "agent-prefix": "Pedido de entrada de agente",
+    "agent-with-name": "Pedido de entrada de agente: {{name}}",
+    "human-fallback": "Pedido de entrada humano",
+    "requested-line": "solicitado {{when}} a partir do IP {{ip}}",
+    "adapter-line": "adaptador: {{adapter}}"
+  },
+  "approval": {
+    "requested-by": "solicitado por {{name}}",
+    "updated-when": "atualizado {{when}}"
+  },
+  "alerts": {
+    "title": "Alertas",
+    "agent-error-singular": "{{count}} agente tem erros",
+    "agent-error-plural": "{{count}} agentes têm erros",
+    "budget-utilization": "Orçamento em {{percent}}% de utilização este mês"
+  },
+  "groups": {
+    "earlier": "Anteriores",
+    "archived": "Arquivados",
+    "other-results": "Outros resultados"
+  },
+  "errors": {
+    "approve-failed": "Falha ao aprovar",
+    "reject-failed": "Falha ao rejeitar",
+    "approve-join-failed": "Falha ao aprovar pedido de entrada",
+    "reject-join-failed": "Falha ao rejeitar pedido de entrada",
+    "archive-failed": "Falha ao arquivar tarefa",
+    "undo-archive-failed": "Falha ao desfazer arquivamento do inbox",
+    "retry-skipped": "Nova tentativa foi pulada."
+  },
+  "list": {
+    "list-view": "Visualização em lista",
+    "board-view": "Visualização em quadro",
+    "sort": "Ordenar",
+    "sort-fields": {
+      "status": "Status",
+      "priority": "Prioridade",
+      "title": "Título",
+      "created": "Criado em",
+      "updated": "Atualizado em"
+    },
+    "group-fields": {
+      "status": "Status",
+      "priority": "Prioridade",
+      "assignee": "Responsável",
+      "workspace": "Workspace",
+      "parent": "Tarefa pai",
+      "none": "Nenhum"
+    },
+    "search-results-cap": "Mostrando até {{count}} resultados. Refine a busca para reduzir.",
+    "board-column-cap": "Algumas colunas do quadro mostram até {{count}} tarefas. Refine os filtros ou a busca para revelar o restante.",
+    "no-issues-match": "Nenhuma tarefa corresponde aos filtros ou à busca.",
+    "create-issue": "Criar Tarefa",
+    "create-issue-with-label": "Criar {{label}}",
+    "new-issue": "Nova Tarefa",
+    "new-issue-with-label": "Novo {{label}}",
+    "rendering-of-total": "Renderizando {{rendered}} de {{total}} tarefas",
+    "columns-title": "Escolha quais colunas de tarefa ficam visíveis"
+  },
+  "groups-labels": {
+    "no-workspace": "Sem workspace",
+    "no-parent": "Sem pai",
+    "unassigned": "Não atribuído",
+    "user": "Usuário"
+  },
+  "issue-row": {
+    "assignee": "Responsável",
+    "user": "Usuário",
+    "unassigned": "Não atribuído",
+    "no-project": "Sem projeto",
+    "filter-by-workspace": "Filtrar por workspace",
+    "sub-issue": "Sub-tarefa",
+    "sub-task-count": "({{count}} sub-tarefa)",
+    "sub-task-count_plural": "({{count}} sub-tarefas)"
+  },
+  "columns": {
+    "status": "Status",
+    "id": "ID",
+    "assignee": "Responsável",
+    "project": "Projeto",
+    "workspace": "Workspace",
+    "parent": "Tarefa pai",
+    "labels": "Etiquetas",
+    "updated": "Última atualização",
+    "descriptions": {
+      "status": "Chip de estado da tarefa na borda esquerda.",
+      "id": "Identificador do ticket como PAP-1009.",
+      "assignee": "Agente atribuído ou usuário do board.",
+      "project": "Pílula de projeto vinculado com sua cor.",
+      "workspace": "Workspace de execução ou de projeto usado para a tarefa.",
+      "parent": "Identificador e título da tarefa pai.",
+      "labels": "Etiquetas da tarefa.",
+      "updated": "Hora da atividade visível mais recente."
+    },
+    "trigger": "Colunas",
+    "section-label": "Linhas de tarefa em desktop",
+    "reset-defaults": "Redefinir padrões",
+    "reset-summary": "status, id, atualizado em"
+  },
+  "live": {
+    "label": "Ao vivo"
+  },
+  "row": {
+    "swipe-to-archive": "Arquivar",
+    "updated-prefix": "Atualizado {{when}}"
+  },
+  "badges": {
+    "paused": "Pausado"
+  }
+}

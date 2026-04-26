@@ -1,1 +1,199 @@
-{}
+{
+  "title": "Inbox",
+  "tabs": {
+    "mine": "Mine",
+    "recent": "Recent",
+    "unread": "Unread",
+    "all": "All"
+  },
+  "search": {
+    "placeholder": "Search inbox…",
+    "issues-placeholder": "Search issues...",
+    "issues-aria": "Search issues",
+    "assignees-placeholder": "Search assignees...",
+    "creators-placeholder": "Search creators..."
+  },
+  "categories": {
+    "everything": "All categories",
+    "issues-i-touched": "My recent issues",
+    "join-requests": "Join requests",
+    "approvals": "Approvals",
+    "failed-runs": "Failed runs",
+    "alerts": "Alerts",
+    "trigger-placeholder": "Category"
+  },
+  "approval-status": {
+    "all": "All approval statuses",
+    "actionable": "Needs action",
+    "resolved": "Resolved",
+    "trigger-placeholder": "Approval status"
+  },
+  "filters": {
+    "title": "Filters",
+    "trigger": "Filter",
+    "trigger-with-count": "Filters: {{count}}",
+    "clear": "Clear",
+    "quick-filters": "Quick filters",
+    "status": "Status",
+    "priority": "Priority",
+    "assignee": "Assignee",
+    "no-assignee": "No assignee",
+    "me": "Me",
+    "creator": "Creator",
+    "no-creators-match": "No creators match.",
+    "remove-creator": "Remove creator {{label}}",
+    "project": "Project",
+    "labels": "Labels",
+    "workspace": "Workspace",
+    "visibility": "Visibility",
+    "live-runs-only": "Live runs only",
+    "hide-routine-runs": "Hide routine runs"
+  },
+  "actions": {
+    "mark-as-read": "Mark as read",
+    "mark-all-as-read": "Mark all as read",
+    "mark-all-as-read-confirm-title": "Mark all as read?",
+    "mark-all-as-read-confirm-description": "This will mark {{count}} unread item as read.",
+    "mark-all-as-read-confirm-description_plural": "This will mark {{count}} unread items as read.",
+    "marking": "Marking…",
+    "dismiss": "Dismiss",
+    "dismiss-from-inbox": "Dismiss from inbox",
+    "approve": "Approve",
+    "reject": "Reject",
+    "retry": "Retry",
+    "retrying": "Retrying…",
+    "archive": "Archive"
+  },
+  "toolbar": {
+    "group": "Group",
+    "group-none": "None",
+    "group-type": "Type",
+    "group-workspace": "Workspace",
+    "nesting-disable": "Disable parent-child nesting",
+    "nesting-enable": "Enable parent-child nesting",
+    "columns-title": "Choose which inbox columns stay visible"
+  },
+  "empty-state": {
+    "select-company": "Select a company to view inbox.",
+    "no-search-results": "No inbox items match your search.",
+    "inbox-zero": "Inbox zero.",
+    "no-new-items": "No new inbox items.",
+    "no-recent-items": "No recent inbox items.",
+    "no-items-match-filters": "No inbox items match these filters."
+  },
+  "failed-run": {
+    "label-with-agent": "Failed run — {{agentName}}",
+    "label": "Failed run",
+    "exit-error-fallback": "Run exited with an error."
+  },
+  "join-request": {
+    "agent-prefix": "Agent join request",
+    "agent-with-name": "Agent join request: {{name}}",
+    "human-fallback": "Human join request",
+    "requested-line": "requested {{when}} from IP {{ip}}",
+    "adapter-line": "adapter: {{adapter}}"
+  },
+  "approval": {
+    "requested-by": "requested by {{name}}",
+    "updated-when": "updated {{when}}"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "agent-error-singular": "{{count}} agent has errors",
+    "agent-error-plural": "{{count}} agents have errors",
+    "budget-utilization": "Budget at {{percent}}% utilization this month"
+  },
+  "groups": {
+    "earlier": "Earlier",
+    "archived": "Archived",
+    "other-results": "Other results"
+  },
+  "errors": {
+    "approve-failed": "Failed to approve",
+    "reject-failed": "Failed to reject",
+    "approve-join-failed": "Failed to approve join request",
+    "reject-join-failed": "Failed to reject join request",
+    "archive-failed": "Failed to archive issue",
+    "undo-archive-failed": "Failed to undo inbox archive",
+    "retry-skipped": "Retry was skipped."
+  },
+  "list": {
+    "list-view": "List view",
+    "board-view": "Board view",
+    "sort": "Sort",
+    "sort-fields": {
+      "status": "Status",
+      "priority": "Priority",
+      "title": "Title",
+      "created": "Created",
+      "updated": "Updated"
+    },
+    "group-fields": {
+      "status": "Status",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "workspace": "Workspace",
+      "parent": "Parent Issue",
+      "none": "None"
+    },
+    "search-results-cap": "Showing up to {{count}} matches. Refine the search to narrow further.",
+    "board-column-cap": "Some board columns are showing up to {{count}} issues. Refine filters or search to reveal the rest.",
+    "no-issues-match": "No issues match the current filters or search.",
+    "create-issue": "Create Issue",
+    "create-issue-with-label": "Create {{label}}",
+    "new-issue": "New Issue",
+    "new-issue-with-label": "New {{label}}",
+    "rendering-of-total": "Rendering {{rendered}} of {{total}} issues",
+    "columns-title": "Choose which issue columns stay visible"
+  },
+  "groups-labels": {
+    "no-workspace": "No Workspace",
+    "no-parent": "No Parent",
+    "unassigned": "Unassigned",
+    "user": "User"
+  },
+  "issue-row": {
+    "assignee": "Assignee",
+    "user": "User",
+    "unassigned": "Unassigned",
+    "no-project": "No project",
+    "filter-by-workspace": "Filter by workspace",
+    "sub-issue": "Sub-issue",
+    "sub-task-count": "({{count}} sub-task)",
+    "sub-task-count_plural": "({{count}} sub-tasks)"
+  },
+  "columns": {
+    "status": "Status",
+    "id": "ID",
+    "assignee": "Assignee",
+    "project": "Project",
+    "workspace": "Workspace",
+    "parent": "Parent issue",
+    "labels": "Tags",
+    "updated": "Last updated",
+    "descriptions": {
+      "status": "Issue state chip on the left edge.",
+      "id": "Ticket identifier like PAP-1009.",
+      "assignee": "Assigned agent or board user.",
+      "project": "Linked project pill with its color.",
+      "workspace": "Execution or project workspace used for the issue.",
+      "parent": "Parent issue identifier and title.",
+      "labels": "Issue labels and tags.",
+      "updated": "Latest visible activity time."
+    },
+    "trigger": "Columns",
+    "section-label": "Desktop issue rows",
+    "reset-defaults": "Reset defaults",
+    "reset-summary": "status, id, updated"
+  },
+  "live": {
+    "label": "Live"
+  },
+  "row": {
+    "swipe-to-archive": "Archive",
+    "updated-prefix": "Updated {{when}}"
+  },
+  "badges": {
+    "paused": "Paused"
+  }
+}

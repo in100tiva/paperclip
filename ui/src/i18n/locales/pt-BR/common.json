@@ -2,5 +2,14 @@
   "app-name": "Paperclip da Equipe",
   "loading": "Carregando…",
   "save": "Salvar",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "actions": {
+    "select-all": "Selecionar todos",
+    "deselect-all": "Limpar seleção",
+    "apply": "Aplicar",
+    "clear": "Limpar",
+    "filter": "Filtrar",
+    "close": "Fechar",
+    "remove": "Remover"
+  }
 }
