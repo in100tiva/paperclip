@@ -8,6 +8,9 @@ import { api } from "./client";
  */
 export type ClaudeAccountStatus = "live" | "exhausted" | "cooldown" | "disabled";
 
+/** Phase 6 / D-05 / PROJ-02. */
+export type ClaudeAccountScope = "company" | "shared";
+
 export interface ClaudeAccount {
   id: string;
   companyId: string;
@@ -15,6 +18,8 @@ export interface ClaudeAccount {
   label: string;
   configDirSlug: string;
   status: ClaudeAccountStatus;
+  /** Phase 6 / D-05 / PROJ-02. 'company' (default) | 'shared'. */
+  scope: ClaudeAccountScope;
   lastQuotaWindowsJson: Record<
     string,
     { exhaustedUntil: string; lastTriggeredAt: string; count: number }
@@ -23,6 +28,19 @@ export interface ClaudeAccount {
   lastUsedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Phase 6 / D-10 / D-11 / PROJ-03. Aggregated cost row for one Claude account
+ * within a company over a date range.
+ */
+export interface CostSummaryRow {
+  accountId: string;
+  accountLabel: string;
+  totalCostUsd: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  stepCount: number;
 }
 
 export interface ClaudeAccountRotatedDetails {
@@ -52,11 +70,15 @@ export interface RotationHistoryEntry {
 export interface CreateClaudeAccountInput {
   label: string;
   configDirSlug: string;
+  /** Phase 6 / D-05 / PROJ-02. Defaults to 'company' server-side when omitted. */
+  scope?: ClaudeAccountScope;
 }
 
 export interface PatchClaudeAccountInput {
   status?: ClaudeAccountStatus;
   label?: string;
+  /** Phase 6 / D-05 / PROJ-02. */
+  scope?: ClaudeAccountScope;
 }
 
 export const claudeAccountsApi = {
@@ -73,4 +95,22 @@ export const claudeAccountsApi = {
     api.get<{ entries: RotationHistoryEntry[] }>(
       `/companies/${companyId}/claude-accounts/rotation-history?limit=${limit}`,
     ),
+  /**
+   * Phase 6 / D-10 / D-11 / PROJ-03. Aggregated spend per Claude account for
+   * the company. Default range (when both bounds omitted) is server-side
+   * "since current month start" aligned with `companies.spentMonthlyCents`
+   * reset semantics.
+   */
+  costSummary: (
+    companyId: string,
+    range?: { from?: string; to?: string },
+  ) => {
+    const params = new URLSearchParams();
+    if (range?.from) params.set("from", range.from);
+    if (range?.to) params.set("to", range.to);
+    const qs = params.toString();
+    return api.get<{ rows: CostSummaryRow[] }>(
+      `/companies/${companyId}/claude-accounts/cost-summary${qs ? `?${qs}` : ""}`,
+    );
+  },
 };

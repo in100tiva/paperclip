@@ -12,6 +12,7 @@ const listMock = vi.hoisted(() => vi.fn());
 const createMock = vi.hoisted(() => vi.fn());
 const patchMock = vi.hoisted(() => vi.fn());
 const rotationHistoryMock = vi.hoisted(() => vi.fn());
+const costSummaryMock = vi.hoisted(() => vi.fn());
 const pushToastMock = vi.hoisted(() => vi.fn());
 const setBreadcrumbsMock = vi.hoisted(() => vi.fn());
 
@@ -28,6 +29,8 @@ vi.mock("@/api/claude-accounts", async () => {
         patchMock(companyId, accountId, input),
       rotationHistory: (companyId: string, limit?: number) =>
         rotationHistoryMock(companyId, limit),
+      costSummary: (companyId: string, range?: { from?: string; to?: string }) =>
+        costSummaryMock(companyId, range),
     },
   };
 });
@@ -74,6 +77,7 @@ function makeAccount(overrides: Partial<ClaudeAccount> = {}): ClaudeAccount {
     label: "Account A",
     configDirSlug: "a",
     status: "live",
+    scope: "company",
     lastQuotaWindowsJson: {},
     exhaustedUntil: null,
     lastUsedAt: "2026-04-25T12:00:00.000Z",
@@ -122,6 +126,7 @@ describe("ClaudeAccounts", () => {
     rotationHistoryMock.mockResolvedValue({ entries: [] });
     createMock.mockResolvedValue({ account: makeAccount() });
     patchMock.mockResolvedValue({ account: makeAccount({ status: "disabled" }) });
+    costSummaryMock.mockResolvedValue({ rows: [] });
   });
 
   afterEach(() => {
@@ -230,6 +235,7 @@ describe("ClaudeAccounts", () => {
     expect(createMock).toHaveBeenCalledWith("company-1", {
       label: "Account Alpha",
       configDirSlug: "alpha",
+      scope: "company",
     });
     expect(pushToastMock).toHaveBeenCalledWith(
       expect.objectContaining({ tone: "success", title: "Claude account registered" }),
@@ -308,5 +314,163 @@ describe("ClaudeAccounts", () => {
     expect(container.textContent).toContain("exhausted");
     expect(container.textContent).toContain("weekly_quota");
     expect(container.textContent).toContain("fallback_full_context");
+  });
+
+  // Phase 6 / D-12 / PROJ-03 — Cost summary section
+  it("renders cost summary table when rows present", async () => {
+    costSummaryMock.mockResolvedValueOnce({
+      rows: [
+        {
+          accountId: "acc-1",
+          accountLabel: "Account A",
+          totalCostUsd: 1.2345,
+          totalInputTokens: 12345,
+          totalOutputTokens: 6789,
+          stepCount: 7,
+        },
+        {
+          accountId: "acc-2",
+          accountLabel: "Account B",
+          totalCostUsd: 0.5,
+          totalInputTokens: 100,
+          totalOutputTokens: 50,
+          stepCount: 2,
+        },
+      ],
+    });
+
+    const { queryClient, root } = renderPage(container);
+    await act(async () => {
+      root.render(
+        <MemoryRouter>
+          <QueryClientProvider client={queryClient}>
+            <ClaudeAccounts />
+          </QueryClientProvider>
+        </MemoryRouter>,
+      );
+    });
+    await flushReact();
+    await flushReact();
+
+    const table = container.querySelector('[data-testid="costs-table"]');
+    expect(table).toBeTruthy();
+    expect(container.textContent).toContain("Cost summary");
+    expect(container.textContent).toContain("Account A");
+    expect(container.textContent).toContain("Account B");
+    expect(container.textContent).toContain("$1.2345");
+    // Locale-agnostic: jsdom uses default ICU locale (may render thousand
+    // separator as "," or "." depending on host); assert digits only.
+    const formattedInput = (12345).toLocaleString();
+    const formattedOutput = (6789).toLocaleString();
+    expect(container.textContent).toContain(formattedInput);
+    expect(container.textContent).toContain(formattedOutput);
+  });
+
+  it("renders empty cost summary state when no rows", async () => {
+    const { queryClient, root } = renderPage(container);
+    await act(async () => {
+      root.render(
+        <MemoryRouter>
+          <QueryClientProvider client={queryClient}>
+            <ClaudeAccounts />
+          </QueryClientProvider>
+        </MemoryRouter>,
+      );
+    });
+    await flushReact();
+    await flushReact();
+
+    const empty = container.querySelector('[data-testid="costs-empty"]');
+    expect(empty).toBeTruthy();
+    expect(container.textContent).toContain("No usage recorded yet.");
+  });
+
+  // Phase 6 / D-05 / PROJ-02 — scope radio submits selected value
+  it("submits register form with scope=shared when shared radio selected", async () => {
+    const { queryClient, root } = renderPage(container);
+    await act(async () => {
+      root.render(
+        <MemoryRouter>
+          <QueryClientProvider client={queryClient}>
+            <ClaudeAccounts />
+          </QueryClientProvider>
+        </MemoryRouter>,
+      );
+    });
+    await flushReact();
+    await flushReact();
+
+    const labelInput = container.querySelector(
+      '[data-testid="claude-account-label"]',
+    ) as HTMLInputElement;
+    const slugInput = container.querySelector(
+      '[data-testid="claude-account-slug"]',
+    ) as HTMLInputElement;
+    const sharedRadio = container.querySelector(
+      '[data-testid="scope-shared"]',
+    ) as HTMLInputElement;
+    expect(sharedRadio).toBeTruthy();
+
+    await act(async () => {
+      setControlledInputValue(labelInput, "Shared Account");
+      setControlledInputValue(slugInput, "shared-1");
+    });
+    await flushReact();
+
+    await act(async () => {
+      sharedRadio.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+    await flushReact();
+
+    const submitButton = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent === "Register",
+    );
+    const form = submitButton?.closest("form");
+    await act(async () => {
+      form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    });
+    await flushReact();
+    await flushReact();
+
+    expect(createMock).toHaveBeenCalledWith("company-1", {
+      label: "Shared Account",
+      configDirSlug: "shared-1",
+      scope: "shared",
+    });
+  });
+
+  // Phase 6 / D-07 / PROJ-02 — shared badge in accounts table
+  it("renders shared badge for accounts with scope=shared", async () => {
+    listMock.mockResolvedValueOnce({
+      accounts: [
+        makeAccount({ id: "acc-shared", label: "Shared One", scope: "shared" }),
+        makeAccount({
+          id: "acc-private",
+          label: "Private One",
+          configDirSlug: "private-1",
+          scope: "company",
+        }),
+      ],
+    });
+
+    const { queryClient, root } = renderPage(container);
+    await act(async () => {
+      root.render(
+        <MemoryRouter>
+          <QueryClientProvider client={queryClient}>
+            <ClaudeAccounts />
+          </QueryClientProvider>
+        </MemoryRouter>,
+      );
+    });
+    await flushReact();
+    await flushReact();
+
+    const sharedScope = container.querySelector('[data-scope="shared"]');
+    const companyScope = container.querySelector('[data-scope="company"]');
+    expect(sharedScope).toBeTruthy();
+    expect(sharedScope?.textContent).toContain("shared");
+    expect(companyScope).toBeTruthy();
+    expect(companyScope?.textContent).toContain("company");
   });
 });

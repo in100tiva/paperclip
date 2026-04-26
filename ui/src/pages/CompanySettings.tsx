@@ -185,6 +185,10 @@ export function CompanySettings() {
   const [brandColor, setBrandColor] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [logoUploadError, setLogoUploadError] = useState<string | null>(null);
+  // Phase 6 / D-04 / D-07 / PROJ-02 — Claude account pool mode toggle
+  const [claudeAccountPoolMode, setClaudeAccountPoolMode] = useState<
+    "per_company" | "shared"
+  >("per_company");
   const [editingEnvironmentId, setEditingEnvironmentId] = useState<string | null>(null);
   const [environmentForm, setEnvironmentForm] = useState<EnvironmentFormState>(createEmptyEnvironmentForm);
   const [probeResults, setProbeResults] = useState<Record<string, EnvironmentProbeResult | null>>({});
@@ -196,6 +200,10 @@ export function CompanySettings() {
     setDescription(selectedCompany.description ?? "");
     setBrandColor(selectedCompany.brandColor ?? "");
     setLogoUrl(selectedCompany.logoUrl ?? "");
+    setClaudeAccountPoolMode(
+      (selectedCompany.claudeAccountPoolMode as "per_company" | "shared") ??
+        "per_company",
+    );
   }, [selectedCompany]);
 
   const [inviteError, setInviteError] = useState<string | null>(null);
@@ -231,13 +239,18 @@ export function CompanySettings() {
     !!selectedCompany &&
     (companyName !== selectedCompany.name ||
       description !== (selectedCompany.description ?? "") ||
-      brandColor !== (selectedCompany.brandColor ?? ""));
+      brandColor !== (selectedCompany.brandColor ?? "") ||
+      claudeAccountPoolMode !==
+        (((selectedCompany as { claudeAccountPoolMode?: string })
+          .claudeAccountPoolMode as "per_company" | "shared") ??
+          "per_company"));
 
   const generalMutation = useMutation({
     mutationFn: (data: {
       name: string;
       description: string | null;
       brandColor: string | null;
+      claudeAccountPoolMode: "per_company" | "shared";
     }) => companiesApi.update(selectedCompanyId!, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
@@ -477,7 +490,8 @@ export function CompanySettings() {
     generalMutation.mutate({
       name: companyName.trim(),
       description: description.trim() || null,
-      brandColor: brandColor || null
+      brandColor: brandColor || null,
+      claudeAccountPoolMode,
     });
   }
 
@@ -1139,6 +1153,54 @@ export function CompanySettings() {
             onChange={(v) => settingsMutation.mutate(v)}
             toggleTestId="company-settings-team-approval-toggle"
           />
+        </div>
+      </div>
+
+      {/* Phase 6 / D-04 / D-07 / PROJ-02 — Claude account pool mode */}
+      <div className="space-y-4" data-testid="company-settings-claude-pool-section">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Claude Account Pool
+        </div>
+        <div className="space-y-3 rounded-md border border-border px-4 py-4">
+          <p className="text-xs text-muted-foreground">
+            Controls which Claude accounts agents in this company can rotate across.{" "}
+            <strong>per_company</strong> keeps the pool isolated to this company's own
+            accounts. <strong>shared</strong> additionally lets agents draw from accounts
+            registered with <code className="rounded bg-muted px-1">scope = shared</code>{" "}
+            in any company.
+          </p>
+          <div className="flex flex-col gap-2 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="claudeAccountPoolMode"
+                value="per_company"
+                checked={claudeAccountPoolMode === "per_company"}
+                onChange={() => setClaudeAccountPoolMode("per_company")}
+                data-testid="pool-mode-per-company"
+              />
+              <span>
+                <span className="font-medium">per_company</span>
+                <span className="text-muted-foreground"> — default, isolated pool</span>
+              </span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="claudeAccountPoolMode"
+                value="shared"
+                checked={claudeAccountPoolMode === "shared"}
+                onChange={() => setClaudeAccountPoolMode("shared")}
+                data-testid="pool-mode-shared"
+              />
+              <span>
+                <span className="font-medium">shared</span>
+                <span className="text-muted-foreground">
+                  {" "}— also draws from the shared pool
+                </span>
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 

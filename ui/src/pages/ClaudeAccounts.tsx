@@ -4,6 +4,7 @@ import { KeyRound, Power } from "lucide-react";
 import {
   claudeAccountsApi,
   type ClaudeAccount,
+  type ClaudeAccountScope,
   type ClaudeAccountStatus,
 } from "@/api/claude-accounts";
 import { ApiError } from "@/api/client";
@@ -69,6 +70,8 @@ export function ClaudeAccounts() {
   const queryClient = useQueryClient();
   const [newLabel, setNewLabel] = useState("");
   const [newSlug, setNewSlug] = useState("");
+  // Phase 6 / D-05 / PROJ-02 — scope choice on register
+  const [newScope, setNewScope] = useState<ClaudeAccountScope>("company");
 
   useEffect(() => {
     setBreadcrumbs([
@@ -80,6 +83,8 @@ export function ClaudeAccounts() {
 
   const accountsKey = ["claude-accounts", "list", selectedCompanyId ?? ""] as const;
   const historyKey = ["claude-accounts", "rotation-history", selectedCompanyId ?? ""] as const;
+  // Phase 6 / D-10 / PROJ-03 — cost summary aggregation
+  const costsKey = ["claude-accounts", "cost-summary", selectedCompanyId ?? ""] as const;
 
   const accountsQuery = useQuery({
     queryKey: accountsKey,
@@ -93,9 +98,18 @@ export function ClaudeAccounts() {
     enabled: Boolean(selectedCompanyId),
   });
 
+  const costsQuery = useQuery({
+    queryKey: costsKey,
+    queryFn: () => claudeAccountsApi.costSummary(selectedCompanyId!),
+    enabled: Boolean(selectedCompanyId),
+  });
+
   const createMutation = useMutation({
-    mutationFn: (input: { label: string; configDirSlug: string }) =>
-      claudeAccountsApi.create(selectedCompanyId!, input),
+    mutationFn: (input: {
+      label: string;
+      configDirSlug: string;
+      scope: ClaudeAccountScope;
+    }) => claudeAccountsApi.create(selectedCompanyId!, input),
     onSuccess: async () => {
       pushToast({
         title: "Claude account registered",
@@ -104,6 +118,7 @@ export function ClaudeAccounts() {
       });
       setNewLabel("");
       setNewSlug("");
+      setNewScope("company");
       await queryClient.invalidateQueries({ queryKey: accountsKey });
     },
     onError: (err) => {
@@ -135,7 +150,7 @@ export function ClaudeAccounts() {
     const label = newLabel.trim();
     const configDirSlug = newSlug.trim();
     if (!label || !configDirSlug) return;
-    createMutation.mutate({ label, configDirSlug });
+    createMutation.mutate({ label, configDirSlug, scope: newScope });
   }
 
   if (!selectedCompanyId) {
@@ -183,38 +198,68 @@ export function ClaudeAccounts() {
             the host machine to seed credentials.
           </p>
         </div>
-        <form className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]" onSubmit={handleSubmit}>
-          <label className="space-y-1 text-sm">
-            <span className="block text-xs font-medium text-muted-foreground">Label</span>
-            <input
-              type="text"
-              value={newLabel}
-              onChange={(e) => setNewLabel(e.target.value)}
-              placeholder="Account A"
-              required
-              maxLength={100}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              data-testid="claude-account-label"
-            />
-          </label>
-          <label className="space-y-1 text-sm">
-            <span className="block text-xs font-medium text-muted-foreground">Config dir slug</span>
-            <input
-              type="text"
-              value={newSlug}
-              onChange={(e) => setNewSlug(e.target.value)}
-              placeholder="a"
-              required
-              pattern={SLUG_PATTERN}
-              title="Lowercase letters, digits, dashes; 1-63 chars; must start with a letter or digit"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              data-testid="claude-account-slug"
-            />
-          </label>
-          <div className="flex items-end">
-            <Button type="submit" disabled={createMutation.isPending}>
-              {createMutation.isPending ? "Registering…" : "Register"}
-            </Button>
+        <form className="space-y-3" onSubmit={handleSubmit}>
+          <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+            <label className="space-y-1 text-sm">
+              <span className="block text-xs font-medium text-muted-foreground">Label</span>
+              <input
+                type="text"
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                placeholder="Account A"
+                required
+                maxLength={100}
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                data-testid="claude-account-label"
+              />
+            </label>
+            <label className="space-y-1 text-sm">
+              <span className="block text-xs font-medium text-muted-foreground">Config dir slug</span>
+              <input
+                type="text"
+                value={newSlug}
+                onChange={(e) => setNewSlug(e.target.value)}
+                placeholder="a"
+                required
+                pattern={SLUG_PATTERN}
+                title="Lowercase letters, digits, dashes; 1-63 chars; must start with a letter or digit"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                data-testid="claude-account-slug"
+              />
+            </label>
+            <div className="flex items-end">
+              <Button type="submit" disabled={createMutation.isPending}>
+                {createMutation.isPending ? "Registering…" : "Register"}
+              </Button>
+            </div>
+          </div>
+          {/* Phase 6 / D-05 / PROJ-02 — scope radio */}
+          <div className="space-y-1 text-sm">
+            <span className="block text-xs font-medium text-muted-foreground">Scope</span>
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="scope"
+                  value="company"
+                  checked={newScope === "company"}
+                  onChange={() => setNewScope("company")}
+                  data-testid="scope-company"
+                />
+                This company only
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="scope"
+                  value="shared"
+                  checked={newScope === "shared"}
+                  onChange={() => setNewScope("shared")}
+                  data-testid="scope-shared"
+                />
+                Shared with all companies (in shared mode)
+              </label>
+            </div>
           </div>
         </form>
       </section>
@@ -237,6 +282,7 @@ export function ClaudeAccounts() {
                 <tr className="border-b border-border">
                   <th className="px-5 py-3 font-medium text-muted-foreground">Label</th>
                   <th className="px-5 py-3 font-medium text-muted-foreground">Slug</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">Scope</th>
                   <th className="px-5 py-3 font-medium text-muted-foreground">Status</th>
                   <th className="px-5 py-3 font-medium text-muted-foreground">Last used</th>
                   <th className="px-5 py-3 font-medium text-muted-foreground">Exhausted until</th>
@@ -253,6 +299,71 @@ export function ClaudeAccounts() {
                     }
                     pending={toggleMutation.isPending}
                   />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {/* Phase 6 / D-10 / D-12 / PROJ-03 — Cost summary aggregated per Claude account */}
+      <section className="rounded-xl border border-border">
+        <div className="px-5 py-4">
+          <h2 className="text-sm font-semibold">Cost summary</h2>
+          <p className="text-sm text-muted-foreground">
+            Aggregated spend per Claude account for this company. Default range: since
+            current month start.
+          </p>
+        </div>
+        {costsQuery.isLoading ? (
+          <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
+            Loading cost summary…
+          </div>
+        ) : !costsQuery.data || costsQuery.data.rows.length === 0 ? (
+          <div
+            className="border-t border-border px-5 py-8 text-sm text-muted-foreground"
+            data-testid="costs-empty"
+          >
+            No usage recorded yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto border-t border-border">
+            <table className="min-w-full text-left text-sm" data-testid="costs-table">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="px-5 py-3 font-medium text-muted-foreground">Account</th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">
+                    Cost (USD)
+                  </th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">
+                    Input tokens
+                  </th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">
+                    Output tokens
+                  </th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">
+                    Steps
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {costsQuery.data.rows.map((row) => (
+                  <tr
+                    key={row.accountId}
+                    className="border-b border-border last:border-b-0"
+                  >
+                    <td className="px-5 py-3">{row.accountLabel}</td>
+                    <td className="px-5 py-3 text-right">
+                      ${row.totalCostUsd.toFixed(4)}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      {row.totalInputTokens.toLocaleString()}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      {row.totalOutputTokens.toLocaleString()}
+                    </td>
+                    <td className="px-5 py-3 text-right">{row.stepCount}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -331,6 +442,17 @@ function ClaudeAccountRow({
       <td className="px-5 py-3 align-top">{account.label}</td>
       <td className="px-5 py-3 align-top">
         <code>{account.configDirSlug}</code>
+      </td>
+      <td className="px-5 py-3 align-top" data-testid={`scope-cell-${account.id}`}>
+        {account.scope === "shared" ? (
+          <Badge variant="secondary" data-scope="shared">
+            shared
+          </Badge>
+        ) : (
+          <span className="text-xs text-muted-foreground" data-scope="company">
+            company
+          </span>
+        )}
       </td>
       <td className="px-5 py-3 align-top">
         <StatusBadge status={account.status} />
