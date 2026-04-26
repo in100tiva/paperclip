@@ -1,0 +1,183 @@
+# Requisitos: DDD — Paperclip da Equipe
+
+**Definidos:** 2026-04-25
+**Valor Central:** A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e o trabalho dos agentes nunca é interrompido por limites de token de uma conta — basta trocar a conta e continuar de onde parou.
+
+## Requisitos v1
+
+Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
+
+### Fork
+
+- [ ] **FORK-01**: Repo `paperclipai/paperclip` clonado para `d:\projetos\ddd` em commit conhecido (SHA registrado)
+- [ ] **FORK-02**: Remote upstream removido; `UPSTREAM_REFERENCE.md` documenta SHA original e política de port manual
+- [ ] **FORK-03**: `package.json` raiz renomeado para `ddd` (sem manter identidade do paperclip)
+- [ ] **FORK-04**: `CONTRIBUTING.md` declara política de fork hard (sem PRs upstream, port manual quando útil)
+- [ ] **FORK-05**: `pnpm install` + `pnpm dev` rodam localmente em Windows com embedded Postgres (smoke test baseline antes de mexer)
+
+### Infra
+
+- [ ] **INFRA-01**: `MIGRATION_AUDIT.md` mapeia uso de `LISTEN/NOTIFY`, `pg_advisory_lock`, `CREATE TEMP`, prepared statements e transactions long-lived no código do paperclip
+- [ ] **INFRA-02**: `packages/db/src/client.ts` usa `prepare: false` quando connection string tem porta 6543 (Supavisor pooler)
+- [ ] **INFRA-03**: `packages/db/src/runtime-config.ts` privilegia `DATABASE_URL` Supabase sobre embedded Postgres
+- [ ] **INFRA-04**: `.env.example` lista `DATABASE_URL` (pooler 6543), `SUPABASE_DB_URL` (direct 5432 para DDL), `BETTER_AUTH_SECRET`, `PAPERCLIP_INSTANCE_ID`
+- [ ] **INFRA-05**: Pool de conexões configurado com `max: 5`, `idle_timeout: 20` por instância dev (não saturar Supabase free tier)
+- [ ] **INFRA-06**: Embedded Postgres permanece como fallback opt-in mas desabilitado por default
+
+### Banco de Dados
+
+- [ ] **DB-01**: Migrations Drizzle aplicadas no projeto Supabase `bxlczioxgizgvtznukwt`
+- [ ] **DB-02**: Auto-migrations no startup desabilitadas — startup falha rápido se schema estiver desatualizado
+- [ ] **DB-03**: Pipeline GitHub Actions é único caminho que roda `pnpm db:migrate` no Supabase (em merge para main)
+- [ ] **DB-04**: PRs com mudança de schema requerem aprovação obrigatória antes de merge
+- [ ] **DB-05**: Drizzle-kit é fonte única de verdade — não usar `supabase migration new` em paralelo
+
+### Auth
+
+- [ ] **AUTH-01**: Better Auth funciona contra Postgres do Supabase (schema `user`/`session`/`account`/`verification` com IDs text)
+- [ ] **AUTH-02**: Cookie prefix configurado via `PAPERCLIP_INSTANCE_ID=team-shared` para todos os devs compartilharem mesma sessão lógica
+- [ ] **AUTH-03**: Modo `authenticated` ativo — todas as rotas (exceto signup/login) requerem sessão Better Auth válida
+- [ ] **AUTH-04**: Signup com email/senha disponível para 5+ devs da equipe
+- [ ] **AUTH-05**: Service-role key do Supabase apenas no servidor — nunca exposto no bundle Vite (verificado por pre-commit hook)
+
+### Equipe
+
+- [ ] **TEAM-01**: 5+ devs cadastrados via fluxo de invite/board-claim do paperclip apontando para Supabase compartilhado
+- [ ] **TEAM-02**: README de setup local documenta passo-a-passo: clonar, env vars, login, primeiro run
+- [ ] **TEAM-03**: Setup script (`pnpm setup`) valida env vars críticas, conexão Supabase, presença do `claude` CLI, login Better Auth
+- [ ] **TEAM-04**: Smoke test E2E: dev A faz login + cria company; dev B em outra máquina vê a mesma company (estado compartilhado funcional)
+- [ ] **TEAM-05**: Doc de troubleshooting cobre falhas comuns (Windows NTFS, Supabase no limite de conexões, cookie prefix)
+
+### Spike
+
+- [ ] **SPIKE-01**: `CLAUDE_429_TAXONOMY.md` mapeia tipos de 429 do Claude Code (RPM transient, TPM transient, daily quota, weekly quota, organization tier, "5h limit reached")
+- [ ] **SPIKE-02**: Protótipo de classifier `detectClaudeQuotaExhausted` testado contra fixtures reais capturadas
+- [ ] **SPIKE-03**: Decisão documentada sobre detecção pré-emptiva (via `tokens-remaining` header) vs reativa (parse de stream)
+- [ ] **SPIKE-04**: Validação empírica: `session_id` do Claude CLI é por-conta? Mecânica de retomada via `issue_continuation_summary` confirmada
+- [ ] **SPIKE-05**: Smoke test manual com 2 contas em filesystem disparando swap em exhaustão simulada
+
+### Multi-Conta
+
+- [ ] **MULTI-01**: Schema `claude_accounts` (id, companyId, ownerUserId, label, configDirSlug, status, lastQuotaWindowsJson, lastUsedAt, exhaustedUntil) migrado e funcional
+- [ ] **MULTI-02**: Schema `agent_account_bindings` (agentId PK, activeAccountId, rotationPolicy, lastRotatedAt) migrado
+- [ ] **MULTI-03**: Schema `agent_step_executions` append-only com (run_id, step_id, account_id, input_tokens, output_tokens, cost_usd, started_at, completed_at) para attribution
+- [ ] **MULTI-04**: `services/claude-accounts.ts` implementa `listAccounts`, `selectActiveAccount`, `rotateOnQuotaExhausted`, `resolveCredentialDir` com lock pessimista (`pg_advisory_xact_lock` por agent_run)
+- [ ] **MULTI-05**: Patch `claude-local/src/server/execute.ts` aceita `config.claudeConfigDir` e propaga para spawn env (`CLAUDE_CONFIG_DIR`)
+- [ ] **MULTI-06**: Patch `claude-local/src/server/parse.ts` adiciona `detectClaudeQuotaExhausted` baseado no spike
+- [ ] **MULTI-07**: `services/heartbeat.ts` chama `selectActiveAccount` antes de cada spawn de agente
+- [ ] **MULTI-08**: Swap automático: ao detectar exhaustão, drena step atual → checkpoint → swap → resume usando `issue_continuation_summary`
+- [ ] **MULTI-09**: UI `ui/src/pages/ClaudeAccounts.tsx` permite registrar conta, ver status (live/exhausted/cooldown), histórico de rotações
+- [ ] **MULTI-10**: Activity log emite `claude_account_rotated` com (from, to, reason, agentId) a cada swap
+- [ ] **MULTI-11**: Smoke test E2E: agente roda → conta A esgota → swap automático para B → continuidade preservada → cost atribuído corretamente a cada conta
+
+### Multi-Projeto
+
+- [ ] **PROJ-01**: Múltiplas companies/projects podem rodar agentes em paralelo no mesmo Supabase sem cross-contamination
+- [ ] **PROJ-02**: Pool de contas Claude pode ser per-company (cada empresa registra suas próprias contas) ou shared (configurável)
+- [ ] **PROJ-03**: Cost attribution agrega por (companyId, accountId) para visibilidade de gasto por projeto
+
+## Requisitos v2
+
+Diferidos para milestone futuro. Rastreados mas não no roadmap atual.
+
+### Auth Migration
+
+- **AUTH2-01**: Migrar de Better Auth para Supabase Auth (resolução de conflito text-id ↔ uuid)
+- **AUTH2-02**: Habilitar RLS completa com `auth.uid()` resolúvel
+- **AUTH2-03**: OAuth (Google/GitHub) via Supabase Auth providers
+
+### Observability
+
+- **OBS-01**: Painel observability mostrando qual conta está rodando qual agente em tempo real
+- **OBS-02**: Reconciliação periódica de cost vs Anthropic dashboard
+- **OBS-03**: Alertas quando pool de contas está perto de saturar
+
+### Polish Multi-Conta
+
+- **POOL-01**: Heartbeat-aware account selection (não picar conta que acabou de retornar 429)
+- **POOL-02**: Per-dev claim de conta (dev pode "marcar" uma conta para uso pessoal)
+- **POOL-03**: Multi-provider pool (Codex, Cursor, etc além de Claude)
+
+### Storage
+
+- **STOR-01**: Migrar uploads do paperclip para Supabase Storage (atualmente filesystem local)
+- **STOR-02**: Supabase Realtime para broadcast de status de agente substituindo WebSocket interno
+
+### Defesa em Profundidade
+
+- **RLS-01**: RLS defensivo opcional em tabelas sensíveis (`company_secrets`, `cost_events`) para times >10 devs
+- **RLS-02**: Cleanup periódico de `heartbeat_runs` e `activity_log` (TTL configurável)
+
+## Fora do Escopo
+
+| Funcionalidade | Motivo |
+|----------------|--------|
+| Migração para Supabase Auth no v1 | Schemas Better Auth (text id) incompatíveis com `auth.users` (uuid); migração HIGH effort sem ganho v1 |
+| RLS completa no v1 | Sem `auth.uid()` resolúvel (Better Auth ≠ Supabase Auth); GUC custom seria frágil; autorização aplicacional via membership é suficiente |
+| OAuth (Google/GitHub) no v1 | Better Auth email/senha herdado é suficiente para 5+ devs internos |
+| Hospedar instância web pública única | Cada dev roda local; estado compartilhado via Supabase é o único shared state |
+| Supabase isolado por dev | Todos compartilham `bxlczioxgizgvtznukwt` — esse é o ponto |
+| Mobile app | Paperclip é web; mantemos web |
+| Sincronização com upstream paperclip | Fork hard — modificamos livremente sem custo de merge |
+| Pool multi-provider (Codex, Cursor) no v1 | Foco do v1 é Claude Code; pool genérico vira v2 |
+
+## Rastreabilidade
+
+Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
+
+| Requisito | Fase | Status |
+|-----------|------|--------|
+| FORK-01 | Pendente | Pending |
+| FORK-02 | Pendente | Pending |
+| FORK-03 | Pendente | Pending |
+| FORK-04 | Pendente | Pending |
+| FORK-05 | Pendente | Pending |
+| INFRA-01 | Pendente | Pending |
+| INFRA-02 | Pendente | Pending |
+| INFRA-03 | Pendente | Pending |
+| INFRA-04 | Pendente | Pending |
+| INFRA-05 | Pendente | Pending |
+| INFRA-06 | Pendente | Pending |
+| DB-01 | Pendente | Pending |
+| DB-02 | Pendente | Pending |
+| DB-03 | Pendente | Pending |
+| DB-04 | Pendente | Pending |
+| DB-05 | Pendente | Pending |
+| AUTH-01 | Pendente | Pending |
+| AUTH-02 | Pendente | Pending |
+| AUTH-03 | Pendente | Pending |
+| AUTH-04 | Pendente | Pending |
+| AUTH-05 | Pendente | Pending |
+| TEAM-01 | Pendente | Pending |
+| TEAM-02 | Pendente | Pending |
+| TEAM-03 | Pendente | Pending |
+| TEAM-04 | Pendente | Pending |
+| TEAM-05 | Pendente | Pending |
+| SPIKE-01 | Pendente | Pending |
+| SPIKE-02 | Pendente | Pending |
+| SPIKE-03 | Pendente | Pending |
+| SPIKE-04 | Pendente | Pending |
+| SPIKE-05 | Pendente | Pending |
+| MULTI-01 | Pendente | Pending |
+| MULTI-02 | Pendente | Pending |
+| MULTI-03 | Pendente | Pending |
+| MULTI-04 | Pendente | Pending |
+| MULTI-05 | Pendente | Pending |
+| MULTI-06 | Pendente | Pending |
+| MULTI-07 | Pendente | Pending |
+| MULTI-08 | Pendente | Pending |
+| MULTI-09 | Pendente | Pending |
+| MULTI-10 | Pendente | Pending |
+| MULTI-11 | Pendente | Pending |
+| PROJ-01 | Pendente | Pending |
+| PROJ-02 | Pendente | Pending |
+| PROJ-03 | Pendente | Pending |
+
+**Cobertura:**
+- Requisitos v1: 44 total
+- Mapeados para fases: 0 (preenchido pelo roadmapper)
+- Não mapeados: 44 ⚠️ (rastreabilidade preenchida na criação do roadmap)
+
+---
+*Requisitos definidos: 2026-04-25*
+*Última atualização: 2026-04-25 após definição inicial*
