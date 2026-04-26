@@ -1,0 +1,96 @@
+name: Apply DB Migrations to Supabase
+
+# Único caminho legítimo de `pnpm db:migrate` em ambiente compartilhado (DB-03).
+# Triggered apenas em push para main após PR aprovado. PRs com schema changes
+# requerem review obrigatório (DB-04, ver .github/PULL_REQUEST_TEMPLATE.md).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/db/src/migrations/**'
+      - 'packages/db/src/schema/**'
+      - 'packages/db/drizzle.config.ts'
+  workflow_dispatch: {}  # Manual trigger from Actions UI for emergencies
+
+concurrency:
+  # Apenas uma migration run por vez no Supabase compartilhado.
+  group: db-migrate-supabase
+  cancel-in-progress: false
+
+jobs:
+  apply-migrations:
+    name: Apply pending Drizzle migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Inspect pending migrations (pre-apply table count)
+        env:
+          # Session pooler 5432 — required for DDL (CREATE TYPE, etc.)
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        working-directory: packages/db
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::SUPABASE_DB_URL secret is not configured. Add it via repo Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          node -e "
+            const postgres = require('postgres');
+            const sql = postgres(process.env.SUPABASE_DB_URL, { max: 1, prepare: false });
+            sql\`SELECT count(*)::int AS c FROM information_schema.tables WHERE table_schema='public'\`
+              .then(r => { console.log('public_table_count_before:', r[0].c); return sql.end(); })
+              .catch(e => { console.error('CONNECT FAILED:', e.message); process.exit(2); });
+          "
+
+      - name: Apply migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PAPERCLIP_MIGRATION_AUTO_APPLY: 'true'
+        run: |
+          echo "Applying pending migrations against Supabase (session pooler 5432)..."
+          pnpm db:migrate
+
+      - name: Verify schema state post-apply
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        working-directory: packages/db
+        run: |
+          node -e "
+            const postgres = require('postgres');
+            const sql = postgres(process.env.SUPABASE_DB_URL, { max: 1, prepare: false });
+            Promise.all([
+              sql\`SELECT count(*)::int AS c FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'\`,
+              sql\`SELECT count(*)::int AS c FROM drizzle.__drizzle_migrations\`,
+            ]).then(([t, m]) => {
+              console.log('public_table_count_after:', t[0].c);
+              console.log('drizzle_migrations_count:', m[0].c);
+              if (t[0].c < 30) { console.error('::error::expected >=30 tables; got ' + t[0].c); process.exit(1); }
+              return sql.end();
+            }).catch(e => { console.error('::error::' + e.message); process.exit(2); });
+          "
+
+      - name: Summarize
+        if: success()
+        run: |
+          echo "::notice::Migrations applied successfully to Supabase project bxlczioxgizgvtznukwt"
