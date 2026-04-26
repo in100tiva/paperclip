@@ -1,0 +1,2 @@
+ALTER TABLE "claude_accounts" ADD COLUMN "scope" text DEFAULT 'company' NOT NULL;--> statement-breakpoint
+ALTER TABLE "companies" ADD COLUMN "claude_account_pool_mode" text DEFAULT 'per_company' NOT NULL;

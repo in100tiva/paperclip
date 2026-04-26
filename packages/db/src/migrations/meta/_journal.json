@@ -505,6 +505,13 @@
       "when": 1777184581867,
       "tag": "0071_lively_azazel",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1777193405590,
+      "tag": "0072_clumsy_leader",
+      "breakpoints": true
     }
   ]
 }
