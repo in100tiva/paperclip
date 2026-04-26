@@ -116,7 +116,7 @@ Planos:
 - [x] 04-01-PLAN.md — Auditoria taxonomy 429: CLAUDE_429_TAXONOMY.md mapeando 6 tipos contra regex existente em parse.ts (SPIKE-01)
 - [x] 04-02-PLAN.md — Decisão arquitetural detecção: DECISION-DETECTION-STRATEGY.md (reativo primary, pré-emptivo opt, cooldown 30s, retry-after honrado) (SPIKE-03)
 - [ ] 04-03-PLAN.md — Protótipo classifier descartável + 6 fixtures stub + tests vitest standalone (SPIKE-02)
-- [ ] 04-04-PLAN.md — Harness shell scripts (capture-fixture.sh + test-multi-account-resume.sh) para HUMAN-UAT empírico (SPIKE-04 + SPIKE-05 enabling)
+- [x] 04-04-PLAN.md — Harness shell scripts (capture-fixture.sh + test-multi-account-resume.sh) para HUMAN-UAT empírico (SPIKE-04 + SPIKE-05 enabling)
 - [ ] 04-05-PLAN.md — Consolidação: 04-HUMAN-UAT.md (UAT-04-01..03) + FINDINGS-FOR-PHASE-5.md (SPIKE-04 + SPIKE-05)
 
 ### Phase 5: Multi-Account Claude Code Swap (Implementação)
