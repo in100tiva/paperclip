@@ -4,6 +4,8 @@ export interface ActivityEvent {
   actorType: "agent" | "user" | "system" | "plugin";
   actorId: string;
   action: string;
+  actionKey?: string | null;
+  paramsJson?: Record<string, unknown> | null;
   entityType: string;
   entityId: string;
   agentId: string | null;

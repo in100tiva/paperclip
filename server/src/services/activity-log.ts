@@ -82,6 +82,8 @@ export interface LogActivityInput {
   actorType: "agent" | "user" | "system" | "plugin";
   actorId: string;
   action: string;
+  actionKey?: string | null;
+  paramsJson?: Record<string, unknown> | null;
   entityType: string;
   entityId: string;
   agentId?: string | null;
@@ -102,11 +104,13 @@ export async function logActivity(db: Db, input: LogActivityInput) {
     actorType: input.actorType,
     actorId: input.actorId,
     action: input.action,
+    actionKey: input.actionKey ?? null,
     entityType: input.entityType,
     entityId: input.entityId,
     agentId: input.agentId ?? null,
     runId: input.runId ?? null,
     details: redactedDetails,
+    paramsJson: input.paramsJson ?? null,
   });
 
   publishLiveEvent({
@@ -116,6 +120,8 @@ export async function logActivity(db: Db, input: LogActivityInput) {
       actorType: input.actorType,
       actorId: input.actorId,
       action: input.action,
+      actionKey: input.actionKey ?? null,
+      paramsJson: input.paramsJson ?? null,
       entityType: input.entityType,
       entityId: input.entityId,
       agentId: input.agentId ?? null,
