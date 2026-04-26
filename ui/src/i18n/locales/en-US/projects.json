@@ -1,1 +1,171 @@
-{}
+{
+  "title": "Projects",
+  "default-name": "Project",
+  "actions": {
+    "add": "Add project",
+    "create": "Create project",
+    "creating": "Creating…",
+    "create-failed": "Failed to create project.",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "archive-project": "Archive project",
+    "unarchive-project": "Unarchive project",
+    "archiving": "Archiving…",
+    "unarchiving": "Unarchiving…",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "confirm-archive": "Archive \"{{ name }}\"?",
+    "confirm-unarchive": "Unarchive \"{{ name }}\"?",
+    "save": "Save",
+    "change-repo": "Change repo",
+    "set-repo": "Set repo",
+    "change-local-folder": "Change local folder",
+    "set-local-folder": "Set local folder"
+  },
+  "status": {
+    "backlog": "Backlog",
+    "planned": "Planned",
+    "in-progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "tabs": {
+    "issues": "Issues",
+    "overview": "Overview",
+    "workspaces": "Workspaces",
+    "configuration": "Configuration",
+    "budget": "Budget"
+  },
+  "labels": {
+    "name": "Name",
+    "description": "Description",
+    "status": "Status",
+    "lead": "Lead",
+    "goals": "Goals",
+    "env": "Env",
+    "created": "Created",
+    "updated": "Updated",
+    "target-date": "Target Date",
+    "codebase": "Codebase",
+    "repo": "Repo",
+    "local-folder": "Local folder",
+    "execution-workspaces": "Execution Workspaces",
+    "danger-zone": "Danger Zone",
+    "branch": "Branch",
+    "path": "Path",
+    "service": "Service",
+    "linked-issues": "Linked issues"
+  },
+  "save-state": {
+    "saving": "Saving",
+    "saved": "Saved",
+    "failed": "Failed"
+  },
+  "new-project": {
+    "title": "New project",
+    "name-placeholder": "Project name",
+    "description-placeholder": "Add description...",
+    "repo-url-label": "Repo URL",
+    "repo-url-placeholder": "https://github.com/org/repo",
+    "local-folder-label": "Local folder",
+    "local-folder-placeholder": "/absolute/path/to/workspace",
+    "optional": "optional",
+    "tooltip-repo": "Link a GitHub repository so agents can clone, read, and push code for this project.",
+    "tooltip-local-folder": "Set an absolute path on this machine where local agents will read and write files for this project.",
+    "goal": "Goal",
+    "goal-add": "+ Goal",
+    "goal-none": "No goal",
+    "goal-all-selected": "All goals already selected.",
+    "goal-all-linked": "All goals linked.",
+    "goal-remove-aria": "Remove goal {{ title }}",
+    "target-date-placeholder": "Target date",
+    "validation-local-absolute": "Local folder must be a full absolute path.",
+    "validation-repo-url": "Repo must use a valid GitHub or GitHub Enterprise repo URL."
+  },
+  "empty-state": {
+    "no-projects": "No projects yet.",
+    "select-company": "Select a company to view projects.",
+    "no-description": "No description",
+    "add-description": "Add a description...",
+    "no-non-default-workspaces": "No non-default workspace activity yet.",
+    "not-set": "Not set."
+  },
+  "loading": {
+    "workspaces": "Loading workspaces...",
+    "loading-projects": "Loading projects..."
+  },
+  "errors": {
+    "no-company-selected": "No company selected",
+    "select-company-secrets": "Select a company to create secrets",
+    "load-failed": "Failed to load projects."
+  },
+  "toast": {
+    "archived": "\"{{ name }}\" has been archived",
+    "unarchived": "\"{{ name }}\" has been unarchived",
+    "archive-failed": "Failed to archive project",
+    "unarchive-failed": "Failed to unarchive project"
+  },
+  "paused-by-budget": "Paused by budget hard stop",
+  "color-picker": {
+    "change-aria": "Change project color",
+    "select-aria": "Select color {{ color }}"
+  },
+  "archive": {
+    "archive-message": "Archive this project to hide it from the sidebar and project selectors.",
+    "unarchive-message": "Unarchive this project to restore it in the sidebar and project selectors."
+  },
+  "codebase": {
+    "tooltip": "Repo identifies the source of truth. Local folder is the default place agents write code.",
+    "help-aria": "Codebase help",
+    "managed-folder": "Paperclip-managed folder.",
+    "additional-legacy": "Additional legacy workspace records exist on this project. Paperclip is using the primary workspace as the codebase view.",
+    "clear-repo-aria": "Clear repo",
+    "clear-local-aria": "Clear local folder",
+    "confirm-clear-local-with-repo": "Clear local folder from this workspace?",
+    "confirm-delete-local": "Delete this workspace local folder?",
+    "confirm-clear-repo-with-local": "Clear repo from this workspace?",
+    "confirm-delete-repo": "Delete this workspace repo?",
+    "save-failed": "Failed to save workspace.",
+    "delete-failed": "Failed to delete workspace.",
+    "update-failed": "Failed to update workspace."
+  },
+  "execution-workspaces": {
+    "tooltip": "Project-owned defaults for isolated issue checkouts and execution workspace behavior.",
+    "help-aria": "Execution workspaces help",
+    "enable-isolated": "Enable isolated issue checkouts",
+    "enable-isolated-description": "Let issues choose between the project's primary checkout and an isolated execution workspace.",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "default-isolated": "New issues default to isolated checkout",
+    "default-isolated-description": "If disabled, new issues stay on the project's primary checkout unless someone opts in.",
+    "advanced-show": "Show advanced checkout settings",
+    "advanced-hide": "Hide advanced checkout settings",
+    "host-managed-impl": "Host-managed implementation:",
+    "git-worktree": "Git worktree",
+    "environment": "Environment",
+    "no-environment": "No environment",
+    "base-ref": "Base ref",
+    "branch-template": "Branch template",
+    "worktree-parent-dir": "Worktree parent dir",
+    "provision-command": "Provision command",
+    "teardown-command": "Teardown command",
+    "advanced-footnote": "Provision runs inside the derived worktree before agent execution. Teardown is stored here for future cleanup flows."
+  },
+  "env-footnote": "Applied to all runs for issues in this project. Project values override agent env on key conflicts.",
+  "workspaces-tab": {
+    "kind-execution": "Execution workspace",
+    "kind-project": "Project workspace",
+    "updated": "Updated {{ when }}",
+    "services-count": "{{ running }}/{{ total }} services",
+    "stop-services": "Stop services",
+    "start-services": "Start services",
+    "close-workspace": "Close workspace",
+    "retry-close": "Retry close",
+    "branch-copied": "Branch copied",
+    "path-copied": "Path copied",
+    "copy-branch-aria": "Copy branch",
+    "copy-path-aria": "Copy path",
+    "more-suffix": "+{{ count }} more",
+    "cleanup-attention": "Cleanup attention needed"
+  }
+}

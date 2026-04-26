@@ -1,1 +1,171 @@
-{}
+{
+  "title": "Projetos",
+  "default-name": "Projeto",
+  "actions": {
+    "add": "Adicionar projeto",
+    "create": "Criar projeto",
+    "creating": "Criando…",
+    "create-failed": "Falha ao criar projeto.",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
+    "archive-project": "Arquivar projeto",
+    "unarchive-project": "Desarquivar projeto",
+    "archiving": "Arquivando…",
+    "unarchiving": "Desarquivando…",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "confirm-archive": "Arquivar \"{{ name }}\"?",
+    "confirm-unarchive": "Desarquivar \"{{ name }}\"?",
+    "save": "Salvar",
+    "change-repo": "Alterar repositório",
+    "set-repo": "Definir repositório",
+    "change-local-folder": "Alterar pasta local",
+    "set-local-folder": "Definir pasta local"
+  },
+  "status": {
+    "backlog": "Backlog",
+    "planned": "Planejado",
+    "in-progress": "Em andamento",
+    "completed": "Concluído",
+    "cancelled": "Cancelado"
+  },
+  "tabs": {
+    "issues": "Tarefas",
+    "overview": "Visão geral",
+    "workspaces": "Workspaces",
+    "configuration": "Configuração",
+    "budget": "Orçamento"
+  },
+  "labels": {
+    "name": "Nome",
+    "description": "Descrição",
+    "status": "Status",
+    "lead": "Líder",
+    "goals": "Metas",
+    "env": "Env",
+    "created": "Criado",
+    "updated": "Atualizado",
+    "target-date": "Data alvo",
+    "codebase": "Código-fonte",
+    "repo": "Repositório",
+    "local-folder": "Pasta local",
+    "execution-workspaces": "Workspaces de execução",
+    "danger-zone": "Zona de perigo",
+    "branch": "Branch",
+    "path": "Caminho",
+    "service": "Serviço",
+    "linked-issues": "Tarefas vinculadas"
+  },
+  "save-state": {
+    "saving": "Salvando",
+    "saved": "Salvo",
+    "failed": "Falhou"
+  },
+  "new-project": {
+    "title": "Novo projeto",
+    "name-placeholder": "Nome do projeto",
+    "description-placeholder": "Adicionar descrição…",
+    "repo-url-label": "URL do repositório",
+    "repo-url-placeholder": "https://github.com/org/repo",
+    "local-folder-label": "Pasta local",
+    "local-folder-placeholder": "/caminho/absoluto/para/workspace",
+    "optional": "opcional",
+    "tooltip-repo": "Vincule um repositório GitHub para que agentes possam clonar, ler e fazer push de código deste projeto.",
+    "tooltip-local-folder": "Defina um caminho absoluto nesta máquina onde agentes locais lerão e escreverão arquivos.",
+    "goal": "Meta",
+    "goal-add": "+ Meta",
+    "goal-none": "Sem meta",
+    "goal-all-selected": "Todas as metas já selecionadas.",
+    "goal-all-linked": "Todas as metas vinculadas.",
+    "goal-remove-aria": "Remover meta {{ title }}",
+    "target-date-placeholder": "Data alvo",
+    "validation-local-absolute": "A pasta local deve ser um caminho absoluto completo.",
+    "validation-repo-url": "O repositório deve usar uma URL válida do GitHub ou GitHub Enterprise."
+  },
+  "empty-state": {
+    "no-projects": "Nenhum projeto ainda.",
+    "select-company": "Selecione uma empresa para ver projetos.",
+    "no-description": "Sem descrição",
+    "add-description": "Adicionar descrição…",
+    "no-non-default-workspaces": "Sem atividade em workspaces não padrão ainda.",
+    "not-set": "Não definido."
+  },
+  "loading": {
+    "workspaces": "Carregando workspaces…",
+    "loading-projects": "Carregando projetos…"
+  },
+  "errors": {
+    "no-company-selected": "Nenhuma empresa selecionada",
+    "select-company-secrets": "Selecione uma empresa para criar segredos",
+    "load-failed": "Falha ao carregar projetos."
+  },
+  "toast": {
+    "archived": "\"{{ name }}\" foi arquivado",
+    "unarchived": "\"{{ name }}\" foi desarquivado",
+    "archive-failed": "Falha ao arquivar projeto",
+    "unarchive-failed": "Falha ao desarquivar projeto"
+  },
+  "paused-by-budget": "Pausado por limite de orçamento",
+  "color-picker": {
+    "change-aria": "Alterar cor do projeto",
+    "select-aria": "Selecionar cor {{ color }}"
+  },
+  "archive": {
+    "archive-message": "Arquive este projeto para ocultá-lo da barra lateral e dos seletores.",
+    "unarchive-message": "Desarquive este projeto para restaurá-lo na barra lateral e nos seletores."
+  },
+  "codebase": {
+    "tooltip": "O repositório identifica a fonte de verdade. A pasta local é o lugar padrão onde os agentes escrevem código.",
+    "help-aria": "Ajuda do código-fonte",
+    "managed-folder": "Pasta gerenciada pelo Paperclip.",
+    "additional-legacy": "Existem registros adicionais de workspace legado neste projeto. O Paperclip está usando o workspace primário como visão do código-fonte.",
+    "clear-repo-aria": "Limpar repositório",
+    "clear-local-aria": "Limpar pasta local",
+    "confirm-clear-local-with-repo": "Limpar a pasta local deste workspace?",
+    "confirm-delete-local": "Excluir a pasta local deste workspace?",
+    "confirm-clear-repo-with-local": "Limpar o repositório deste workspace?",
+    "confirm-delete-repo": "Excluir o repositório deste workspace?",
+    "save-failed": "Falha ao salvar workspace.",
+    "delete-failed": "Falha ao excluir workspace.",
+    "update-failed": "Falha ao atualizar workspace."
+  },
+  "execution-workspaces": {
+    "tooltip": "Padrões do projeto para checkouts isolados de tarefas e comportamento dos workspaces de execução.",
+    "help-aria": "Ajuda dos workspaces de execução",
+    "enable-isolated": "Habilitar checkouts isolados de tarefas",
+    "enable-isolated-description": "Permita que tarefas escolham entre o checkout primário do projeto e um workspace de execução isolado.",
+    "enabled": "Habilitado",
+    "disabled": "Desabilitado",
+    "default-isolated": "Novas tarefas usam checkout isolado por padrão",
+    "default-isolated-description": "Se desativado, novas tarefas permanecem no checkout primário do projeto, a menos que alguém opte por isolar.",
+    "advanced-show": "Mostrar configurações avançadas de checkout",
+    "advanced-hide": "Ocultar configurações avançadas de checkout",
+    "host-managed-impl": "Implementação gerenciada pelo host:",
+    "git-worktree": "Git worktree",
+    "environment": "Ambiente",
+    "no-environment": "Sem ambiente",
+    "base-ref": "Ref base",
+    "branch-template": "Template de branch",
+    "worktree-parent-dir": "Diretório pai do worktree",
+    "provision-command": "Comando de provisionamento",
+    "teardown-command": "Comando de teardown",
+    "advanced-footnote": "O provisionamento roda dentro do worktree derivado antes da execução do agente. O teardown é guardado aqui para fluxos futuros de limpeza."
+  },
+  "env-footnote": "Aplicado a todas as execuções de tarefas neste projeto. Valores do projeto sobrescrevem env do agente em conflitos de chave.",
+  "workspaces-tab": {
+    "kind-execution": "Workspace de execução",
+    "kind-project": "Workspace do projeto",
+    "updated": "Atualizado {{ when }}",
+    "services-count": "{{ running }}/{{ total }} serviços",
+    "stop-services": "Parar serviços",
+    "start-services": "Iniciar serviços",
+    "close-workspace": "Fechar workspace",
+    "retry-close": "Tentar fechar novamente",
+    "branch-copied": "Branch copiada",
+    "path-copied": "Caminho copiado",
+    "copy-branch-aria": "Copiar branch",
+    "copy-path-aria": "Copiar caminho",
+    "more-suffix": "+{{ count }} mais",
+    "cleanup-attention": "Atenção necessária na limpeza"
+  }
+}
