@@ -241,6 +241,17 @@ async function buildClaudeRuntimeConfig(input: ClaudeExecutionInput): Promise<Cl
     if (typeof value === "string") env[key] = value;
   }
 
+  // MULTI-05 (Phase 5): explicit config field for Claude account credential dir.
+  // Precedence: config.claudeConfigDir > config.env.CLAUDE_CONFIG_DIR > process.env.CLAUDE_CONFIG_DIR
+  // (the last one is propagated via includeRuntimeKeys below for logging visibility, but the spawn
+  // env now honors a dedicated field so callers — heartbeat in 05-06 — can inject per-account
+  // isolation via selectActiveAccount(agent) → resolveCredentialDir without mutating process.env.
+  // See: server/src/services/claude-accounts.ts and FINDINGS-FOR-PHASE-5.md Finding 2.
+  const claudeConfigDir = asString(config.claudeConfigDir, "");
+  if (claudeConfigDir) {
+    env.CLAUDE_CONFIG_DIR = claudeConfigDir;
+  }
+
   if (!hasExplicitApiKey && authToken) {
     env.PAPERCLIP_API_KEY = authToken;
   }
