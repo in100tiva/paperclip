@@ -836,4 +836,118 @@ describe("claude execute", () => {
       await fs.rm(root, { recursive: true, force: true });
     }
   });
+
+  // MULTI-05 (Phase 5): config.claudeConfigDir wiring
+  // Confirms that the caller (heartbeat in 05-06) can inject per-account credential dir
+  // via dedicated config field, without mutating process.env.CLAUDE_CONFIG_DIR.
+  //
+  // Implementation note: we observe the wired env via the adapter's onMeta callback
+  // (loggedEnv contains the spawn env BEFORE the child process actually starts), which
+  // is platform-agnostic. We use process.execPath + a JS script wrapper as the spawned
+  // command to avoid shell shebangs that don't resolve on Windows. We don't assert on
+  // result.exitCode because the script we point to is intentionally minimal — the wiring
+  // is fully captured at the onMeta phase (env has already been built by buildClaudeRuntimeConfig
+  // at that point).
+  describe("MULTI-05 — claudeConfigDir wiring", () => {
+    async function runExecuteCapturingMeta(opts: {
+      runId: string;
+      workspace: string;
+      configOverrides: Record<string, unknown>;
+    }): Promise<{ loggedEnv: Record<string, string> }> {
+      let capturedEnv: Record<string, string> = {};
+      try {
+        await execute({
+          runId: opts.runId,
+          agent: { id: "agent-1", companyId: "co-1", name: "Test", adapterType: "claude_local", adapterConfig: {} },
+          runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+          config: {
+            command: process.execPath, // node binary (cross-platform; bypasses shebang resolution)
+            cwd: opts.workspace,
+            promptTemplate: "Do work.",
+            ...opts.configOverrides,
+          },
+          context: {},
+          authToken: "tok",
+          onLog: async () => {},
+          onMeta: async (meta) => {
+            capturedEnv = meta.env ?? {};
+          },
+        });
+      } catch {
+        // Spawn may fail (we point at node with no script); we only care about onMeta.
+      }
+      return { loggedEnv: capturedEnv };
+    }
+
+    it("sets env.CLAUDE_CONFIG_DIR when config.claudeConfigDir is provided", async () => {
+      const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-claude-multi05-a-"));
+      const workspace = path.join(root, "workspace");
+      const accountDir = path.join(root, "account-a");
+      await fs.mkdir(workspace, { recursive: true });
+      await fs.mkdir(accountDir, { recursive: true });
+      const previousClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
+      // Mutate host env to prove dedicated config field wins over process.env.
+      process.env.CLAUDE_CONFIG_DIR = path.join(root, "host-env-should-be-overridden");
+      try {
+        const { loggedEnv } = await runExecuteCapturingMeta({
+          runId: "run-multi05-a",
+          workspace,
+          configOverrides: { claudeConfigDir: accountDir },
+        });
+        expect(loggedEnv.CLAUDE_CONFIG_DIR).toBe(accountDir);
+      } finally {
+        if (previousClaudeConfigDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
+        else process.env.CLAUDE_CONFIG_DIR = previousClaudeConfigDir;
+        await fs.rm(root, { recursive: true, force: true });
+      }
+    });
+
+    it("config.claudeConfigDir takes precedence over config.env.CLAUDE_CONFIG_DIR", async () => {
+      const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-claude-multi05-b-"));
+      const workspace = path.join(root, "workspace");
+      const dedicatedDir = path.join(root, "dedicated");
+      const legacyDir = path.join(root, "legacy");
+      await fs.mkdir(workspace, { recursive: true });
+      await fs.mkdir(dedicatedDir, { recursive: true });
+      await fs.mkdir(legacyDir, { recursive: true });
+      try {
+        const { loggedEnv } = await runExecuteCapturingMeta({
+          runId: "run-multi05-b",
+          workspace,
+          configOverrides: {
+            claudeConfigDir: dedicatedDir,
+            env: { CLAUDE_CONFIG_DIR: legacyDir },
+          },
+        });
+        expect(loggedEnv.CLAUDE_CONFIG_DIR).toBe(dedicatedDir);
+      } finally {
+        await fs.rm(root, { recursive: true, force: true });
+      }
+    });
+
+    it("does not set env.CLAUDE_CONFIG_DIR from adapter when config.claudeConfigDir is absent (host process.env still propagates via runtime keys logging)", async () => {
+      const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-claude-multi05-c-"));
+      const workspace = path.join(root, "workspace");
+      const hostDir = path.join(root, "host-claude-config");
+      await fs.mkdir(workspace, { recursive: true });
+      await fs.mkdir(hostDir, { recursive: true });
+      const previousClaudeConfigDir = process.env.CLAUDE_CONFIG_DIR;
+      process.env.CLAUDE_CONFIG_DIR = hostDir;
+      try {
+        const { loggedEnv } = await runExecuteCapturingMeta({
+          runId: "run-multi05-c",
+          workspace,
+          configOverrides: {},
+        });
+        // includeRuntimeKeys propagates host CLAUDE_CONFIG_DIR for visibility/logging,
+        // and absent dedicated field means the host env value wins (existing behavior
+        // preserved by Finding 2 of Phase 4 spike).
+        expect(loggedEnv.CLAUDE_CONFIG_DIR).toBe(hostDir);
+      } finally {
+        if (previousClaudeConfigDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
+        else process.env.CLAUDE_CONFIG_DIR = previousClaudeConfigDir;
+        await fs.rm(root, { recursive: true, force: true });
+      }
+    });
+  });
 });
