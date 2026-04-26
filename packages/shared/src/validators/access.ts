@@ -169,11 +169,15 @@ const profileImageSchema = z
   .max(4000)
   .refine(isValidProfileImage, { message: "Invalid profile image URL" });
 
+export const localeSchema = z.enum(["pt-BR", "en-US"]);
+export type Locale = z.infer<typeof localeSchema>;
+
 export const currentUserProfileSchema = z.object({
   id: z.string().min(1),
   email: z.string().email().nullable(),
   name: z.string().min(1).max(120).nullable(),
   image: profileImageSchema.nullable(),
+  locale: localeSchema,
 });
 
 export type CurrentUserProfile = z.infer<typeof currentUserProfileSchema>;
@@ -188,12 +192,18 @@ export const authSessionSchema = z.object({
 
 export type AuthSession = z.infer<typeof authSessionSchema>;
 
-export const updateCurrentUserProfileSchema = z.object({
-  name: z.string().trim().min(1).max(120),
-  image: z
-    .union([profileImageSchema, z.literal(""), z.null()])
-    .optional()
-    .transform((value) => value === "" ? null : value),
-});
+export const updateCurrentUserProfileSchema = z
+  .object({
+    name: z.string().trim().min(1).max(120).optional(),
+    image: z
+      .union([profileImageSchema, z.literal(""), z.null()])
+      .optional()
+      .transform((value) => value === "" ? null : value),
+    locale: localeSchema.optional(),
+  })
+  .refine(
+    (data) => data.name !== undefined || data.image !== undefined || data.locale !== undefined,
+    { message: "At least one field (name, image, or locale) must be provided" },
+  );
 
 export type UpdateCurrentUserProfile = z.infer<typeof updateCurrentUserProfileSchema>;
