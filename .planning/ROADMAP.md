@@ -40,7 +40,14 @@ Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência 
 4. Build/CI sinaliza (warn ou erro) quando o código usa uma chave de tradução que não existe nos dicionários — chaves órfãs detectáveis antes de ir para produção.
 5. Locale do usuário está disponível no contexto do servidor (acessível em rotas API, SSR e templates de activity log) — não apenas no cliente.
 
-**Plans**: TBD
+**Plans**: 5 plans across 3 waves
+
+Plans:
+- [ ] 07-01-PLAN.md — Wave 0 (RED): 16 bootstrap JSON dicts + 5 failing test files anchoring SETTINGS-01..04 + I18N-01..05
+- [ ] 07-02-PLAN.md — Wave 1: DB migration 0073_add_user_locale.sql + Better Auth additionalFields.locale + Zod localeSchema/refine
+- [ ] 07-03-PLAN.md — Wave 1: i18next + react-i18next install; ui/src/i18n/{index,resources,i18next.d}.ts; init+missing-keys tests GREEN
+- [ ] 07-04-PLAN.md — Wave 2: server actorMiddleware sets req.locale (3-tier fallback); PATCH /api/auth/profile accepts locale; server tests GREEN
+- [ ] 07-05-PLAN.md — Wave 2: I18nextProvider in main.tsx + ProfileSettings Language toggle (optimistic, await changeLanguage before setQueryData) + UAT-07-01/02 checkpoint
 
 ### Phase 8: Tradução UI Core
 
@@ -120,7 +127,7 @@ Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência 
 
 | Fase | Planos Completos | Status | Concluída em |
 |------|------------------|--------|--------------|
-| 7. Foundation i18n + Toggle de Settings | 0/0 | Não iniciada | - |
+| 7. Foundation i18n + Toggle de Settings | 0/5 | Planejada | - |
 | 8. Tradução UI Core | 0/0 | Não iniciada | - |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/0 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 0/0 | Não iniciada | - |
