@@ -2,10 +2,10 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: defining-requirements
-last_updated: "2026-04-26T12:00:00.000Z"
+status: phase-pending
+last_updated: "2026-04-26T13:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -22,10 +22,10 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
 
 ## Posição Atual
 
-Fase: Não iniciada (definindo requisitos)
-Plano: —
-Status: Definindo requisitos do milestone v1.1 — Internacionalização pt-BR
-Última atividade: 2026-04-26 — Milestone v1.1 iniciado via /novo-marco. Escopo: toggle pt-BR/en-US em settings, infra i18n, UI completa, mensagens de agentes e skills/system prompts traduzidos.
+Fase: 7 de 11 (Foundation i18n + Toggle de Settings) — **PENDING**
+Plano: — (aguardando /planejar-fase 7)
+Status: Roadmap v1.1 criado (5 fases 7-11, 26/26 requisitos mapeados, zero órfãos). Fase 7 destravada como entry point — schema de preferência de idioma, toggle UI em instance/settings, biblioteca i18n com namespaces, dicionários pt-BR/en-US, fallback en-US e detector de chaves ausentes. Sem essa fundação as fases seguintes (UI tradução, mensagens de agente, system prompts) não têm onde renderizar nem por onde propagar locale.
+Última atividade: 2026-04-26 — Roadmap v1.1 escrito por /roadmap. Continuação de numeração (v1.0 fechou em Fase 6 → v1.1 começa em Fase 7). 5 fases derivadas dos 26 requisitos das 5 categorias SETTINGS/I18N/UI/AGENT-MSG/AGENT-SKILL: Fase 7 Foundation (9 reqs SETTINGS-01..04 + I18N-01..05), Fase 8 UI Core (5 reqs UI-01/02/03/05/09), Fase 9 UI Admin+Auth+Sistêmicas (4 reqs UI-04/06/07/08), Fase 10 Mensagens dos Agentes (4 reqs AGENT-MSG-01..04), Fase 11 Skills+System Prompts (4 reqs AGENT-SKILL-01..04). Ordem ditada por dependência técnica: infra i18n + persistence antes de tradução UI; UI antes de mensagens de agente; system prompts/skills por último (precisam da preference já propagada user → agent context → spawn). Próxima ação: /planejar-fase 7.
 
 Fase anterior: 6 de 6 (Multi-Projeto + Polish — milestone v1.0 final) — **COMPLETE**
 Plano: 6/6 — todas waves Phase 6 concluídas. Plano 06-06 (V1-READINESS.md + REQUIREMENTS.md closure) entregue.
@@ -138,7 +138,9 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: **Milestone v1.0 (Fork + Multi-Account) DECLARED READY.** Plano 06-06 completo (V1-READINESS.md 275 linhas + REQUIREMENTS.md closure 45/45 zero Pending). Phase 6 fechada como `complete-with-pending-UAT` (precedente Phase 3/4/5). 7 UATs registradas como itens de validação humana contínua não-bloqueantes. Próxima ação: `/auditar-marco` (autonomous lifecycle) ou execução pontual das UATs pendentes pelo operador humano conforme acesso a recursos físicos (2 máquinas para UAT-03-01, 5+ devs reais para UAT-03-02, 2 contas Claude reais para UAT-04-02/03 + UAT-05-01, 2 browsers/profiles para UAT-06-01). v2 backlog priorizado por sinal real de uso (5 categorias × 13 itens em REQUIREMENTS.md §"Requisitos v2"); criar Phase 7 quando 2-3 itens acumularem demanda concreta.
+Parou em: **Milestone v1.1 (Internacionalização pt-BR) iniciado e roadmap criado.** ROADMAP.md escrito com 5 fases (7-11) cobrindo 26/26 requisitos sem órfãos. REQUIREMENTS.md atualizado com tabela de Rastreabilidade preenchida (SETTINGS/I18N → Fase 7; UI core → Fase 8; UI admin/auth/sistêmicas → Fase 9; AGENT-MSG → Fase 10; AGENT-SKILL → Fase 11; status Pending). Próxima ação: /planejar-fase 7 para decompor Foundation i18n + Toggle de Settings em planos executáveis. Ordem das fases: 7 (foundation) → 8 (UI core) → 9 (UI admin+auth+sistêmicas) → 10 (agent messages) → 11 (agent skills + system prompts).
+
+Parou anteriormente em: **Milestone v1.0 (Fork + Multi-Account) DECLARED READY.** Plano 06-06 completo (V1-READINESS.md 275 linhas + REQUIREMENTS.md closure 45/45 zero Pending). Phase 6 fechada como `complete-with-pending-UAT` (precedente Phase 3/4/5). 7 UATs registradas como itens de validação humana contínua não-bloqueantes. Próxima ação: `/auditar-marco` (autonomous lifecycle) ou execução pontual das UATs pendentes pelo operador humano conforme acesso a recursos físicos (2 máquinas para UAT-03-01, 5+ devs reais para UAT-03-02, 2 contas Claude reais para UAT-04-02/03 + UAT-05-01, 2 browsers/profiles para UAT-06-01). v2 backlog priorizado por sinal real de uso (5 categorias × 13 itens em REQUIREMENTS.md §"Requisitos v2"); criar Phase 7 quando 2-3 itens acumularem demanda concreta.
 
 Parou anteriormente em: 06-05 completo (MULTI-COMPANY-SMOKE.md + 06-HUMAN-UAT.md); PROJ-01 satisfeita como artefato testável (Modo A SQL) + UAT-06-01 pending (Modo B visual cross-browser).
 

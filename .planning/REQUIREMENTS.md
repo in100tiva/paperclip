@@ -84,38 +84,45 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| SETTINGS-01 | TBD | Pending |
-| SETTINGS-02 | TBD | Pending |
-| SETTINGS-03 | TBD | Pending |
-| SETTINGS-04 | TBD | Pending |
-| I18N-01 | TBD | Pending |
-| I18N-02 | TBD | Pending |
-| I18N-03 | TBD | Pending |
-| I18N-04 | TBD | Pending |
-| I18N-05 | TBD | Pending |
-| UI-01 | TBD | Pending |
-| UI-02 | TBD | Pending |
-| UI-03 | TBD | Pending |
-| UI-04 | TBD | Pending |
-| UI-05 | TBD | Pending |
-| UI-06 | TBD | Pending |
-| UI-07 | TBD | Pending |
-| UI-08 | TBD | Pending |
-| UI-09 | TBD | Pending |
-| AGENT-MSG-01 | TBD | Pending |
-| AGENT-MSG-02 | TBD | Pending |
-| AGENT-MSG-03 | TBD | Pending |
-| AGENT-MSG-04 | TBD | Pending |
-| AGENT-SKILL-01 | TBD | Pending |
-| AGENT-SKILL-02 | TBD | Pending |
-| AGENT-SKILL-03 | TBD | Pending |
-| AGENT-SKILL-04 | TBD | Pending |
+| SETTINGS-01 | Fase 7 | Pending |
+| SETTINGS-02 | Fase 7 | Pending |
+| SETTINGS-03 | Fase 7 | Pending |
+| SETTINGS-04 | Fase 7 | Pending |
+| I18N-01 | Fase 7 | Pending |
+| I18N-02 | Fase 7 | Pending |
+| I18N-03 | Fase 7 | Pending |
+| I18N-04 | Fase 7 | Pending |
+| I18N-05 | Fase 7 | Pending |
+| UI-01 | Fase 8 | Pending |
+| UI-02 | Fase 8 | Pending |
+| UI-03 | Fase 8 | Pending |
+| UI-04 | Fase 9 | Pending |
+| UI-05 | Fase 8 | Pending |
+| UI-06 | Fase 9 | Pending |
+| UI-07 | Fase 9 | Pending |
+| UI-08 | Fase 9 | Pending |
+| UI-09 | Fase 8 | Pending |
+| AGENT-MSG-01 | Fase 10 | Pending |
+| AGENT-MSG-02 | Fase 10 | Pending |
+| AGENT-MSG-03 | Fase 10 | Pending |
+| AGENT-MSG-04 | Fase 10 | Pending |
+| AGENT-SKILL-01 | Fase 11 | Pending |
+| AGENT-SKILL-02 | Fase 11 | Pending |
+| AGENT-SKILL-03 | Fase 11 | Pending |
+| AGENT-SKILL-04 | Fase 11 | Pending |
 
 **Cobertura:**
 - Requisitos v1.1: 26 total
-- Mapeados para fases: 0 (preenchido pelo roadmapper)
-- Não mapeados: 26 ⚠️ (será resolvido pelo roadmap)
+- Mapeados para fases: 26 ✓
+- Não mapeados: 0
+
+**Distribuição por fase:**
+- Fase 7 (Foundation i18n + Toggle): 9 requisitos (SETTINGS-01..04, I18N-01..05)
+- Fase 8 (Tradução UI Core): 5 requisitos (UI-01, UI-02, UI-03, UI-05, UI-09)
+- Fase 9 (Tradução UI Admin + Auth + Sistêmicas): 4 requisitos (UI-04, UI-06, UI-07, UI-08)
+- Fase 10 (Mensagens dos Agentes): 4 requisitos (AGENT-MSG-01..04)
+- Fase 11 (Skills + System Prompts): 4 requisitos (AGENT-SKILL-01..04)
 
 ---
 *Requisitos definidos: 2026-04-26*
-*Última atualização: 2026-04-26 após início do milestone v1.1*
+*Última atualização: 2026-04-26 após criação do roadmap v1.1 (fases 7-11 mapeadas)*
