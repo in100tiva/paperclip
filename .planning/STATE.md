@@ -3,12 +3,12 @@ state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
 status: completed
-last_updated: "2026-04-26T04:15:03.913Z"
+last_updated: "2026-04-26T04:41:07.980Z"
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 13
+  completed_plans: 10
 ---
 
 # Estado do Projeto
@@ -94,6 +94,7 @@ Decisões recentes que afetam o trabalho atual:
 - 02-06: Better Auth rejeita signup sem header `Origin` com 403 `MISSING_OR_NULL_ORIGIN`. Clientes (testes, scripts) precisam enviar `Origin: <server-url>` ou hostname declarado em `BETTER_AUTH_TRUSTED_ORIGINS`. Captured para TEAM-05 (troubleshooting Phase 3).
 - 02-06: Default-company auto-create é gated a `local_trusted` mode (`ensureLocalTrustedBoardPrincipal`); em `authenticated`, signups novos não recebem company default e `GET /api/companies` retorna `[]`. Comportamento correto — onboarding team-shared (invite/board-claim) é responsabilidade da Phase 3 TEAM-01.
 - 02-06: Phase 2 declared complete via human-verify approval; 16/16 requirements satisfeitos (INFRA-01..06, DB-01..05, AUTH-01..05). Multi-dev cross-machine validation deferida para Phase 3 TEAM-04 — infra está pronta, falta só o human flow.
+- 03-03: TROUBLESHOOTING.md pt-br criado (193 linhas, 7 seções) cobrindo Windows NTFS, stale registry, too-many-connections, cookie prefix, schema desatualizado, claude CLI, prepared statement 6543. Anchors GFM alinhados com links do ONBOARDING.md; cada causa em código cita path:linha (D-18). Satisfies TEAM-05.
 
 ### Todos Pendentes
 

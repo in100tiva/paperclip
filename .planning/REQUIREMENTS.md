@@ -46,7 +46,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 - [ ] **TEAM-02**: README de setup local documenta passo-a-passo: clonar, env vars, login, primeiro run
 - [ ] **TEAM-03**: Setup script (`pnpm setup`) valida env vars críticas, conexão Supabase, presença do `claude` CLI, login Better Auth
 - [ ] **TEAM-04**: Smoke test E2E: dev A faz login + cria company; dev B em outra máquina vê a mesma company (estado compartilhado funcional)
-- [ ] **TEAM-05**: Doc de troubleshooting cobre falhas comuns (Windows NTFS, Supabase no limite de conexões, cookie prefix)
+- [x] **TEAM-05**: Doc de troubleshooting cobre falhas comuns (Windows NTFS, Supabase no limite de conexões, cookie prefix)
 
 ### Spike
 
@@ -152,7 +152,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | TEAM-02 | Phase 3 | Pending |
 | TEAM-03 | Phase 3 | Pending |
 | TEAM-04 | Phase 3 | Pending |
-| TEAM-05 | Phase 3 | Pending |
+| TEAM-05 | Phase 3 | Complete |
 | SPIKE-01 | Phase 4 | Pending |
 | SPIKE-02 | Phase 4 | Pending |
 | SPIKE-03 | Phase 4 | Pending |
