@@ -17,6 +17,15 @@
 // Outputs structured JSON to stdout for the SMOKE-TEST-LOG.md to consume.
 
 import { writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
+
+// Resolve `postgres` package via packages/db (where it is a real dep) instead of root.
+// Allows running this script from project root without hoisting `postgres` to root.
+const REPO_ROOT_FOR_REQUIRE = process.env.PAPERCLIP_REPO_ROOT ?? process.cwd();
+const dbRequire = createRequire(`${REPO_ROOT_FOR_REQUIRE}/packages/db/package.json`);
+const postgresEntry = dbRequire.resolve("postgres");
+const importPostgres = async () => (await import(pathToFileURL(postgresEntry).href)).default;
 
 const SERVER_URL = process.env.SERVER_URL ?? "http://localhost:3100";
 const SUPABASE_DB_URL = process.env.SUPABASE_DB_URL ?? process.env.DATABASE_URL;
@@ -55,7 +64,7 @@ async function main() {
   try {
     const r = await fetch(`${SERVER_URL}/api/auth/sign-up/email`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", origin: SERVER_URL },
       body: JSON.stringify(USER_A),
     });
     const body = await r.json().catch(() => ({}));
@@ -74,7 +83,7 @@ async function main() {
 
   // Step 3: Get session with cookie
   try {
-    const r = await fetch(`${SERVER_URL}/api/auth/get-session`, { headers: { cookie: cookieA } });
+    const r = await fetch(`${SERVER_URL}/api/auth/get-session`, { headers: { cookie: cookieA, origin: SERVER_URL } });
     const body = await r.json().catch(() => ({}));
     results.push(log("get-session", r.ok && body?.user?.email === USER_A.email ? "pass" : "fail", {
       status: r.status,
@@ -87,7 +96,7 @@ async function main() {
 
   // Step 4: Authenticated GET /api/companies
   try {
-    const r = await fetch(`${SERVER_URL}/api/companies`, { headers: { cookie: cookieA } });
+    const r = await fetch(`${SERVER_URL}/api/companies`, { headers: { cookie: cookieA, origin: SERVER_URL } });
     const body = await r.json().catch(() => null);
     results.push(log("get-companies", r.ok ? "pass" : "fail", {
       status: r.status,
@@ -100,7 +109,7 @@ async function main() {
 
   // Step 5: Verify user row in Supabase
   try {
-    const postgres = (await import("postgres")).default;
+    const postgres = await importPostgres();
     const sql = postgres(SUPABASE_DB_URL, { max: 1, prepare: false });
     const rows = await sql`SELECT email, name FROM "user" WHERE email = ${USER_A.email}`;
     await sql.end();
@@ -117,7 +126,7 @@ async function main() {
   try {
     const r = await fetch(`${SERVER_URL}/api/auth/sign-up/email`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", origin: SERVER_URL },
       body: JSON.stringify(USER_B),
     });
     cookieB = r.headers.get("set-cookie");
@@ -128,7 +137,7 @@ async function main() {
 
   // Step 7: Both users present in Supabase
   try {
-    const postgres = (await import("postgres")).default;
+    const postgres = await importPostgres();
     const sql = postgres(SUPABASE_DB_URL, { max: 1, prepare: false });
     const rows = await sql`SELECT email FROM "user" WHERE email IN (${USER_A.email}, ${USER_B.email})`;
     await sql.end();
@@ -154,7 +163,8 @@ async function main() {
   };
 
   // Write JSON output for SMOKE-TEST-LOG.md to consume
-  const outPath = ".planning/phases/02-migra-o-de-storage-para-supabase/smoke-test-results.json";
+  const REPO_ROOT = process.env.PAPERCLIP_REPO_ROOT ?? process.cwd();
+  const outPath = `${REPO_ROOT}/.planning/phases/02-migra-o-de-storage-para-supabase/smoke-test-results.json`;
   writeFileSync(outPath, JSON.stringify({ summary, results }, null, 2));
   console.log("\n=== SMOKE TEST RESULT ===");
   console.log(JSON.stringify(summary, null, 2));
