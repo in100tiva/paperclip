@@ -15,13 +15,16 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - ✓ Paperclip clonado e convertido em fork hard (sem upstream) — Fase 1 (SHA `40782f7`)
 - ✓ Identidade reescrita como `ddd`, política de fork documentada (`UPSTREAM_REFERENCE.md`, `CONTRIBUTING.md`) — Fase 1
 - ✓ Smoke test baseline: `pnpm install` + `pnpm dev` rodam em Windows com embedded Postgres — Fase 1
+- ✓ PostgreSQL embedded substituído por Supabase remoto (`bxlczioxgizgvtznukwt`) via Supavisor pooler com `prepare:false` — Fase 2
+- ✓ 71 migrations Drizzle aplicadas em `bxlczioxgizgvtznukwt`; 80 tabelas em `public.*`; auto-migrations no startup desabilitadas; GitHub Actions é o único caminho legítimo de `db:migrate` em merge para main — Fase 2
+- ✓ Better Auth funcional contra Postgres do Supabase com cookie prefix `paperclip-team-shared` — Fase 2 (smoke 7/7 PASS, single-machine)
+- ✓ Pre-commit hook detectando leaks de service-role key (`eyJ...` em arquivos client-side) — Fase 2
+- ✓ Auditoria de acoplamentos Postgres-embedded → Supavisor (LISTEN/NOTIFY, advisory locks, prepared statements, long-lived txs) documentada em `MIGRATION_AUDIT.md` — Fase 2
 
 ### Ativos
 
-- [ ] Substituir PostgreSQL embedded por Supabase remoto compartilhado (projeto `bxlczioxgizgvtznukwt`)
-- [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip
-- [ ] Manter Better Auth (auth atual do paperclip) rodando contra o Supabase Postgres — não trocar para Supabase Auth no v1
-- [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase
+- [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip *(schema aplicado; RLS opcional v1 ainda pendente)*
+- [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra pronta; cross-machine multi-dev valida em Phase 3 TEAM-04)*
 - [ ] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes
 - [ ] Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam
 - [ ] Persistir estado dos agentes no Supabase de forma que a troca de conta não perca progresso
@@ -58,10 +61,11 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 | Decisão | Justificativa | Resultado |
 |---------|---------------|-----------|
 | Fork hard (sem upstream) | Liberdade para customizar profundamente sem custo de merge contínuo | ✓ Boa — Fase 1 confirmou `pnpm dev` funcional pós-corte |
-| Supabase remoto compartilhado | Estado único da equipe, qualquer dev em qualquer máquina vê o mesmo | — Pendente |
-| Local-first + Supabase remoto | Evita custo/complexidade de hospedar instância única; cada dev tem ambiente próprio mas estado central | — Pendente |
-| Manter Better Auth, Supabase só como Postgres | Schemas Better Auth (text id) incompatíveis com `auth.users` (uuid); migração HIGH effort sem ganho v1 | — Pendente |
-| RLS opcional no v1 | Sem `auth.uid()` resolúvel (Better Auth ≠ Supabase Auth); autorização aplicacional via membership por company_id; service-role key no servidor | — Pendente |
+| Supabase remoto compartilhado | Estado único da equipe, qualquer dev em qualquer máquina vê o mesmo | ✓ Validado — Fase 2 (71 migrations aplicadas, smoke 7/7 PASS) |
+| Local-first + Supabase remoto | Evita custo/complexidade de hospedar instância única; cada dev tem ambiente próprio mas estado central | ✓ Validado — Fase 2 |
+| Manter Better Auth, Supabase só como Postgres | Schemas Better Auth (text id) incompatíveis com `auth.users` (uuid); migração HIGH effort sem ganho v1 | ✓ Validado — Fase 2 (cookie `paperclip-team-shared.session_token` empiricamente confirmado) |
+| RLS opcional no v1 | Sem `auth.uid()` resolúvel (Better Auth ≠ Supabase Auth); autorização aplicacional via membership por company_id; service-role key no servidor | — Decisão mantida; RLS não implementado v1 |
+| Supavisor transaction mode (porta 6543) com `prepare:false` | Pooler do Supabase desabilita prepared statements em txn mode; código herdado tinha 1 prepared statement (auditoria F.1) que precisa de adaptação | ✓ Implementado — Fase 2 |
 
 ## Evolução
 
@@ -81,4 +85,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 1 completion*
+*Last updated: 2026-04-26 after Phase 2 completion*
