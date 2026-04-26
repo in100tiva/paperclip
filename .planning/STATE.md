@@ -1,3 +1,7 @@
+---
+milestone: v1.0
+---
+
 # Estado do Projeto
 
 ## Referência do Projeto
