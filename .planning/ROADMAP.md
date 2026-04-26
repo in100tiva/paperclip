@@ -17,7 +17,7 @@ Traduzir toda a experiência do paperclip para português do Brasil, com toggle 
 
 Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência histórica do milestone v1.0.
 
-- [ ] **Phase 7: Foundation i18n + Toggle de Settings** — Schema de preferência de idioma, API de update, toggle UI em settings, biblioteca i18n integrada, dicionários pt-BR/en-US, fallback e detector de chaves ausentes
+- [x] **Phase 7: Foundation i18n + Toggle de Settings** — Schema de preferência de idioma, API de update, toggle UI em settings, biblioteca i18n integrada, dicionários pt-BR/en-US, fallback e detector de chaves ausentes (`complete-with-pending-UAT` — UAT-07-01/02 deferred)
 - [ ] **Phase 8: Tradução UI Core** — Inbox, projects, settings, navegação/sidebar/header e activity log renderizados em pt-BR
 - [ ] **Phase 9: Tradução UI Admin + Auth + Mensagens Sistêmicas** — Telas admin/company, auth (login/signup/reset/invite), formulários, erros, validações, tooltips, modais e toasts traduzidos
 - [ ] **Phase 10: Mensagens dos Agentes ao Usuário** — Status messages, summaries/relatórios, prompts UI de painéis de agente, notificações e toasts de eventos de agente em pt-BR
@@ -47,7 +47,7 @@ Plans:
 - [x] 07-02-PLAN.md — Wave 1: DB migration 0073_add_user_locale.sql + Better Auth additionalFields.locale + Zod localeSchema/refine
 - [x] 07-03-PLAN.md — Wave 1: i18next + react-i18next install; ui/src/i18n/{index,resources,i18next.d}.ts; init+missing-keys tests GREEN
 - [x] 07-04-PLAN.md — Wave 2: server actorMiddleware sets req.locale (3-tier fallback); PATCH /api/auth/profile accepts locale; server tests GREEN
-- [ ] 07-05-PLAN.md — Wave 2: I18nextProvider in main.tsx + ProfileSettings Language toggle (optimistic, await changeLanguage before setQueryData) + UAT-07-01/02 checkpoint
+- [x] 07-05-PLAN.md — Wave 2: I18nextProvider in main.tsx + ProfileSettings Language toggle (optimistic, await changeLanguage before setQueryData) + UAT-07-01/02 checkpoint
 
 ### Phase 8: Tradução UI Core
 
@@ -127,7 +127,7 @@ Plans:
 
 | Fase | Planos Completos | Status | Concluída em |
 |------|------------------|--------|--------------|
-| 7. Foundation i18n + Toggle de Settings | 0/5 | Planejada | - |
+| 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
 | 8. Tradução UI Core | 0/0 | Não iniciada | - |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/0 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 0/0 | Não iniciada | - |
