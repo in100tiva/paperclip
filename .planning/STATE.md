@@ -3,12 +3,12 @@ state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
 status: executing
-last_updated: "2026-04-26T01:29:07.331Z"
+last_updated: "2026-04-26T01:34:13.924Z"
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Estado do Projeto
@@ -23,29 +23,29 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 ## Posição Atual
 
 Fase: 1 de 6 (Fork Hard + Cerimônia de Corte)
-Plano: 0 de ? na fase atual
+Plano: 1 de 2 na fase atual (01-01-PLAN concluído; próximo: 01-02-PLAN smoke test)
 Status: Executing Phase 01
-Última atividade: 2026-04-25 — Roadmap criado com 6 fases, 44 requisitos v1 mapeados, cobertura 100%
+Última atividade: 2026-04-26 — Plano 01-01 concluído: paperclip SHA 40782f7 importado, identidade reescrita para `ddd`, upstream remote cortado, UPSTREAM_REFERENCE.md + CONTRIBUTING.md (hard fork) criados
 
-Progresso: [░░░░░░░░░░] 0%
+Progresso: [█████░░░░░] 50%
 
 ## Métricas de Performance
 
 **Velocidade:**
 
-- Total de planos concluídos: 0
-- Duração média: —
-- Tempo total de execução: 0h
+- Total de planos concluídos: 1
+- Duração média: 3 min
+- Tempo total de execução: 0h 3min
 
 **Por Fase:**
 
 | Fase | Planos | Total | Média/Plano |
 |------|--------|-------|-------------|
-| — | — | — | — |
+| 01-fork-hard | 1 | 3min | 3min |
 
 **Tendência Recente:**
 
-- Últimos 5 planos: —
+- Últimos 5 planos: 01-01 (3min)
 - Tendência: —
 
 *Atualizado após cada conclusão de plano*
@@ -62,6 +62,9 @@ Decisões recentes que afetam o trabalho atual:
 - Inicial: Manter Better Auth, usar Supabase só como Postgres — schemas text-id incompatíveis com `auth.users` uuid; migração HIGH effort sem ganho v1.
 - Inicial: RLS opcional no v1 — sem `auth.uid()` resolúvel; autorização aplicacional via membership.
 - Roadmap: Fase 4 é spike investigativo puro — sem código de produção; entregáveis são taxonomia 429, classifier prototype e validação de mecânica de retomada.
+- 01-01: Import strategy = `git read-tree -u --reset` from temporary remote (não clone-to-temp). Mantém SHA traceable em git history.
+- 01-01: Substituir paperclip's CONTRIBUTING.md inteiramente (hard-fork policy supersede upstream contribution guide).
+- 01-01: Renomear paperclip's root ROADMAP.md → paperclip-ROADMAP.md (preservar como referência; nosso roadmap em .planning/).
 
 ### Todos Pendentes
 
@@ -73,6 +76,6 @@ Nenhum ainda.
 
 ## Continuidade de Sessão
 
-Última sessão: 2026-04-25
-Parou em: Roadmap criado, REQUIREMENTS.md traceability atualizada. Pronto para `/planejar-fase 1`.
+Última sessão: 2026-04-26
+Parou em: Concluído 01-01-PLAN.md (fork-cut ceremony). Pronto para 01-02-PLAN.md (smoke test: pnpm install + pnpm dev).
 Arquivo de retomada: Nenhum

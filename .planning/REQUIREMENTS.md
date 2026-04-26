@@ -9,10 +9,10 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 ### Fork
 
-- [ ] **FORK-01**: Repo `paperclipai/paperclip` clonado para `d:\projetos\ddd` em commit conhecido (SHA registrado)
-- [ ] **FORK-02**: Remote upstream removido; `UPSTREAM_REFERENCE.md` documenta SHA original e política de port manual
-- [ ] **FORK-03**: `package.json` raiz renomeado para `ddd` (sem manter identidade do paperclip)
-- [ ] **FORK-04**: `CONTRIBUTING.md` declara política de fork hard (sem PRs upstream, port manual quando útil)
+- [x] **FORK-01**: Repo `paperclipai/paperclip` clonado para `d:\projetos\ddd` em commit conhecido (SHA registrado)
+- [x] **FORK-02**: Remote upstream removido; `UPSTREAM_REFERENCE.md` documenta SHA original e política de port manual
+- [x] **FORK-03**: `package.json` raiz renomeado para `ddd` (sem manter identidade do paperclip)
+- [x] **FORK-04**: `CONTRIBUTING.md` declara política de fork hard (sem PRs upstream, port manual quando útil)
 - [ ] **FORK-05**: `pnpm install` + `pnpm dev` rodam localmente em Windows com embedded Postgres (smoke test baseline antes de mexer)
 
 ### Infra
@@ -127,10 +127,10 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| FORK-01 | Phase 1 | Pending |
-| FORK-02 | Phase 1 | Pending |
-| FORK-03 | Phase 1 | Pending |
-| FORK-04 | Phase 1 | Pending |
+| FORK-01 | Phase 1 | Complete |
+| FORK-02 | Phase 1 | Complete |
+| FORK-03 | Phase 1 | Complete |
+| FORK-04 | Phase 1 | Complete |
 | FORK-05 | Phase 1 | Pending |
 | INFRA-01 | Phase 2 | Pending |
 | INFRA-02 | Phase 2 | Pending |

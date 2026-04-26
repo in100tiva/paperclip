@@ -43,7 +43,7 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 **Plans**: 2 plans
 
 Planos:
-- [ ] 01-01-PLAN.md — Importar paperclip, reescrever identidade para ddd, cortar upstream, documentar cerimonia (FORK-01..04)
+- [x] 01-01-PLAN.md — Importar paperclip, reescrever identidade para ddd, cortar upstream, documentar cerimonia (FORK-01..04)
 - [ ] 01-02-PLAN.md — Smoke test baseline: pnpm install + pnpm dev com embedded Postgres em Windows (FORK-05)
 
 ### Phase 2: Migração de Storage para Supabase
