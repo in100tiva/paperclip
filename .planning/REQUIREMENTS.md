@@ -72,7 +72,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 ### Multi-Projeto
 
-- [ ] **PROJ-01**: Múltiplas companies/projects podem rodar agentes em paralelo no mesmo Supabase sem cross-contamination
+- [x] **PROJ-01**: Múltiplas companies/projects podem rodar agentes em paralelo no mesmo Supabase sem cross-contamination
 - [x] **PROJ-02**: Pool de contas Claude pode ser per-company (cada empresa registra suas próprias contas) ou shared (configurável)
 - [x] **PROJ-03**: Cost attribution agrega por (companyId, accountId) para visibilidade de gasto por projeto
 
@@ -169,7 +169,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | MULTI-09 | Phase 5 | Pending |
 | MULTI-10 | Phase 5 | Complete |
 | MULTI-11 | Phase 5 | Complete |
-| PROJ-01 | Phase 6 | Pending |
+| PROJ-01 | Phase 6 | Complete |
 | PROJ-02 | Phase 6 | Complete |
 | PROJ-03 | Phase 6 | Complete |
 
