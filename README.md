@@ -1,3 +1,5 @@
+> **🧭 Dev da equipe DDD?** Comece pelo **[ONBOARDING.md](ONBOARDING.md)** (pt-br) e use **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** quando travar. Tempo-alvo: <30 min do clone à primeira sessão logada.
+>
 > **DDD** — hard fork of [paperclipai/paperclip](https://github.com/paperclipai/paperclip). See `UPSTREAM_REFERENCE.md` for the imported SHA and `CONTRIBUTING.md` for the fork policy. Paperclip's original README content follows.
 
 <p align="center">
