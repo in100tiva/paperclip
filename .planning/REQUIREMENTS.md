@@ -62,7 +62,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 - [x] **MULTI-02**: Schema `agent_account_bindings` (agentId PK, activeAccountId, rotationPolicy, lastRotatedAt) migrado
 - [x] **MULTI-03**: Schema `agent_step_executions` append-only com (run_id, step_id, account_id, input_tokens, output_tokens, cost_usd, started_at, completed_at) para attribution
 - [ ] **MULTI-04**: `services/claude-accounts.ts` implementa `listAccounts`, `selectActiveAccount`, `rotateOnQuotaExhausted`, `resolveCredentialDir` com lock pessimista (`pg_advisory_xact_lock` por agent_run)
-- [ ] **MULTI-05**: Patch `claude-local/src/server/execute.ts` aceita `config.claudeConfigDir` e propaga para spawn env (`CLAUDE_CONFIG_DIR`)
+- [x] **MULTI-05**: Patch `claude-local/src/server/execute.ts` aceita `config.claudeConfigDir` e propaga para spawn env (`CLAUDE_CONFIG_DIR`)
 - [x] **MULTI-06**: Patch `claude-local/src/server/parse.ts` adiciona `detectClaudeQuotaExhausted` baseado no spike
 - [ ] **MULTI-07**: `services/heartbeat.ts` chama `selectActiveAccount` antes de cada spawn de agente
 - [ ] **MULTI-08**: Swap automático: ao detectar exhaustão, drena step atual → checkpoint → swap → resume usando `issue_continuation_summary`
@@ -162,7 +162,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | MULTI-02 | Phase 5 | Complete |
 | MULTI-03 | Phase 5 | Complete |
 | MULTI-04 | Phase 5 | Pending |
-| MULTI-05 | Phase 5 | Pending |
+| MULTI-05 | Phase 5 | Complete |
 | MULTI-06 | Phase 5 | Complete |
 | MULTI-07 | Phase 5 | Pending |
 | MULTI-08 | Phase 5 | Pending |

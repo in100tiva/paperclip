@@ -140,7 +140,7 @@ Planos:
 - [x] 05-01-PLAN.md — DB schemas: claude_accounts, agent_account_bindings, agent_step_executions + drizzle migration (MULTI-01..03) [Wave 1]
 - [x] 05-02-PLAN.md — Classifier detectClaudeQuotaExhausted em parse.ts + tests (MULTI-06) [Wave 1]
 - [x] 05-03-PLAN.md — .env.example cooldown var + activity-log event type + claude-accounts-swap.md (MULTI-10 type registration) [Wave 1]
-- [ ] 05-05-PLAN.md — Wire config.claudeConfigDir → env.CLAUDE_CONFIG_DIR em execute.ts + tests (MULTI-05) [Wave 1]
+- [x] 05-05-PLAN.md — Wire config.claudeConfigDir → env.CLAUDE_CONFIG_DIR em execute.ts + tests (MULTI-05) [Wave 1]
 - [ ] 05-04-PLAN.md — claudeAccountsService factory + 6 métodos D-09 + lock advisory + tests (MULTI-04) [Wave 2; depende de 05-01, 05-03]
 - [ ] 05-06-PLAN.md — Heartbeat integration + orchestrateClaudeSwap module com Plano B (MULTI-07, MULTI-08) [Wave 3; depende de 05-04, 05-05]
 - [ ] 05-07-PLAN.md — Backing API + UI ClaudeAccounts.tsx + route + tests (MULTI-09, MULTI-10 emit via service) [Wave 3; depende de 05-04]
@@ -180,5 +180,5 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
 | 4. Spike — Multi-Account Detection | 5/5 | Complete   | 2026-04-26 |
-| 5. Multi-Account Swap (Implementação) | 3/8 | In Progress|  |
+| 5. Multi-Account Swap (Implementação) | 4/8 | In Progress|  |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |
