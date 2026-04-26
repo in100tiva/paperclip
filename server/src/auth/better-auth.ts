@@ -50,6 +50,7 @@ export type BetterAuthSessionUser = {
   id: string;
   email?: string | null;
   name?: string | null;
+  locale?: "pt-BR" | "en-US" | null;
 };
 
 export type BetterAuthSessionResult = {
@@ -144,6 +145,11 @@ export function createBetterAuthInstance(db: Db, config: Config, trustedOrigins?
         verification: authVerifications,
       },
     }),
+    user: {
+      additionalFields: {
+        locale: { type: "string" as const, required: false, defaultValue: "pt-BR" },
+      },
+    },
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
@@ -180,7 +186,7 @@ export async function resolveBetterAuthSessionFromHeaders(
 
   const value = sessionValue as {
     session?: { id?: string; userId?: string } | null;
-    user?: { id?: string; email?: string | null; name?: string | null } | null;
+    user?: { id?: string; email?: string | null; name?: string | null; locale?: string | null } | null;
   };
   const session = value.session?.id && value.session.userId
     ? { id: value.session.id, userId: value.session.userId }
@@ -190,6 +196,7 @@ export async function resolveBetterAuthSessionFromHeaders(
         id: value.user.id,
         email: value.user.email ?? null,
         name: value.user.name ?? null,
+        locale: ((value.user as { locale?: string }).locale as "pt-BR" | "en-US" | null) ?? null,
       }
     : null;
 
