@@ -23,31 +23,31 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 ## Posição Atual
 
 Fase: 2 de 6 (Migração de Storage para Supabase) — **EM PROGRESSO**
-Plano: 02-01 concluído (Wave 1, paralelo com 02-02). Próximo: aguardar 02-02; depois iniciar Wave 2 (02-03).
-Status: Phase 02 Wave 1 — 02-01 done (MIGRATION_AUDIT.md → INFRA-01)
-Última atividade: 2026-04-25 — Plano 02-01 concluído: audit de 11 findings em 10 categorias produzido. 71 migrations confirmed try-as-is (1 CREATE EXTENSION pg_trgm, 0 CREATE SCHEMA). pg_advisory_xact_lock confirmado compatível.
+Plano: Wave 1 completa (02-01 + 02-02 ambos concluídos em paralelo). Próximo: iniciar Wave 2 (02-03).
+Status: Phase 02 Wave 1 done — pre-commit guard online + migration audit publicado
+Última atividade: 2026-04-26 — Plano 02-02 concluído: husky 9.1.7 + scripts/check-no-service-role-leak.mjs (7/7 vitest cases pass). Pre-commit hook bloqueia JWT em ui/src/** + VITE_*SERVICE_ROLE/SECRET* em qualquer arquivo. AUTH-05 satisfeito.
 
-Progresso: [████░░░░░░] 38% (3 / 8 plans complete)
+Progresso: [█████░░░░░] 50% (4 / 8 plans complete)
 
 ## Métricas de Performance
 
 **Velocidade:**
 
-- Total de planos concluídos: 3
-- Duração média: ~8 min
-- Tempo total de execução: 0h 24min (3min + ~15min + ~6min)
+- Total de planos concluídos: 4
+- Duração média: ~7 min
+- Tempo total de execução: 0h 29min (3min + ~15min + ~6min + ~5min)
 
 **Por Fase:**
 
 | Fase | Planos | Total | Média/Plano |
 |------|--------|-------|-------------|
 | 01-fork-hard | 2 | ~18min | ~9min |
-| 02-supabase | 1+ | ~6min+ | ~6min |
+| 02-supabase | 2+ | ~11min+ | ~5.5min |
 
 **Tendência Recente:**
 
-- Últimos 5 planos: 01-01 (3min), 01-02 (~15min), 02-01 (~6min)
-- Tendência: 02-01 audit-only doc plan executou rápido — leitura/grep apenas, sem code changes.
+- Últimos 5 planos: 01-01 (3min), 01-02 (~15min), 02-01 (~6min), 02-02 (~5min)
+- Tendência: 02-02 TDD execution rapid — checker tests + impl + husky wiring fluiram sem bloqueios; pnpm install (2m11s) foi a maior parte do wall-clock.
 
 *Atualizado após cada conclusão de plano*
 
@@ -75,6 +75,9 @@ Decisões recentes que afetam o trabalho atual:
 - 02-01: auto-migrations no startup serão desabilitadas no plano 02-03 (HIGH risk em DB compartilhado por 5 devs).
 - 02-01: pool config travada — max=5, idle_timeout=20, prepare:false condicional para porta 6543.
 - 02-01: `aws-1-sa-east-1.pooler.supabase.com` confirmado como hostname Supavisor empírico (não documentado em Supabase docs públicas).
+- 02-02: Pre-commit guard escolheu husky@9 (idiomatic single-line hook) em vez de simple-git-hooks ou lint-staged-only. Husky se auto-instala via `prepare` script — zero fricção para devs novos.
+- 02-02: Path classification rule: `ui/src/**` + `*.tsx`/`*.jsx` são client-side (forbidden for JWTs); `server/**`, `packages/**`, `scripts/**` são livres. VITE_*SERVICE_ROLE/SECRET* names são bloqueados em qualquer arquivo (env files inclusive).
+- 02-02: Standalone vitest config (`scripts/check-no-service-role-leak.vitest.config.mjs`) necessária — root vitest.config.ts declara 12 workspace projects, nenhum inclui `scripts/`. Adicionado como artefato versionado para verifiability.
 
 ### Todos Pendentes
 
@@ -86,6 +89,6 @@ Nenhum ainda.
 
 ## Continuidade de Sessão
 
-Última sessão: 2026-04-25
-Parou em: Concluído 02-01-PLAN.md (MIGRATION_AUDIT.md → INFRA-01). Wave 1 paralela com 02-02 em andamento. Aguardando Wave 2 (02-03).
+Última sessão: 2026-04-26
+Parou em: Concluído 02-02-PLAN.md (pre-commit leak guard, AUTH-05). Wave 1 da Fase 02 completa (02-01 + 02-02 paralelos). Pronto para Wave 2 (02-03 schema/migrations).
 Arquivo de retomada: Nenhum

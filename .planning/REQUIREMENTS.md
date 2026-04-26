@@ -38,7 +38,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 - [ ] **AUTH-02**: Cookie prefix configurado via `PAPERCLIP_INSTANCE_ID=team-shared` para todos os devs compartilharem mesma sessão lógica
 - [ ] **AUTH-03**: Modo `authenticated` ativo — todas as rotas (exceto signup/login) requerem sessão Better Auth válida
 - [ ] **AUTH-04**: Signup com email/senha disponível para 5+ devs da equipe
-- [ ] **AUTH-05**: Service-role key do Supabase apenas no servidor — nunca exposto no bundle Vite (verificado por pre-commit hook)
+- [x] **AUTH-05**: Service-role key do Supabase apenas no servidor — nunca exposto no bundle Vite (verificado por pre-commit hook)
 
 ### Equipe
 
@@ -147,7 +147,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
 | AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Complete |
 | TEAM-01 | Phase 3 | Pending |
 | TEAM-02 | Phase 3 | Pending |
 | TEAM-03 | Phase 3 | Pending |
