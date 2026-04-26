@@ -23,6 +23,13 @@ export const companies = pgTable(
     feedbackDataSharingConsentByUserId: text("feedback_data_sharing_consent_by_user_id"),
     feedbackDataSharingTermsVersion: text("feedback_data_sharing_terms_version"),
     brandColor: text("brand_color"),
+    /**
+     * Phase 6 / D-04 / PROJ-02. Valores aceitos:
+     * - 'per_company' (default): isolamento total — contas filtradas por companyId + scope='company'
+     * - 'shared': permite usar contas com scope='shared' além das próprias
+     * Validação aplicacional, sem CHECK constraint hard.
+     */
+    claudeAccountPoolMode: text("claude_account_pool_mode").notNull().default("per_company"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
