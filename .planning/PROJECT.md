@@ -69,14 +69,14 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.1 — Internacionalização pt-BR (em definição):**
+**v1.1 — Internacionalização pt-BR (em andamento):**
 
-- [ ] Toggle de idioma em instance/settings (pt-BR / en-US) persistido por usuário
-- [ ] Infraestrutura i18n com extração de strings, fallback en-US e detecção de chaves ausentes
-- [ ] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros)
-- [ ] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI)
-- [ ] Skills/system prompts dos agentes em pt-BR quando idioma ativo (afeta resposta do modelo)
-- [ ] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas
+- [x] Toggle de idioma em instance/settings (pt-BR / en-US) persistido por usuário *(Fase 7 — UAT-07-01 pendente)*
+- [x] Infraestrutura i18n com fallback en-US e detector de chaves ausentes *(Fase 7 — i18next 26 + react-i18next 17, 8 namespaces, missing-keys CI)*
+- [ ] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros) *(Fases 8-9)*
+- [ ] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI) *(Fase 10)*
+- [ ] Skills/system prompts dos agentes em pt-BR quando idioma ativo *(Fase 11)*
+- [x] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas *(Fase 7 — UAT-07-02 pendente)*
 
 **v1.0 (carry-over não-bloqueantes):**
 
@@ -139,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-26 após início do milestone v1.1 (Internacionalização pt-BR)*
+*Última atualização: 2026-04-26 após Fase 7 (Foundation i18n + Toggle) — complete-with-pending-UAT (UAT-07-01/02)*
