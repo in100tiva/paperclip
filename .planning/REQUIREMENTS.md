@@ -26,11 +26,11 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 ### Banco de Dados
 
-- [ ] **DB-01**: Migrations Drizzle aplicadas no projeto Supabase `bxlczioxgizgvtznukwt`
+- [x] **DB-01**: Migrations Drizzle aplicadas no projeto Supabase `bxlczioxgizgvtznukwt`
 - [x] **DB-02**: Auto-migrations no startup desabilitadas — startup falha rápido se schema estiver desatualizado
-- [ ] **DB-03**: Pipeline GitHub Actions é único caminho que roda `pnpm db:migrate` no Supabase (em merge para main)
-- [ ] **DB-04**: PRs com mudança de schema requerem aprovação obrigatória antes de merge
-- [ ] **DB-05**: Drizzle-kit é fonte única de verdade — não usar `supabase migration new` em paralelo
+- [x] **DB-03**: Pipeline GitHub Actions é único caminho que roda `pnpm db:migrate` no Supabase (em merge para main)
+- [x] **DB-04**: PRs com mudança de schema requerem aprovação obrigatória antes de merge
+- [x] **DB-05**: Drizzle-kit é fonte única de verdade — não usar `supabase migration new` em paralelo
 
 ### Auth
 
@@ -138,11 +138,11 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | INFRA-04 | Phase 2 | Complete |
 | INFRA-05 | Phase 2 | Complete |
 | INFRA-06 | Phase 2 | Complete |
-| DB-01 | Phase 2 | Pending |
+| DB-01 | Phase 2 | Complete |
 | DB-02 | Phase 2 | Complete |
-| DB-03 | Phase 2 | Pending |
-| DB-04 | Phase 2 | Pending |
-| DB-05 | Phase 2 | Pending |
+| DB-03 | Phase 2 | Complete |
+| DB-04 | Phase 2 | Complete |
+| DB-05 | Phase 2 | Complete |
 | AUTH-01 | Phase 2 | Complete |
 | AUTH-02 | Phase 2 | Complete |
 | AUTH-03 | Phase 2 | Complete |

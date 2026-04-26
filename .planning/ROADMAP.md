@@ -67,7 +67,7 @@ Planos:
 - [x] 02-01-PLAN.md — Migration audit: documentar acoplamentos Postgres-embedded → Supavisor (INFRA-01)
 - [x] 02-02-PLAN.md — Pre-commit hook detectando JWT/service-role leaks em client-side (AUTH-05)
 - [x] 02-03-PLAN.md — Driver patches (prepare:false, pool), runtime-config, .env.example, disable auto-migrations (INFRA-02..06, DB-02)
-- [ ] 02-04-PLAN.md — Aplicar 71 migrations Drizzle + GitHub Actions migration pipeline + PR template DB gate (DB-01, DB-03..05)
+- [x] 02-04-PLAN.md — Aplicar 71 migrations Drizzle + GitHub Actions migration pipeline + PR template DB gate (DB-01, DB-03..05)
 - [x] 02-05-PLAN.md — Validar Better Auth wiring contra Supabase + cookie prefix paperclip-team-shared (AUTH-01..04)
 - [ ] 02-06-PLAN.md — Smoke test E2E (signup, cookie, multi-dev verification) + checkpoint humano (autonomous: false)
 

@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
-status: completed
-last_updated: "2026-04-26T03:43:56.294Z"
+status: Phase 02 Wave 3 complete — schema applied to Supabase (80 tables, 71 migrations) + auth wiring validated (AUTH-01..04) + CI pipeline + governance
+last_updated: "2026-04-26T03:46:00.000Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Estado do Projeto
@@ -23,9 +23,9 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 ## Posição Atual
 
 Fase: 2 de 6 (Migração de Storage para Supabase) — **EM PROGRESSO**
-Plano: Wave 3 em execução paralela (02-04 + 02-05). 02-05 concluído. Próximo: aguardar 02-04 (paralelo) e iniciar 02-06 (E2E smoke test).
-Status: Phase 02 Wave 3 — auth wiring validated; 7-test readiness suite covers AUTH-01..04
-Última atividade: 2026-04-26 — Plano 02-05 concluído: Better Auth ↔ Supabase wiring verificado empiricamente; deriveAuthCookiePrefix('team-shared') = 'paperclip-team-shared' (5 unit tests); createBetterAuthInstance contra Supabase real OK (1 integration test gated por SUPABASE_DB_URL); inline AUTH-01..04 mapping em better-auth.ts. Zero edits estruturais — verification-only. AUTH-01..04 satisfeitos.
+Plano: Wave 3 completa (02-04 + 02-05 concluídos em paralelo). Próximo: iniciar Wave 4 (02-06 E2E smoke test).
+Status: Phase 02 Wave 3 complete — schema applied to Supabase (80 tables, 71 migrations) + auth wiring validated (AUTH-01..04) + CI pipeline + governance
+Última atividade: 2026-04-26 — Plano 02-04 concluído (paralelo com 02-05): 71 migrations aplicaram cleanly contra Supabase pooler 5432 (Outcome A — sem regenerate-baseline necessário); 80 tabelas em public.* incluindo Better Auth; .github/workflows/db-migrate.yml criado como único caminho automatizado (concurrency group, path filter, workflow_dispatch); PR template DB-04 + CONTRIBUTING.md Database Migration Policy estabelecem governança humana. DB-01/03/04/05 satisfeitos. TODO manual: owner do repo adicionar secret SUPABASE_DB_URL no GitHub.
 
 Progresso: [█████████░] ~88% (atualizado por update-progress tool)
 
@@ -46,8 +46,8 @@ Progresso: [█████████░] ~88% (atualizado por update-progress
 
 **Tendência Recente:**
 
-- Últimos 5 planos: 01-02 (~15min), 02-01 (~6min), 02-02 (~5min), 02-03 (~40min)
-- Tendência: 02-03 mais longo — TDD para client.ts + 6 arquivos tocados + alinhamento de teste runtime-config existente (Regra 1 deviation). Server vitest suite completa demorou ~28min (suite tem 1345 testes, 64 falhas pré-existentes em workspace-runtime no Windows; nada relacionado às mudanças deste plano).
+- Últimos 5 planos: 02-01 (~6min), 02-02 (~5min), 02-03 (~40min), 02-04 (~4min), 02-05 (paralelo)
+- Tendência: 02-04 muito rápido — Outcome A (clean apply) confirmado de primeira; sem retentativas, sem regenerate-baseline. Maior tempo gasto foi em escrita de YAML/Markdown e self-check, não no apply em si (~6s). Confirma a hipótese ALTA do MIGRATION_AUDIT (J.3).
 
 *Atualizado após cada conclusão de plano*
 
@@ -85,6 +85,10 @@ Decisões recentes que afetam o trabalho atual:
 - 02-03: `promptApplyMigrations` em non-TTY retorna `false` (era `true`) — fechamento de Audit F.1 HIGH risk. Watchers/dev-runner/daemon não aplicam migrations sem opt-in (`PAPERCLIP_MIGRATION_AUTO_APPLY=true`) ou TTY interativo.
 - 02-05: Verification-only execution — better-auth.ts módulo preservado intacto (zero edits estruturais), apenas comment block (33 linhas) mapeando AUTH-01..04 a linhas específicas. Readiness suite (7 tests) valida AUTH-01 (integration contra Supabase real, gated por SUPABASE_DB_URL) + AUTH-02 (5 unit tests, cookie prefix paperclip-team-shared empiricamente confirmado).
 - 02-05: Integration test gated por `it.skipIf(skipReason !== null)` baseado em SUPABASE_DB_URL/DATABASE_URL presence — graceful skip sem env, valida wiring real com .env.local. Padrão reusable para futuras fases de testes que requerem secrets.
+- 02-04: 71 migrations aplicaram cleanly contra Supabase pooler 5432 (Outcome A) — 80 tabelas em `public.*`, 71 rows em `drizzle.__drizzle_migrations`; sem necessidade de regenerate-baseline. Confiança ex ante do MIGRATION_AUDIT.md (J.3 ALTA) confirmada empiricamente em ~6s de apply.
+- 02-04: GitHub Actions workflow `db-migrate.yml` é único caminho automatizado de `pnpm db:migrate` em merge para `main` (DB-03). Concurrency group `db-migrate-supabase` impede runs paralelas; `workflow_dispatch` habilitado para emergências manuais. Path filter restrito a `packages/db/src/{migrations,schema}/**` + `drizzle.config.ts`.
+- 02-04: Schema governance dual gate — humano (PR template `## Schema/Migration Changes (DB-04)` com 4 checkboxes) + automatizado (workflow path filter). CONTRIBUTING.md `## Database Migration Policy` declara drizzle-kit como única fonte (DB-05), proíbe explicitamente `supabase migration new` e `pnpm db:migrate` local contra Supabase compartilhado.
+- 02-04: Workflow YAML usa `working-directory: packages/db` nos steps node de verification — postgres package resolve via `packages/db/node_modules` (workspace install pattern). Lição aprendida durante pré-flight local: `node -e "require('postgres')"` rodando do root falha com MODULE_NOT_FOUND.
 
 ### Todos Pendentes
 
@@ -93,9 +97,10 @@ Nenhum ainda.
 ### Bloqueios/Preocupações
 
 - **Wart conhecido (Windows, deferido para Phase 3):** stale `~/.paperclip/instances/default/runtime-services/` survives `taskkill //F //T //PID`. Recomendar `scripts/kill-dev.sh` para shutdown gracioso. Candidatos de fix: PowerShell wrapper, `SIGBREAK` handler em `dev-runner.ts`, ou defensive PID-alive check no startup. Documentado em `.planning/phases/01-fork-hard-cerim-nia-de-corte/SMOKE-TEST-LOG.md` Outcome.
+- **Configuração manual pendente (02-04, owner do repo):** GitHub Actions secret `SUPABASE_DB_URL` precisa ser adicionado via Settings → Secrets and variables → Actions antes do primeiro merge para `main` que toque `packages/db/`. Sem o secret, workflow `.github/workflows/db-migrate.yml` falha cedo com erro claro. Documentado em `MIGRATION_APPLY_LOG.md` e `02-04-SUMMARY.md`.
 
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 02-05-PLAN.md (auth wiring validation, AUTH-01..04). Wave 3 paralela (02-04 ainda em execução simultânea). Pronto para 02-06 (E2E smoke test) após 02-04 concluir.
+Parou em: Concluído 02-04-PLAN.md (apply migrations + GitHub Actions pipeline + governance, DB-01/03/04/05) e 02-05-PLAN.md (auth wiring validation, AUTH-01..04) em paralelo. Wave 3 completa. Pronto para Wave 4 (02-06 E2E smoke test).
 Arquivo de retomada: Nenhum
