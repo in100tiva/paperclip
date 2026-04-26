@@ -4,7 +4,9 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import i18n from "@/i18n";
 import { InviteLandingPage } from "./InviteLanding";
 
 const getInviteMock = vi.hoisted(() => vi.fn());
@@ -70,6 +72,14 @@ async function flushReact() {
 describe("InviteLandingPage", () => {
   let container: HTMLDivElement;
 
+  beforeAll(async () => {
+    await i18n.changeLanguage("en-US");
+  });
+
+  afterAll(async () => {
+    await i18n.changeLanguage("en-US");
+  });
+
   beforeEach(() => {
     localStorage.clear();
     container = document.createElement("div");
@@ -134,13 +144,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -219,13 +231,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -305,13 +319,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -385,13 +401,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -454,13 +472,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -499,13 +519,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -566,13 +588,15 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -625,18 +649,20 @@ describe("InviteLandingPage", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
-          <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
+            <QueryClientProvider client={queryClient}>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
 
-    expect(container.textContent).toContain("Checking your access...");
+    expect(container.textContent).toContain("Checking your access…");
     expect(container.textContent).not.toContain("Accept company invite");
     expect(acceptInviteMock).not.toHaveBeenCalled();
 
