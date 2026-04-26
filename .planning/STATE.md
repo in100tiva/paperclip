@@ -2,15 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: "Phase 7 concluída como `complete-with-pending-UAT` (precedente Phases 3-6). 5/5 planos completos. Plan 07-05 entregou I18nextProvider em main.tsx + ProfileSettings Language toggle (optimistic mutation com Pitfall 3 ordering + session-driven hydration). Wave 0 UI test ProfileSettings.locale-toggle 2/2 GREEN; full UI suite 637/637 GREEN; pnpm -r typecheck exit 0; ui build exit 0. UAT-07-01 + UAT-07-02 deferidos como pending HUMAN-UAT (artifact `07-HUMAN-UAT.md` persistido). Próxima ação: /planejar-fase 8."
-last_updated: "2026-04-26T14:50:00.000Z"
+status: planning
+last_updated: "2026-04-26T14:35:53.578Z"
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 5
   completed_plans: 5
-  current_phase: 07
-  current_plan: 05
 ---
 
 # Estado do Projeto
