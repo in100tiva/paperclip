@@ -25,6 +25,11 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - ✓ Procedimento documentado de cadastro coletivo (`TEAM-SIGNUP-PROCEDURE.md`) reusando fluxo de invite/board-claim do paperclip; bootstrap_ceo via script existente — Fase 3
 - ✓ Procedimento de smoke E2E cross-machine documentado (`CROSS-MACHINE-SMOKE.md`) com fallback single-host aceito — Fase 3
 - ✓ Documentado setup local para qualquer dev clonar o repo e começar a usar sem fricção — Fase 3
+- ✓ Taxonomia 429 do Claude Code (`CLAUDE_429_TAXONOMY.md`) com auditoria contra `CLAUDE_TRANSIENT_UPSTREAM_RE` existente: 4 tipos cobertos, 2 partial — Fase 4
+- ✓ Estratégia de detecção decidida (`DECISION-DETECTION-STRATEGY.md`): reativo primary + pré-emptivo opcional, cooldown 30s configurável, `retry-after` honrado — Fase 4
+- ✓ Protótipo descartável `detect-quota-exhausted` com 6 fixtures stub e suite vitest standalone (8/8 testes passando) — Fase 4
+- ✓ Harness empírico (`capture-fixture.sh` + `test-multi-account-resume.sh`) preparado para HUMAN-UAT com 2 contas — Fase 4
+- ✓ Findings da Fase 4 mapeados a MULTI-01/04/05/06/08 (`FINDINGS-FOR-PHASE-5.md`): regex existente reusável, `CLAUDE_CONFIG_DIR` passthrough já presente em `execute.ts:253`, schema `lastQuotaWindowsJson` deve refletir taxonomia — Fase 4
 
 ### Ativos
 
@@ -89,4 +94,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 3 completion (UAT pendente: cross-machine smoke + 5+ devs reais)*
+*Last updated: 2026-04-26 after Phase 4 completion (UATs pendentes: Fase 3 cross-machine + 5+ devs; Fase 4 captura 429 real + smoke 2 contas)*
