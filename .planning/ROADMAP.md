@@ -20,7 +20,7 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 - [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
 - [x] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs (artefatos completos, complete-with-pending-UAT — TEAM-04 e TEAM-01 execução real em 03-HUMAN-UAT.md)
 - [x] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção) (completed 2026-04-26)
-- [ ] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão
+- [x] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão (completed 2026-04-26)
 - [ ] **Phase 6: Multi-Projeto + Polish** — Múltiplas companies em paralelo, cost attribution por projeto e fechamento do v1
 
 ## Detalhes das Fases
@@ -144,7 +144,7 @@ Planos:
 - [x] 05-04-PLAN.md — claudeAccountsService factory + 6 métodos D-09 + lock advisory + tests (MULTI-04) [Wave 2; depende de 05-01, 05-03]
 - [x] 05-06-PLAN.md — Heartbeat integration + orchestrateClaudeSwap module com Plano B (MULTI-07, MULTI-08) [Wave 3; depende de 05-04, 05-05]
 - [x] 05-07-PLAN.md — Backing API + UI ClaudeAccounts.tsx + route + tests (MULTI-09, MULTI-10 emit via service) [Wave 3; depende de 05-04]
-- [ ] 05-08-PLAN.md — SMOKE-E2E.md + 05-HUMAN-UAT.md UAT-05-01 (MULTI-11) [Wave 4; depende de 05-06, 05-07]
+- [x] 05-08-PLAN.md — SMOKE-E2E.md + 05-HUMAN-UAT.md UAT-05-01 (MULTI-11) [Wave 4; depende de 05-06, 05-07]
 
 **UI hint**: yes
 
@@ -180,5 +180,5 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
 | 4. Spike — Multi-Account Detection | 5/5 | Complete   | 2026-04-26 |
-| 5. Multi-Account Swap (Implementação) | 7/8 | In Progress|  |
+| 5. Multi-Account Swap (Implementação) | 8/8 | Complete   | 2026-04-26 |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |

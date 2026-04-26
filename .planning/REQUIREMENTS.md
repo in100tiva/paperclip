@@ -68,7 +68,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 - [x] **MULTI-08**: Swap automático: ao detectar exhaustão, drena step atual → checkpoint → swap → resume usando `issue_continuation_summary`
 - [ ] **MULTI-09**: UI `ui/src/pages/ClaudeAccounts.tsx` permite registrar conta, ver status (live/exhausted/cooldown), histórico de rotações
 - [x] **MULTI-10**: Activity log emite `claude_account_rotated` com (from, to, reason, agentId) a cada swap
-- [ ] **MULTI-11**: Smoke test E2E: agente roda → conta A esgota → swap automático para B → continuidade preservada → cost atribuído corretamente a cada conta
+- [x] **MULTI-11**: Smoke test E2E: agente roda → conta A esgota → swap automático para B → continuidade preservada → cost atribuído corretamente a cada conta
 
 ### Multi-Projeto
 
@@ -168,7 +168,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | MULTI-08 | Phase 5 | Complete |
 | MULTI-09 | Phase 5 | Pending |
 | MULTI-10 | Phase 5 | Complete |
-| MULTI-11 | Phase 5 | Pending |
+| MULTI-11 | Phase 5 | Complete |
 | PROJ-01 | Phase 6 | Pending |
 | PROJ-02 | Phase 6 | Pending |
 | PROJ-03 | Phase 6 | Pending |
