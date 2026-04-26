@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: in-progress
-last_updated: "2026-04-26T19:09:14.935Z"
+status: "Plano 08-02 concluído em ~20min (3 commits atomic — `b99735a` projects.json dictionaries 139 leaf keys pt-BR+en-US 100% mirror + `4d34be5` 6-file Projects surface migration to t() + `2b5d279` RTL probe test). Projects surface fully translated. PROJECT_STATUS_KEY static lookup map pattern invented to bridge typed-t() ↔ kebab-case dynamic enum keys (TS-blocker workaround for Pitfall 1). Toasts use t(key, { name }) interpolation (Pitfall 3). setBreadcrumbs([{ label: t() }]) with [setBreadcrumbs, t] deps (Pitfall 2). Desvios: 2 auto-fixes (Rule 3 PROJECT_STATUS_KEY; Rule 1 ProjectWorkspaceSummaryCard.test.tsx fixture wrap). Full UI suite **641/641 GREEN** (was 639, +2 probes); CI=true missing-keys vitest GREEN; UI typecheck exit 0. UI-02 satisfied. Self-check PASSED."
+last_updated: "2026-04-26T19:34:49.157Z"
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 10
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Estado do Projeto
@@ -22,10 +22,10 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
 
 ## Posição Atual
 
-Fase: 8 de 11 (Tradução UI Core) — **IN PROGRESS** (1/5 plans complete)
-Plano: 08-01 — concluído. Próxima ação: /executar-fase 08 → 08-02 (Projects) ou wave-parallel-launch para Plans 02+03+04 (arquivos disjuntos exceto JSON dicts em namespaces distintos).
-Status: Plano 08-01 concluído em ~75min (3 commits atomic — `4fb6d5e` dictionaries 149 keys + `5f5abd4` 7-file Inbox migration to t() + `555ede0` RTL probe test + 4 Rule-1 fixture fixes). Inbox surface (Inbox.tsx 2563 LOC + IssuesList.tsx 1311 LOC compartilhado com ProjectDetail/Issues page + 5 child components) totalmente traduzido pt-BR/en-US via 149-key inbox.json (parity 100% com en-US). 7 keys novos em common.actions.* (select-all, deselect-all, apply, clear, filter, close, remove) preservando Phase 7 keys. Padrões estabelecidos para 08-02..08-04: dictionary-first commit → surface migration → RTL probe test (probe-component approach evita Radix portal flakiness em jsdom). Desvios: 3 Rule-1 fixes (runFailureMessage signature recebe fallback string; formatJoinRequestInboxLabel aceita translate fn opcional com fallback inglês; 4 test files broke após Task 2 — wrapped em I18nextProvider + beforeAll changeLanguage). Full UI suite **639/639 GREEN** (was 627/639 antes dos fixes); CI=true missing-keys vitest GREEN (zero orphan keys); pnpm --filter @paperclipai/ui typecheck exit 0. UI-01 satisfied. Self-check PASSED.
-Última atividade: 2026-04-26 — Plano 08-01 concluído em ~75min. Próximas ações desbloqueadas: 08-02 (Projects, ProjectDetail, NewProjectDialog) — IssuesList.tsx já traduzido, então o trabalho de 08-02 encolhe para projects.json + project-specific surfaces; 08-03 (Settings extension de namespace settings.* já com language.*); 08-04 (Navegação — common.nav.* sub-tree + Sidebar/SidebarAccountMenu/BreadcrumbBar). Plans 02+03+04 podem rodar em paralelo (arquivos disjuntos exceto JSON dicts em namespaces diferentes — race aceitável).
+Fase: 8 de 11 (Tradução UI Core) — **IN PROGRESS** (2/5 plans complete)
+Plano: 08-02 — concluído. Próxima ação: /executar-fase 08 → 08-03 (Settings) ou wave-parallel-launch para Plans 03+04 (arquivos disjuntos: settings.* namespace vs common.nav.* sub-tree).
+Status: Plano 08-02 concluído em ~20min (3 commits atomic — `b99735a` projects.json dictionaries 139 leaf keys pt-BR+en-US 100% mirror + `4d34be5` 6-file Projects surface migration to t() + `2b5d279` RTL probe test). Projects surface (Projects.tsx 87 LOC + ProjectDetail.tsx 711 LOC + NewProjectDialog.tsx 447 LOC + ProjectProperties.tsx 1184 LOC + 2 workspace components) totalmente traduzido pt-BR/en-US. Padrões novos estabelecidos: PROJECT_STATUS_KEY (Record<EnumValue, LiteralKeyUnion>) static lookup map para typed-t() compatibility com Pitfall 1 (template-literal keys rejeitadas pelo i18next module augmentation TS — necessário para enums dinâmicos kebab-case). Toasts archive/unarchive interpolam via t('projects:toast.archived', { name }) (Pitfall 3 RED→GREEN). setBreadcrumbs([{ label: t('projects:title') }]) com [setBreadcrumbs, t] dep array (Pitfall 2 RED→GREEN). Tooltips (repo + local-folder em NewProjectDialog) incluídos in-scope conforme RESEARCH § Pattern 2 (descrevem campos de form, não actions — distinção semântica vs Phase 9 UI-08). Inner row components (OverviewContent/ColorPicker/SaveIndicator/ProjectStatusPicker/ArchiveDangerZone) consomem useTranslation diretamente em vez de receber t() via prop (singleton reuse, signatures limpas). Desvios: 2 auto-fixes (Rule 3 — TS blocker para Pitfall 1 dynamic-key + typed t() resolvido com PROJECT_STATUS_KEY pattern; Rule 1 — ProjectWorkspaceSummaryCard.test.tsx 5 renders wrapped em I18nextProvider + beforeAll en-US, mirrora Phase 8-01 fixture-fix pattern). Full UI suite **641/641 GREEN** (was 639, +2 novos probe tests); CI=true missing-keys vitest GREEN (zero orphan keys); pnpm --filter @paperclipai/ui typecheck exit 0. Plan 08-01 IssuesList integration intact (verified IssuesList.test.tsx 18/18 GREEN, useTranslation line 239 unchanged). UI-02 satisfied. Self-check PASSED.
+Última atividade: 2026-04-26 — Plano 08-02 concluído em ~20min. Próximas ações desbloqueadas: 08-03 (Settings extension de namespace settings.* já com language.*); 08-04 (Navegação — common.nav.* sub-tree + Sidebar/SidebarAccountMenu/BreadcrumbBar). Plans 03+04 podem rodar em paralelo (arquivos disjuntos: settings vs nav namespaces). PROJECT_STATUS_KEY pattern documented em SUMMARY para reuso quando Plans 03/04/05 hit dynamic-key enums.
 
 Posição anterior: Fase 7 de 11 (Foundation i18n + Toggle de Settings) — **COMPLETE-WITH-PENDING-UAT** (5/5 plans complete)
 Plano: 07-05 — concluído.
@@ -80,7 +80,7 @@ Progresso: [██████████] 100% (18/18 plans — atualizado por
 | 02-supabase | 6 | ~71min+ | ~12min |
 | 03-team-onboarding | 5 | ~50min | ~10min |
 | 04-spike-detection | 5 | ~20min+ | ~4min (artefatos documentais + harness shell + prototype TS) |
-| 08-traducao-ui-core | 1 (até agora) | ~75min | ~75min (Inbox surface — 2563 LOC main file + 1311 LOC shared component + 5 child) |
+| 08-traducao-ui-core | 2 (até agora) | ~95min | ~47min (08-01 Inbox 2563+1311 LOC ~75min; 08-02 Projects surface 6 files ~20min — IssuesList já feito por 08-01 reduziu escopo) |
 
 **Tendência Recente:**
 
