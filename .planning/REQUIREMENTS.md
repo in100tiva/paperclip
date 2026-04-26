@@ -25,7 +25,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 
 ### UI — Tradução Completa da Interface
 
-- [ ] **UI-01**: Tela inbox traduzida (lista de items, filtros, ações em massa, estados vazios)
+- [x] **UI-01**: Tela inbox traduzida (lista de items, filtros, ações em massa, estados vazios)
 - [ ] **UI-02**: Tela projects traduzida (lista, criação, detalhes, edição)
 - [ ] **UI-03**: Tela settings traduzida — incluindo a própria seção de idioma e settings de Claude accounts
 - [ ] **UI-04**: Telas admin/company traduzidas (membros, roles, claude accounts pool, cost summary, rotation history)
@@ -93,7 +93,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | I18N-03 | Fase 7 | Complete |
 | I18N-04 | Fase 7 | Complete |
 | I18N-05 | Fase 7 | Complete |
-| UI-01 | Fase 8 | Pending |
+| UI-01 | Fase 8 | Complete |
 | UI-02 | Fase 8 | Pending |
 | UI-03 | Fase 8 | Pending |
 | UI-04 | Fase 9 | Pending |

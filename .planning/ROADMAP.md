@@ -67,7 +67,7 @@ Plans:
 **Plans**: 5 plans across 2 waves
 
 Plans:
-- [ ] 08-01-PLAN.md — Wave 1: Inbox traduzido (UI-01) — 7 arquivos TSX + inbox.json + RTL test
+- [x] 08-01-PLAN.md — Wave 1: Inbox traduzido (UI-01) — 7 arquivos TSX + inbox.json + RTL test
 - [ ] 08-02-PLAN.md — Wave 1: Projects traduzido (UI-02) — 6 arquivos TSX + projects.json + RTL test
 - [ ] 08-03-PLAN.md — Wave 1: Settings traduzido (UI-03) — 5 arquivos TSX + settings.json extension + RTL test
 - [ ] 08-04-PLAN.md — Wave 1: Nav/Sidebar/Header/Breadcrumb traduzido (UI-05) — 11 arquivos TSX + common.json nav.* + RTL test
@@ -135,7 +135,7 @@ Plans:
 | Fase | Planos Completos | Status | Concluída em |
 |------|------------------|--------|--------------|
 | 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
-| 8. Tradução UI Core | 0/5 | Planejada | - |
+| 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/0 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 0/0 | Não iniciada | - |
 | 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |

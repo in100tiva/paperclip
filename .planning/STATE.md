@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: planning
-last_updated: "2026-04-26T14:35:53.578Z"
+status: in-progress
+last_updated: "2026-04-26T19:09:14.935Z"
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 10
+  completed_plans: 6
 ---
 
 # Estado do Projeto
@@ -22,9 +22,14 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
 
 ## Posição Atual
 
-Fase: 7 de 11 (Foundation i18n + Toggle de Settings) — **COMPLETE-WITH-PENDING-UAT** (5/5 plans complete)
-Plano: 07-05 — concluído. Próxima ação: /planejar-fase 8 (Tradução UI Core).
-Status: Phase 7 fecha como `complete-with-pending-UAT` (precedente Phases 3-6). UI toggle end-to-end pronto: I18nextProvider em main.tsx (Pitfall 5 — entre QueryClientProvider e ThemeProvider), ProfileSettings com Language section + 2 radios (pt-BR/en-US) + optimistic locale mutation com Pitfall 3 ordering (`await i18n.changeLanguage(newLocale)` ANTES de `queryClient.setQueryData`) + session-driven hydration (useEffect que chama changeLanguage quando `i18n.language !== userLocale`). Wave 0 UI test `ProfileSettings.locale-toggle.test.tsx` 2/2 GREEN (SETTINGS-01 + SETTINGS-04 fechados em código); full UI suite **637/637 GREEN**; `pnpm -r typecheck` exit 0; `pnpm --filter @paperclipai/ui build` exit 0. UAT-07-01 (hot-swap + persistência cross-reload + cross-logout/login) + UAT-07-02 (default pt-BR para new user) deferidos como pending HUMAN-UAT — artifact `.planning/phases/07-foundation-i18n-toggle-de-settings/07-HUMAN-UAT.md` persistido com frontmatter `status: pending` e procedimentos completos. SETTINGS-01 + SETTINGS-04 marcados Complete em REQUIREMENTS.md (UAT pending non-blocking).
+Fase: 8 de 11 (Tradução UI Core) — **IN PROGRESS** (1/5 plans complete)
+Plano: 08-01 — concluído. Próxima ação: /executar-fase 08 → 08-02 (Projects) ou wave-parallel-launch para Plans 02+03+04 (arquivos disjuntos exceto JSON dicts em namespaces distintos).
+Status: Plano 08-01 concluído em ~75min (3 commits atomic — `4fb6d5e` dictionaries 149 keys + `5f5abd4` 7-file Inbox migration to t() + `555ede0` RTL probe test + 4 Rule-1 fixture fixes). Inbox surface (Inbox.tsx 2563 LOC + IssuesList.tsx 1311 LOC compartilhado com ProjectDetail/Issues page + 5 child components) totalmente traduzido pt-BR/en-US via 149-key inbox.json (parity 100% com en-US). 7 keys novos em common.actions.* (select-all, deselect-all, apply, clear, filter, close, remove) preservando Phase 7 keys. Padrões estabelecidos para 08-02..08-04: dictionary-first commit → surface migration → RTL probe test (probe-component approach evita Radix portal flakiness em jsdom). Desvios: 3 Rule-1 fixes (runFailureMessage signature recebe fallback string; formatJoinRequestInboxLabel aceita translate fn opcional com fallback inglês; 4 test files broke após Task 2 — wrapped em I18nextProvider + beforeAll changeLanguage). Full UI suite **639/639 GREEN** (was 627/639 antes dos fixes); CI=true missing-keys vitest GREEN (zero orphan keys); pnpm --filter @paperclipai/ui typecheck exit 0. UI-01 satisfied. Self-check PASSED.
+Última atividade: 2026-04-26 — Plano 08-01 concluído em ~75min. Próximas ações desbloqueadas: 08-02 (Projects, ProjectDetail, NewProjectDialog) — IssuesList.tsx já traduzido, então o trabalho de 08-02 encolhe para projects.json + project-specific surfaces; 08-03 (Settings extension de namespace settings.* já com language.*); 08-04 (Navegação — common.nav.* sub-tree + Sidebar/SidebarAccountMenu/BreadcrumbBar). Plans 02+03+04 podem rodar em paralelo (arquivos disjuntos exceto JSON dicts em namespaces diferentes — race aceitável).
+
+Posição anterior: Fase 7 de 11 (Foundation i18n + Toggle de Settings) — **COMPLETE-WITH-PENDING-UAT** (5/5 plans complete)
+Plano: 07-05 — concluído.
+Status anterior: Phase 7 fecha como `complete-with-pending-UAT` (precedente Phases 3-6). UI toggle end-to-end pronto: I18nextProvider em main.tsx (Pitfall 5 — entre QueryClientProvider e ThemeProvider), ProfileSettings com Language section + 2 radios (pt-BR/en-US) + optimistic locale mutation com Pitfall 3 ordering (`await i18n.changeLanguage(newLocale)` ANTES de `queryClient.setQueryData`) + session-driven hydration (useEffect que chama changeLanguage quando `i18n.language !== userLocale`). Wave 0 UI test `ProfileSettings.locale-toggle.test.tsx` 2/2 GREEN (SETTINGS-01 + SETTINGS-04 fechados em código); full UI suite **637/637 GREEN**; `pnpm -r typecheck` exit 0; `pnpm --filter @paperclipai/ui build` exit 0. UAT-07-01 (hot-swap + persistência cross-reload + cross-logout/login) + UAT-07-02 (default pt-BR para new user) deferidos como pending HUMAN-UAT — artifact `.planning/phases/07-foundation-i18n-toggle-de-settings/07-HUMAN-UAT.md` persistido com frontmatter `status: pending` e procedimentos completos. SETTINGS-01 + SETTINGS-04 marcados Complete em REQUIREMENTS.md (UAT pending non-blocking).
 Última atividade: 2026-04-26 — Plano 07-05 concluído em ~18min (commits `151d5ba` Task 1 wire I18nextProvider + testing-library devDeps, `84d909c` Task 2 ProfileSettings Language section + optimistic toggle + hydration, `6a8a16b` Task 3 07-HUMAN-UAT.md artifact). 3 desvios Regra 3 (bloqueadores): (1) `@testing-library/react`+`@testing-library/jest-dom`+`@testing-library/user-event` ausentes em `ui/package.json` — adicionados como devDependencies (Plan 01 escreveu o teste, Plan 03 instalou só i18next/react-i18next; testing-library nunca foi instalado); (2) `Locale` type não re-exportado de `@paperclipai/shared` barrel — adicionado `export type { Locale } from "./validators/access"` ao barrel para que `import type { Locale } from "@paperclipai/shared"` resolvesse; (3) Wave 0 test do Plan 01 usava `render(<ProfileSettings/>)` bare sem QueryClientProvider/I18nextProvider wrappers — helper `renderProfileSettings()` adicionado wrappando em ambos providers (mesmo contrato de assertion). Todos os 3 desvios são pré-condições ausentes para o plano executar como escrito; nenhuma mudança de comportamento ou escopo. Decisão de fechamento: HUMAN-UAT routing seguindo precedente Phases 3-6 (Phase 3 TEAM-04, Phase 4 SPIKE-04/05, Phase 5 UAT-05-01, Phase 6 UAT-06-01) — quando validação requer browser real + julgamento perceptual humano (hot-swap visível ao olho, sem flicker de chaves cruas, persistência sentida cross-session), executor persiste o artifact com status pending e roteia phase para `complete-with-pending-UAT`. Self-check PASSED. Phase 8 destravada — todas as preconditions atendidas (I18nextProvider mounted globally, 8 namespaces ready, missing-keys detector wired CI mode, session.user.locale round-trip end-to-end).
 
 Posição anterior: Fase 7 de 11 (Foundation i18n + Toggle de Settings) — **IN PROGRESS** (4/5 plans complete)
@@ -63,9 +68,9 @@ Progresso: [██████████] 100% (18/18 plans — atualizado por
 
 **Velocidade:**
 
-- Total de planos concluídos: 18
-- Duração média: ~11 min
-- Tempo total de execução: ~3h+
+- Total de planos concluídos: 19
+- Duração média: ~14 min
+- Tempo total de execução: ~4h+
 
 **Por Fase:**
 
@@ -75,6 +80,7 @@ Progresso: [██████████] 100% (18/18 plans — atualizado por
 | 02-supabase | 6 | ~71min+ | ~12min |
 | 03-team-onboarding | 5 | ~50min | ~10min |
 | 04-spike-detection | 5 | ~20min+ | ~4min (artefatos documentais + harness shell + prototype TS) |
+| 08-traducao-ui-core | 1 (até agora) | ~75min | ~75min (Inbox surface — 2563 LOC main file + 1311 LOC shared component + 5 child) |
 
 **Tendência Recente:**
 
