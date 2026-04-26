@@ -13,6 +13,9 @@ import { authUsers } from "./auth.js";
  *
  * - `status`: 'live' | 'exhausted' | 'cooldown' | 'disabled'. Default 'live'
  *   (registro novo é elegível por padrão).
+ * - `scope`: 'company' | 'shared' (D-05). Default 'company' preserva semântica
+ *   Fase 5; 'shared' habilita uso por qualquer company com
+ *   `claudeAccountPoolMode='shared'`.
  * - `lastQuotaWindowsJson` (D-03 / Finding 3): mapa por sub-tipo da taxonomia
  *   429 (rpm_transient | tpm_transient | daily_quota | weekly_quota |
  *   session_5h | org_tier) — cada chave guarda `{ exhaustedUntil,
@@ -40,6 +43,15 @@ export const claudeAccounts = pgTable(
     label: text("label").notNull(),
     configDirSlug: text("config_dir_slug").notNull(),
     status: text("status").notNull().default("live"),
+    /**
+     * Phase 6 / D-05 / D-08 / PROJ-02. Valores aceitos:
+     * - 'company' (default): exclusiva da companyId declarada (semântica Fase 5)
+     * - 'shared': qualquer company com claudeAccountPoolMode='shared' pode usá-la;
+     *   companyId continua marcando o owner.
+     * Migração Fase 5→6: registros existentes adquirem default 'company' sem
+     * precisar de UPDATE explícito (D-08).
+     */
+    scope: text("scope").notNull().default("company"),
     lastQuotaWindowsJson: jsonb("last_quota_windows_json")
       .$type<
         Record<
