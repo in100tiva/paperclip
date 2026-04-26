@@ -110,10 +110,14 @@ Planos:
 4. Validação empírica confirmada e documentada: `session_id` do Claude CLI é por-conta; mecânica de retomada via `issue_continuation_summary` funciona após swap em smoke test manual com 2 contas em filesystem (`~/.paperclip/claude-accounts/{a,b}/`).
 5. Spike termina com lista explícita de "achados que afetam o schema/UI da Phase 5" — qualquer surpresa que mude design da implementação está documentada antes de Phase 5 começar.
 
-**Plans**: A definir
+**Plans**: 5 plans
 
 Planos:
-- [ ] 04-01: A definir durante `/planejar-fase 4`
+- [ ] 04-01-PLAN.md — Auditoria taxonomy 429: CLAUDE_429_TAXONOMY.md mapeando 6 tipos contra regex existente em parse.ts (SPIKE-01)
+- [ ] 04-02-PLAN.md — Decisão arquitetural detecção: DECISION-DETECTION-STRATEGY.md (reativo primary, pré-emptivo opt, cooldown 30s, retry-after honrado) (SPIKE-03)
+- [ ] 04-03-PLAN.md — Protótipo classifier descartável + 6 fixtures stub + tests vitest standalone (SPIKE-02)
+- [ ] 04-04-PLAN.md — Harness shell scripts (capture-fixture.sh + test-multi-account-resume.sh) para HUMAN-UAT empírico (SPIKE-04 + SPIKE-05 enabling)
+- [ ] 04-05-PLAN.md — Consolidação: 04-HUMAN-UAT.md (UAT-04-01..03) + FINDINGS-FOR-PHASE-5.md (SPIKE-04 + SPIKE-05)
 
 ### Phase 5: Multi-Account Claude Code Swap (Implementação)
 
@@ -168,6 +172,6 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Fork Hard + Cerimônia de Corte | 2/2 | Complete | 2026-04-25 |
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
-| 4. Spike — Multi-Account Detection | 0/? | Not started | - |
+| 4. Spike — Multi-Account Detection | 0/5 | Planned | - |
 | 5. Multi-Account Swap (Implementação) | 0/? | Not started | - |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |
