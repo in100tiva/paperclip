@@ -14,7 +14,7 @@ import type { WorkspaceRuntimeDesiredState, WorkspaceRuntimeServiceStateMap } fr
 import { trackProjectCreated } from "@paperclipai/shared/telemetry";
 import { validate } from "../middleware/validate.js";
 import { projectService, logActivity, workspaceOperationService } from "../services/index.js";
-import { conflict } from "../errors.js";
+import { conflict, conflictWithCode } from "../errors.js";
 import { assertCompanyAccess, getActorInfo } from "./authz.js";
 import {
   buildWorkspaceRuntimeDesiredStatePatch,
@@ -82,7 +82,10 @@ export function projectRoutes(db: Db) {
     if (!companyId) return rawId;
     const resolved = await svc.resolveByReference(companyId, rawId);
     if (resolved.ambiguous) {
-      throw conflict("Project shortname is ambiguous in this company. Use the project ID.");
+      throw conflictWithCode(
+        "Project shortname is ambiguous in this company. Use the project ID.",
+        "project.shortname-ambiguous",
+      );
     }
     return resolved.project?.id ?? rawId;
   }

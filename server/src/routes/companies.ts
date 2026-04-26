@@ -12,7 +12,7 @@ import {
   updateCompanyBrandingSchema,
   updateCompanySchema,
 } from "@paperclipai/shared";
-import { badRequest, forbidden } from "../errors.js";
+import { badRequest, badRequestWithCode, forbidden, forbiddenWithCode } from "../errors.js";
 import { validate } from "../middleware/validate.js";
 import {
   accessService,
@@ -43,7 +43,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
     if (typeof value !== "string" || value.trim().length === 0) return undefined;
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) {
-      throw badRequest(`Invalid ${field} query value`);
+      throw badRequestWithCode(`Invalid ${field} query value`, "validation.query.invalid", { field });
     }
     return parsed;
   }
@@ -69,7 +69,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
       throw forbidden("Agent key cannot access another company");
     }
     if (actorAgent.role !== "ceo") {
-      throw forbidden("Only CEO agents can update company branding");
+      throw forbiddenWithCode("Only CEO agents can update company branding", "company.branding.ceo-only");
     }
   }
 
@@ -83,7 +83,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
       throw forbidden("Agent key cannot access another company");
     }
     if (actorAgent.role !== "ceo") {
-      throw forbidden(`Only CEO agents can manage company ${capability}`);
+      throw forbiddenWithCode(`Only CEO agents can manage company ${capability}`, "company.capability.ceo-only", { capability });
     }
   }
 
@@ -267,7 +267,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
   router.post("/", validate(createCompanySchema), async (req, res) => {
     assertBoard(req);
     if (!(req.actor.source === "local_implicit" || req.actor.isInstanceAdmin)) {
-      throw forbidden("Instance admin required");
+      throw forbiddenWithCode("Instance admin required", "auth.instance-admin-required");
     }
     const company = await svc.create(req.body);
     await access.ensureMembership(company.id, "user", req.actor.userId ?? "local-board", "owner", "active");
@@ -314,7 +314,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
       const agentSvc = agentService(db);
       const actorAgent = req.actor.agentId ? await agentSvc.getById(req.actor.agentId) : null;
       if (!actorAgent || actorAgent.role !== "ceo") {
-        throw forbidden("Only CEO agents or board users may update company settings");
+        throw forbiddenWithCode("Only CEO agents or board users may update company settings", "company.settings.ceo-or-board-only");
       }
       if (actorAgent.companyId !== companyId) {
         throw forbidden("Agent key cannot access another company");

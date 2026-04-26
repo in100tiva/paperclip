@@ -66,7 +66,16 @@ import {
   getActorInfo,
 } from "./authz.js";
 import { validateInstanceConfig } from "../services/plugin-config-validator.js";
-import { badRequest, forbidden, notFound, unauthorized, unprocessable } from "../errors.js";
+import {
+  badRequest,
+  badRequestWithCode,
+  forbidden,
+  notFound,
+  notFoundWithCode,
+  unauthorized,
+  unprocessable,
+  unprocessableWithCode,
+} from "../errors.js";
 
 /** UI slot declaration extracted from plugin manifest */
 type PluginUiSlotDeclaration = NonNullable<NonNullable<PaperclipPluginManifestV1["ui"]>["slots"]>[number];
@@ -475,7 +484,10 @@ export function pluginRoutes(
       return;
     }
     if (route.auth === "webhook") {
-      throw unprocessable("Webhook-scoped plugin API routes require a signature verifier and are not enabled");
+      throw unprocessableWithCode(
+        "Webhook-scoped plugin API routes require a signature verifier and are not enabled",
+        "plugin.webhook-not-enabled",
+      );
     }
     assertAuthenticated(req);
     if (req.actor.type !== "board" && req.actor.type !== "agent") {
@@ -493,11 +505,14 @@ export function pluginRoutes(
     if (policy === "none" || req.actor.type !== "agent") return;
     const issueId = params.issueId;
     if (!issueId) {
-      throw unprocessable("Checkout-protected plugin API routes require an issueId route parameter");
+      throw unprocessableWithCode(
+        "Checkout-protected plugin API routes require an issueId route parameter",
+        "plugin.checkout.issueid-required",
+      );
     }
     const issue = await issuesSvc.getById(issueId);
     if (!issue || issue.companyId !== companyId) {
-      throw notFound("Issue not found");
+      throw notFoundWithCode("Issue not found", "issue.not-found");
     }
     if (policy === "required-for-agent-in-progress") {
       if (issue.status !== "in_progress" || issue.assigneeAgentId !== req.actor.agentId) return;
@@ -561,7 +576,10 @@ export function pluginRoutes(
       return undefined;
     }
     if (typeof companyId !== "string" || companyId.trim().length === 0) {
-      throw badRequest('"companyId" must be a non-empty string when provided');
+      throw badRequestWithCode(
+        '"companyId" must be a non-empty string when provided',
+        "validation.company-id-required",
+      );
     }
     assertCompanyAccess(req, companyId);
     return companyId;

@@ -56,7 +56,16 @@ import {
   workProductService,
 } from "../services/index.js";
 import { logger } from "../middleware/logger.js";
-import { conflict, forbidden, HttpError, notFound, unauthorized } from "../errors.js";
+import {
+  conflict,
+  conflictWithCode,
+  forbidden,
+  forbiddenWithCode,
+  HttpError,
+  notFound,
+  notFoundWithCode,
+  unauthorized,
+} from "../errors.js";
 import { assertBoard, assertCompanyAccess, getActorInfo } from "./authz.js";
 import {
   assertNoAgentHostWorkspaceCommandMutation,
@@ -766,10 +775,13 @@ export function issueRoutes(
 
     const resolved = await agentsSvc.resolveByReference(companyId, raw);
     if (resolved.ambiguous) {
-      throw conflict("Agent shortname is ambiguous in this company. Use the agent ID.");
+      throw conflictWithCode(
+        "Agent shortname is ambiguous in this company. Use the agent ID.",
+        "agent.shortname-ambiguous",
+      );
     }
     if (!resolved.agent) {
-      throw notFound("Agent not found");
+      throw notFoundWithCode("Agent not found", "agent.not-found");
     }
     return resolved.agent.id;
   }

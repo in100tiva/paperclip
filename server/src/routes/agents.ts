@@ -46,7 +46,15 @@ import {
   syncInstructionsBundleConfigFromFilePath,
   workspaceOperationService,
 } from "../services/index.js";
-import { conflict, forbidden, notFound, unprocessable } from "../errors.js";
+import {
+  conflict,
+  conflictWithCode,
+  forbidden,
+  notFound,
+  notFoundWithCode,
+  unprocessable,
+  unprocessableWithCode,
+} from "../errors.js";
 import { assertBoard, assertCompanyAccess, assertInstanceAdmin, getActorInfo } from "./authz.js";
 import {
   assertNoAgentHostWorkspaceCommandMutation,
@@ -425,10 +433,14 @@ export function agentRoutes(
   function assertKnownAdapterType(type: string | null | undefined): string {
     const adapterType = typeof type === "string" ? type.trim() : "";
     if (!adapterType) {
-      throw unprocessable("Adapter type is required");
+      throw unprocessableWithCode("Adapter type is required", "agent.adapter-type-required");
     }
     if (!findServerAdapter(adapterType)) {
-      throw unprocessable(`Unknown adapter type: ${adapterType}`);
+      throw unprocessableWithCode(
+        `Unknown adapter type: ${adapterType}`,
+        "agent.adapter-type-unknown",
+        { adapterType },
+      );
     }
     return adapterType;
   }
@@ -441,10 +453,17 @@ export function agentRoutes(
     if (environmentId === undefined || environmentId === null) return;
     const environment = await environmentsSvc.getById(environmentId);
     if (!environment || environment.companyId !== companyId) {
-      throw unprocessable("Selected environment must belong to the same company");
+      throw unprocessableWithCode(
+        "Selected environment must belong to the same company",
+        "agent.environment-cross-company",
+      );
     }
     if (options?.allowedDrivers && !options.allowedDrivers.includes(environment.driver)) {
-      throw unprocessable(`Environment driver "${environment.driver}" is not allowed here`);
+      throw unprocessableWithCode(
+        `Environment driver "${environment.driver}" is not allowed here`,
+        "agent.environment-driver-not-allowed",
+        { driver: environment.driver },
+      );
     }
     if (environment.driver === "sandbox" && options?.allowedSandboxProviders) {
       const config = environment.config && typeof environment.config === "object"
@@ -498,15 +517,21 @@ export function agentRoutes(
 
     const companyId = await resolveCompanyIdForAgentReference(req);
     if (!companyId) {
-      throw unprocessable("Agent shortname lookup requires companyId query parameter");
+      throw unprocessableWithCode(
+        "Agent shortname lookup requires companyId query parameter",
+        "agent.shortname-needs-company",
+      );
     }
 
     const resolved = await svc.resolveByReference(companyId, raw);
     if (resolved.ambiguous) {
-      throw conflict("Agent shortname is ambiguous in this company. Use the agent ID.");
+      throw conflictWithCode(
+        "Agent shortname is ambiguous in this company. Use the agent ID.",
+        "agent.shortname-ambiguous",
+      );
     }
     if (!resolved.agent) {
-      throw notFound("Agent not found");
+      throw notFoundWithCode("Agent not found", "agent.not-found");
     }
     return resolved.agent.id;
   }

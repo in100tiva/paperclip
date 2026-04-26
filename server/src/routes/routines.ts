@@ -12,7 +12,7 @@ import { trackRoutineCreated } from "@paperclipai/shared/telemetry";
 import { validate } from "../middleware/validate.js";
 import { accessService, logActivity, routineService } from "../services/index.js";
 import { assertCompanyAccess, getActorInfo } from "./authz.js";
-import { forbidden, unauthorized } from "../errors.js";
+import { forbidden, forbiddenWithCode, unauthorized } from "../errors.js";
 import { getTelemetryClient } from "../telemetry.js";
 import type { PluginWorkerManager } from "../services/plugin-worker-manager.js";
 
@@ -41,7 +41,10 @@ export function routineRoutes(
     if (req.actor.type === "board") return;
     if (req.actor.type !== "agent" || !req.actor.agentId) throw unauthorized();
     if (assigneeAgentId !== req.actor.agentId) {
-      throw forbidden("Agents can only manage routines assigned to themselves");
+      throw forbiddenWithCode(
+        "Agents can only manage routines assigned to themselves",
+        "routine.agent-self-only",
+      );
     }
   }
 
@@ -52,7 +55,10 @@ export function routineRoutes(
     if (req.actor.type === "board") return routine;
     if (req.actor.type !== "agent" || !req.actor.agentId) throw unauthorized();
     if (routine.assigneeAgentId !== req.actor.agentId) {
-      throw forbidden("Agents can only manage routines assigned to themselves");
+      throw forbiddenWithCode(
+        "Agents can only manage routines assigned to themselves",
+        "routine.agent-self-only",
+      );
     }
     return routine;
   }
@@ -125,7 +131,10 @@ export function routineRoutes(
       req.body.assigneeAgentId !== undefined &&
       req.body.assigneeAgentId !== req.actor.agentId
     ) {
-      throw forbidden("Agents can only assign routines to themselves");
+      throw forbiddenWithCode(
+        "Agents can only assign routines to themselves",
+        "routine.assign-self-only",
+      );
     }
     const updated = await svc.update(routine.id, req.body, {
       agentId: req.actor.type === "agent" ? req.actor.agentId : null,

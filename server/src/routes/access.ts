@@ -47,11 +47,15 @@ import {
 } from "@paperclipai/shared";
 import type { DeploymentExposure, DeploymentMode, HumanCompanyMembershipRole, PermissionKey } from "@paperclipai/shared";
 import {
-  forbidden,
+  badRequest,
+  badRequestWithCode,
   conflict,
+  conflictWithCode,
+  forbidden,
   notFound,
+  notFoundWithCode,
   unauthorized,
-  badRequest
+  unauthorizedWithCode,
 } from "../errors.js";
 import { logger } from "../middleware/logger.js";
 import { validate } from "../middleware/validate.js";
@@ -2441,14 +2445,14 @@ export function accessRoutes(
     if (req.actor.type !== "board") throw unauthorized();
     if (isLocalImplicit(req)) return;
     const allowed = await access.isInstanceAdmin(req.actor.userId);
-    if (!allowed) throw forbidden("Instance admin required");
+    if (!allowed) throw forbidden("Instance admin required"); // legacy — auth-gate, falls back to errors:auth.forbidden
   }
 
   router.get("/board-claim/:token", async (req, res) => {
     const token = (req.params.token as string).trim();
     const code =
       typeof req.query.code === "string" ? req.query.code.trim() : undefined;
-    if (!token) throw notFound("Board claim challenge not found");
+    if (!token) throw notFoundWithCode("Board claim challenge not found", "board-claim.not-found");
     const challenge = inspectBoardClaimChallenge(token, code);
     if (challenge.status === "invalid")
       throw notFound("Board claim challenge not found");
@@ -2459,14 +2463,17 @@ export function accessRoutes(
     const token = (req.params.token as string).trim();
     const code =
       typeof req.body?.code === "string" ? req.body.code.trim() : undefined;
-    if (!token) throw notFound("Board claim challenge not found");
-    if (!code) throw badRequest("Claim code is required");
+    if (!token) throw notFoundWithCode("Board claim challenge not found", "board-claim.not-found");
+    if (!code) throw badRequestWithCode("Claim code is required", "board-claim.code-required");
     if (
       req.actor.type !== "board" ||
       req.actor.source !== "session" ||
       !req.actor.userId
     ) {
-      throw unauthorized("Sign in before claiming board ownership");
+      throw unauthorizedWithCode(
+        "Sign in before claiming board ownership",
+        "board-claim.signin-required",
+      );
     }
 
     const claimed = await claimBoardOwnership(db, {
@@ -2476,10 +2483,11 @@ export function accessRoutes(
     });
 
     if (claimed.status === "invalid")
-      throw notFound("Board claim challenge not found");
+      throw notFoundWithCode("Board claim challenge not found", "board-claim.not-found");
     if (claimed.status === "expired")
-      throw conflict(
-        "Board claim challenge expired. Restart server to generate a new one."
+      throw conflictWithCode(
+        "Board claim challenge expired. Restart server to generate a new one.",
+        "board-claim.expired",
       );
     if (claimed.status === "claimed") {
       res.json({
@@ -2489,7 +2497,10 @@ export function accessRoutes(
       return;
     }
 
-    throw conflict("Board claim challenge is no longer available");
+    throw conflictWithCode(
+      "Board claim challenge is no longer available",
+      "board-claim.unavailable",
+    );
   });
 
   router.post(
@@ -2550,7 +2561,10 @@ export function accessRoutes(
         req.actor.type !== "board" ||
         (!req.actor.userId && !isLocalImplicit(req))
       ) {
-        throw unauthorized("Sign in before approving CLI access");
+        throw unauthorizedWithCode(
+          "Sign in before approving CLI access",
+          "cli-auth.signin-required",
+        );
       }
 
       const userId = req.actor.userId ?? "local-board";
@@ -2754,7 +2768,10 @@ export function accessRoutes(
       }
     }
     if (!token || !created) {
-      throw conflict("Failed to generate a unique invite token. Please retry.");
+      throw conflictWithCode(
+        "Failed to generate a unique invite token. Please retry.",
+        "invite.token-generation-failed",
+      );
     }
 
     return { token, created, normalizedAgentMessage };
@@ -2986,7 +3003,7 @@ export function accessRoutes(
 
   router.get("/invites/:token", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
@@ -2999,7 +3016,7 @@ export function accessRoutes(
       inviteExpired(invite) ||
       (invite.acceptedAt && !inviteJoinRequest)
     ) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const companyBranding = await getInviteCompanyBranding(invite.companyId, token);
@@ -3018,7 +3035,7 @@ export function accessRoutes(
 
   router.get("/invites/:token/logo", async (req, res, next) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
@@ -3031,19 +3048,19 @@ export function accessRoutes(
       inviteExpired(invite) ||
       (invite.acceptedAt && !inviteJoinRequest)
     ) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const logoAsset = await getInviteLogoAsset(invite.companyId);
     if (!logoAsset || !logoAsset.companyId) {
-      throw notFound("Invite logo not found");
+      throw notFoundWithCode("Invite logo not found", "invite.logo-not-found");
     }
     const companyId = logoAsset.companyId;
 
     const storage = getStorageService();
     const logoHead = await storage.headObject(companyId, logoAsset.objectKey);
     if (!logoHead.exists) {
-      throw notFound("Invite logo not found");
+      throw notFoundWithCode("Invite logo not found", "invite.logo-not-found");
     }
     const object = await storage.getObject(companyId, logoAsset.objectKey);
     const responseContentType =
@@ -3072,14 +3089,14 @@ export function accessRoutes(
 
   router.get("/invites/:token/onboarding", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
       .where(eq(invites.tokenHash, hashToken(token)))
       .then((rows) => rows[0] ?? null);
     if (!invite || invite.revokedAt || inviteExpired(invite)) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const companyBranding = await getInviteCompanyBranding(invite.companyId);
@@ -3091,14 +3108,14 @@ export function accessRoutes(
 
   router.get("/invites/:token/onboarding.txt", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
       .where(eq(invites.tokenHash, hashToken(token)))
       .then((rows) => rows[0] ?? null);
     if (!invite || invite.revokedAt || inviteExpired(invite)) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const companyBranding = await getInviteCompanyBranding(invite.companyId);
@@ -3114,14 +3131,14 @@ export function accessRoutes(
 
   router.get("/invites/:token/skills/index", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
       .where(eq(invites.tokenHash, hashToken(token)))
       .then((rows) => rows[0] ?? null);
     if (!invite || invite.revokedAt || inviteExpired(invite)) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     res.json({
@@ -3136,14 +3153,14 @@ export function accessRoutes(
 
   router.get("/invites/:token/skills/:skillName", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
       .where(eq(invites.tokenHash, hashToken(token)))
       .then((rows) => rows[0] ?? null);
     if (!invite || invite.revokedAt || inviteExpired(invite)) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const skillName = (req.params.skillName as string).trim().toLowerCase();
@@ -3155,14 +3172,14 @@ export function accessRoutes(
 
   router.get("/invites/:token/test-resolution", async (req, res) => {
     const token = (req.params.token as string).trim();
-    if (!token) throw notFound("Invite not found");
+    if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
     const invite = await db
       .select()
       .from(invites)
       .where(eq(invites.tokenHash, hashToken(token)))
       .then((rows) => rows[0] ?? null);
     if (!invite || invite.revokedAt || inviteExpired(invite)) {
-      throw notFound("Invite not found");
+      throw notFoundWithCode("Invite not found", "invite.not-found");
     }
 
     const rawUrl =
@@ -3201,7 +3218,7 @@ export function accessRoutes(
     validate(acceptInviteSchema),
     async (req, res) => {
       const token = (req.params.token as string).trim();
-      if (!token) throw notFound("Invite not found");
+      if (!token) throw notFoundWithCode("Invite not found", "invite.not-found");
 
       const invite = await db
         .select()
@@ -3209,7 +3226,7 @@ export function accessRoutes(
         .where(eq(invites.tokenHash, hashToken(token)))
         .then((rows) => rows[0] ?? null);
       if (!invite || invite.revokedAt || inviteExpired(invite)) {
-        throw notFound("Invite not found");
+        throw notFoundWithCode("Invite not found", "invite.not-found");
       }
       const inviteAlreadyAccepted = Boolean(invite.acceptedAt);
       const existingJoinRequestForInvite = inviteAlreadyAccepted
@@ -3221,9 +3238,12 @@ export function accessRoutes(
         : null;
 
       if (invite.inviteType === "bootstrap_ceo") {
-        if (inviteAlreadyAccepted) throw notFound("Invite not found");
+        if (inviteAlreadyAccepted) throw notFoundWithCode("Invite not found", "invite.not-found");
         if (req.body.requestType !== "human") {
-          throw badRequest("Bootstrap invite requires human request type");
+          throw badRequestWithCode(
+            "Bootstrap invite requires human request type",
+            "invite.bootstrap-human-only",
+          );
         }
         if (
           req.actor.type !== "board" ||
@@ -3255,12 +3275,16 @@ export function accessRoutes(
 
       const requestType = req.body.requestType as "human" | "agent";
       const companyId = invite.companyId;
-      if (!companyId) throw conflict("Invite is missing company scope");
+      if (!companyId) throw conflictWithCode("Invite is missing company scope", "invite.missing-scope");
       if (
         invite.allowedJoinTypes !== "both" &&
         invite.allowedJoinTypes !== requestType
       ) {
-        throw badRequest(`Invite does not allow ${requestType} joins`);
+        throw badRequestWithCode(
+          `Invite does not allow ${requestType} joins`,
+          "invite.join-type-not-allowed",
+          { requestType },
+        );
       }
 
       if (requestType === "human" && req.actor.type !== "board") {
@@ -3273,20 +3297,29 @@ export function accessRoutes(
         !req.actor.userId &&
         !isLocalImplicit(req)
       ) {
-        throw unauthorized("Authenticated user is required");
+        throw unauthorizedWithCode(
+          "Authenticated user is required",
+          "auth.user-required",
+        );
       }
       if (
         requestType === "human" &&
         actorHasActiveUserMembership(req, companyId)
       ) {
-        throw conflict("You already belong to this company");
+        throw conflictWithCode(
+          "You already belong to this company",
+          "invite.already-member",
+        );
       }
       if (requestType === "agent" && !req.body.agentName) {
         if (
           !inviteAlreadyAccepted ||
           !existingJoinRequestForInvite?.agentName
         ) {
-          throw badRequest("agentName is required for agent join requests");
+          throw badRequestWithCode(
+            "agentName is required for agent join requests",
+            "invite.agent-name-required",
+          );
         }
       }
 
@@ -3299,13 +3332,13 @@ export function accessRoutes(
           existingJoinRequest: existingJoinRequestForInvite
         })
       ) {
-        throw notFound("Invite not found");
+        throw notFoundWithCode("Invite not found", "invite.not-found");
       }
       const replayJoinRequestId = inviteAlreadyAccepted
         ? existingJoinRequestForInvite?.id ?? null
         : null;
       if (inviteAlreadyAccepted && !replayJoinRequestId) {
-        throw conflict("Join request not found");
+        throw conflictWithCode("Join request not found", "join-request.not-found");
       }
 
       const replayMergedDefaults = inviteAlreadyAccepted
@@ -3475,7 +3508,7 @@ export function accessRoutes(
             .then((rows) => rows[0]);
 
       if (!created) {
-        throw conflict("Join request not found");
+        throw conflictWithCode("Join request not found", "join-request.not-found");
       }
 
       if (
@@ -3642,10 +3675,10 @@ export function accessRoutes(
     if (invite.inviteType === "bootstrap_ceo") {
       await assertInstanceAdmin(req);
     } else {
-      if (!invite.companyId) throw conflict("Invite is missing company scope");
+      if (!invite.companyId) throw conflictWithCode("Invite is missing company scope", "invite.missing-scope");
       await assertCompanyPermission(req, invite.companyId, "users:invite");
     }
-    if (invite.acceptedAt) throw conflict("Invite already consumed");
+    if (invite.acceptedAt) throw conflictWithCode("Invite already consumed", "invite.already-used");
     if (invite.revokedAt) return res.json(invite);
 
     const revoked = await db
@@ -3711,16 +3744,16 @@ export function accessRoutes(
           )
         )
         .then((rows) => rows[0] ?? null);
-      if (!existing) throw notFound("Join request not found");
+      if (!existing) throw notFoundWithCode("Join request not found", "join-request.not-found");
       if (existing.status !== "pending_approval")
-        throw conflict("Join request is not pending");
+        throw conflictWithCode("Join request is not pending", "join-request.not-pending");
 
       const invite = await db
         .select()
         .from(invites)
         .where(eq(invites.id, existing.inviteId))
         .then((rows) => rows[0] ?? null);
-      if (!invite) throw notFound("Invite not found");
+      if (!invite) throw notFoundWithCode("Invite not found", "invite.not-found");
 
       let createdAgentId: string | null = existing.createdAgentId ?? null;
       if (existing.requestType === "human") {
@@ -3860,9 +3893,9 @@ export function accessRoutes(
           )
         )
         .then((rows) => rows[0] ?? null);
-      if (!existing) throw notFound("Join request not found");
+      if (!existing) throw notFoundWithCode("Join request not found", "join-request.not-found");
       if (existing.status !== "pending_approval")
-        throw conflict("Join request is not pending");
+        throw conflictWithCode("Join request is not pending", "join-request.not-pending");
 
       const rejected = await db
         .update(joinRequests)
@@ -3902,11 +3935,17 @@ export function accessRoutes(
         .from(joinRequests)
         .where(eq(joinRequests.id, requestId))
         .then((rows) => rows[0] ?? null);
-      if (!joinRequest) throw notFound("Join request not found");
+      if (!joinRequest) throw notFoundWithCode("Join request not found", "join-request.not-found");
       if (joinRequest.requestType !== "agent")
-        throw badRequest("Only agent join requests can claim API keys");
+        throw badRequestWithCode(
+          "Only agent join requests can claim API keys",
+          "join-request.agent-claim-only",
+        );
       if (joinRequest.status !== "approved")
-        throw conflict("Join request must be approved before key claim");
+        throw conflictWithCode(
+          "Join request must be approved before key claim",
+          "join-request.must-be-approved",
+        );
       if (!joinRequest.createdAgentId)
         throw conflict("Join request has no created agent");
       if (!joinRequest.claimSecretHash)
@@ -3914,23 +3953,23 @@ export function accessRoutes(
       if (
         !tokenHashesMatch(joinRequest.claimSecretHash, presentedClaimSecretHash)
       ) {
-        throw forbidden("Invalid claim secret");
+        throw conflictWithCode("Invalid claim secret", "claim-secret.invalid");
       }
       if (
         joinRequest.claimSecretExpiresAt &&
         joinRequest.claimSecretExpiresAt.getTime() <= Date.now()
       ) {
-        throw conflict("Claim secret expired");
+        throw conflictWithCode("Claim secret expired", "claim-secret.expired");
       }
       if (joinRequest.claimSecretConsumedAt)
-        throw conflict("Claim secret already used");
+        throw conflictWithCode("Claim secret already used", "claim-secret.already-used");
 
       const existingKey = await db
         .select({ id: agentApiKeys.id })
         .from(agentApiKeys)
         .where(eq(agentApiKeys.agentId, joinRequest.createdAgentId))
         .then((rows) => rows[0] ?? null);
-      if (existingKey) throw conflict("API key already claimed");
+      if (existingKey) throw conflictWithCode("API key already claimed", "claim-secret.api-key-claimed");
 
       const consumed = await db
         .update(joinRequests)
@@ -3943,7 +3982,7 @@ export function accessRoutes(
         )
         .returning({ id: joinRequests.id })
         .then((rows) => rows[0] ?? null);
-      if (!consumed) throw conflict("Claim secret already used");
+      if (!consumed) throw conflictWithCode("Claim secret already used", "claim-secret.already-used");
 
       const created = await agents.createApiKey(
         joinRequest.createdAgentId,
@@ -4000,7 +4039,7 @@ export function accessRoutes(
       const memberId = req.params.memberId as string;
       await assertCompanyPermission(req, companyId, "users:manage_permissions");
       const memberToUpdate = await access.getMemberById(companyId, memberId);
-      if (!memberToUpdate) throw notFound("Member not found");
+      if (!memberToUpdate) throw notFoundWithCode("Member not found", "member.not-found");
       await assertCanManageCompanyMember(req, access, companyId, memberToUpdate);
 
       const updated = await db.transaction(async (tx) => {
@@ -4051,7 +4090,10 @@ export function accessRoutes(
             )
             .then((rows) => rows.length);
           if (activeOwnerCount <= 1) {
-            throw conflict("Cannot remove the last active owner");
+            throw conflictWithCode(
+              "Cannot remove the last active owner",
+              "member.last-owner",
+            );
           }
         }
 
@@ -4066,7 +4108,7 @@ export function accessRoutes(
           .returning()
           .then((rows) => rows[0] ?? existing);
       });
-      if (!updated) throw notFound("Member not found");
+      if (!updated) throw notFoundWithCode("Member not found", "member.not-found");
 
       await logActivity(db, {
         companyId,
@@ -4084,7 +4126,7 @@ export function accessRoutes(
       const member = (await loadCompanyMemberRecords(db, companyId)).find(
         (entry) => entry.id === memberId,
       );
-      if (!member) throw notFound("Member not found");
+      if (!member) throw notFoundWithCode("Member not found", "member.not-found");
       res.json(member);
     }
   );
@@ -4097,7 +4139,7 @@ export function accessRoutes(
       const memberId = req.params.memberId as string;
       await assertCompanyPermission(req, companyId, "users:manage_permissions");
       const memberToUpdate = await access.getMemberById(companyId, memberId);
-      if (!memberToUpdate) throw notFound("Member not found");
+      if (!memberToUpdate) throw notFoundWithCode("Member not found", "member.not-found");
       await assertCanManageCompanyMember(req, access, companyId, memberToUpdate);
 
       const updated = await db.transaction(async (tx) => {
@@ -4148,7 +4190,10 @@ export function accessRoutes(
             )
             .then((rows) => rows.length);
           if (activeOwnerCount <= 1) {
-            throw conflict("Cannot remove the last active owner");
+            throw conflictWithCode(
+              "Cannot remove the last active owner",
+              "member.last-owner",
+            );
           }
         }
 
@@ -4192,7 +4237,7 @@ export function accessRoutes(
 
         return updatedMember;
       });
-      if (!updated) throw notFound("Member not found");
+      if (!updated) throw notFoundWithCode("Member not found", "member.not-found");
 
       await logActivity(db, {
         companyId,
@@ -4211,7 +4256,7 @@ export function accessRoutes(
       const member = (await loadCompanyMemberRecords(db, companyId)).find(
         (entry) => entry.id === memberId,
       );
-      if (!member) throw notFound("Member not found");
+      if (!member) throw notFoundWithCode("Member not found", "member.not-found");
       res.json(member);
     }
   );
@@ -4224,13 +4269,13 @@ export function accessRoutes(
       const memberId = req.params.memberId as string;
       await assertCompanyPermission(req, companyId, "users:manage_permissions");
       const memberToArchive = await access.getMemberById(companyId, memberId);
-      if (!memberToArchive) throw notFound("Member not found");
+      if (!memberToArchive) throw notFoundWithCode("Member not found", "member.not-found");
       await assertCanManageCompanyMember(req, access, companyId, memberToArchive, "archive");
 
       const result = await access.archiveMember(companyId, memberId, {
         reassignment: req.body.reassignment ?? null,
       });
-      if (!result) throw notFound("Member not found");
+      if (!result) throw notFoundWithCode("Member not found", "member.not-found");
 
       await logActivity(db, {
         companyId,
@@ -4249,7 +4294,7 @@ export function accessRoutes(
       const member = (await loadCompanyMemberRecords(db, companyId, { includeArchived: true })).find(
         (entry) => entry.id === memberId,
       );
-      if (!member) throw notFound("Member not found");
+      if (!member) throw notFoundWithCode("Member not found", "member.not-found");
       res.json({
         member,
         reassignedIssueCount: result.reassignedIssueCount,
@@ -4265,7 +4310,7 @@ export function accessRoutes(
       const memberId = req.params.memberId as string;
       await assertCompanyPermission(req, companyId, "users:manage_permissions");
       const memberToUpdate = await access.getMemberById(companyId, memberId);
-      if (!memberToUpdate) throw notFound("Member not found");
+      if (!memberToUpdate) throw notFoundWithCode("Member not found", "member.not-found");
       await assertCanManageCompanyMember(req, access, companyId, memberToUpdate);
       const updated = await access.setMemberPermissions(
         companyId,
@@ -4273,7 +4318,7 @@ export function accessRoutes(
         req.body.grants ?? [],
         req.actor.userId ?? null
       );
-      if (!updated) throw notFound("Member not found");
+      if (!updated) throw notFoundWithCode("Member not found", "member.not-found");
       await logActivity(db, {
         companyId,
         actorType: "user",
@@ -4288,7 +4333,7 @@ export function accessRoutes(
       const member = (await loadCompanyMemberRecords(db, companyId)).find(
         (entry) => entry.id === memberId,
       );
-      if (!member) throw notFound("Member not found");
+      if (!member) throw notFoundWithCode("Member not found", "member.not-found");
       res.json(member);
     }
   );
