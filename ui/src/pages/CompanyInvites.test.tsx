@@ -4,7 +4,9 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import { CompanyInvites } from "./CompanyInvites";
 import { queryKeys } from "@/lib/queryKeys";
 
@@ -51,6 +53,12 @@ async function flushReact() {
 
 describe("CompanyInvites", () => {
   let container: HTMLDivElement;
+
+  beforeAll(async () => {
+    // Phase 9-01 Rule 1 fixture-fix: pin locale so existing English assertions still match.
+    await i18n.changeLanguage("en-US");
+  });
+
   const inviteHistory = Array.from({ length: 25 }, (_, index) => {
     const inviteNumber = 25 - index;
     const isActive = inviteNumber === 25;
@@ -123,11 +131,13 @@ describe("CompanyInvites", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter>
-          <QueryClientProvider client={queryClient}>
-            <CompanyInvites />
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter>
+            <QueryClientProvider client={queryClient}>
+              <CompanyInvites />
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
@@ -238,11 +248,13 @@ describe("CompanyInvites", () => {
 
     await act(async () => {
       root.render(
-        <MemoryRouter>
-          <QueryClientProvider client={queryClient}>
-            <CompanyInvites />
-          </QueryClientProvider>
-        </MemoryRouter>,
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter>
+            <QueryClientProvider client={queryClient}>
+              <CompanyInvites />
+            </QueryClientProvider>
+          </MemoryRouter>
+        </I18nextProvider>,
       );
     });
     await flushReact();
