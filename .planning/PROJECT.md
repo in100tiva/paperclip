@@ -12,11 +12,12 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Validados
 
-(Nenhum ainda — lançar para validar)
+- ✓ Paperclip clonado e convertido em fork hard (sem upstream) — Fase 1 (SHA `40782f7`)
+- ✓ Identidade reescrita como `ddd`, política de fork documentada (`UPSTREAM_REFERENCE.md`, `CONTRIBUTING.md`) — Fase 1
+- ✓ Smoke test baseline: `pnpm install` + `pnpm dev` rodam em Windows com embedded Postgres — Fase 1
 
 ### Ativos
 
-- [ ] Clonar paperclip como base do projeto e converter em fork hard (sem upstream)
 - [ ] Substituir PostgreSQL embedded por Supabase remoto compartilhado (projeto `bxlczioxgizgvtznukwt`)
 - [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip
 - [ ] Manter Better Auth (auth atual do paperclip) rodando contra o Supabase Postgres — não trocar para Supabase Auth no v1
@@ -56,7 +57,7 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 | Decisão | Justificativa | Resultado |
 |---------|---------------|-----------|
-| Fork hard (sem upstream) | Liberdade para customizar profundamente sem custo de merge contínuo | — Pendente |
+| Fork hard (sem upstream) | Liberdade para customizar profundamente sem custo de merge contínuo | ✓ Boa — Fase 1 confirmou `pnpm dev` funcional pós-corte |
 | Supabase remoto compartilhado | Estado único da equipe, qualquer dev em qualquer máquina vê o mesmo | — Pendente |
 | Local-first + Supabase remoto | Evita custo/complexidade de hospedar instância única; cada dev tem ambiente próprio mas estado central | — Pendente |
 | Manter Better Auth, Supabase só como Postgres | Schemas Better Auth (text id) incompatíveis com `auth.users` (uuid); migração HIGH effort sem ganho v1 | — Pendente |
@@ -80,4 +81,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-25 after initialization*
+*Last updated: 2026-04-26 after Phase 1 completion*
