@@ -92,8 +92,8 @@ Planos:
 - [x] 03-01-PLAN.md — Setup script `pnpm setup` validando ambiente local (TEAM-03)
 - [x] 03-02-PLAN.md — ONBOARDING.md pt-br + nota no README apontando para ele (TEAM-02)
 - [x] 03-03-PLAN.md — TROUBLESHOOTING.md pt-br cobrindo 7 problemas conhecidos (TEAM-05)
-- [ ] 03-04-PLAN.md — Procedimento smoke E2E cross-machine + 03-HUMAN-UAT.md (TEAM-04)
-- [ ] 03-05-PLAN.md — Procedimento de cadastro coletivo de 5+ devs via fluxo existente (TEAM-01)
+- [x] 03-04-PLAN.md — Procedimento smoke E2E cross-machine + 03-HUMAN-UAT.md (TEAM-04)
+- [x] 03-05-PLAN.md — Procedimento de cadastro coletivo de 5+ devs via fluxo existente (TEAM-01)
 
 ### Phase 4: Spike — Multi-Account Claude Code Detection
 

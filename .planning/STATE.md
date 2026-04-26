@@ -3,12 +3,12 @@ state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
 status: completed
-last_updated: "2026-04-26T04:44:27.817Z"
+last_updated: "2026-04-26T04:49:18.804Z"
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 13
 ---
 
 # Estado do Projeto
@@ -96,6 +96,7 @@ Decisões recentes que afetam o trabalho atual:
 - 02-06: Phase 2 declared complete via human-verify approval; 16/16 requirements satisfeitos (INFRA-01..06, DB-01..05, AUTH-01..05). Multi-dev cross-machine validation deferida para Phase 3 TEAM-04 — infra está pronta, falta só o human flow.
 - 03-02: ONBOARDING.md pt-br criado na raiz (124 linhas, 7 seções H2 numeradas seguindo D-06) com tempo-alvo <30min declarado no topo (D-07). Vars críticas em tabela markdown; PAPERCLIP_INSTANCE_ID=team-shared destacado como literal obrigatório com aviso de divergência → cookie isolado. Modo `authenticated` documentado como override explícito para invite flow (finding 02-06: pnpm dev arranca em local_trusted, Better Auth handler não montado). Bootstrap CEO vs dev #2..N split na seção 6. README.md ganhou nota DDD curta no topo apontando para ONBOARDING.md (D-08); paperclip body intocado byte-por-byte (439 linhas remanescentes). Anchor convention estabelecida para TROUBLESHOOTING.md em snake-case (#windows-ntfs, #cookie-prefix-divergente). TEAM-02 satisfeito.
 - 03-03: TROUBLESHOOTING.md pt-br criado (193 linhas, 7 seções) cobrindo Windows NTFS, stale registry, too-many-connections, cookie prefix, schema desatualizado, claude CLI, prepared statement 6543. Anchors GFM alinhados com links do ONBOARDING.md; cada causa em código cita path:linha (D-18). Satisfies TEAM-05.
+- 03-05: TEAM-SIGNUP-PROCEDURE.md (185 linhas, pt-br) documenta bootstrap CEO via `tsx packages/db/scripts/create-auth-bootstrap-invite.ts --config <path> --base-url <url>` + cadastro coletivo de 4+ devs via fluxo `company_join` existente (D-09: zero código novo). 3 SQL queries de validação literal (pre-check bootstrap_ceo, count intermediário 1user/1company, count final 5+ users na shared company). Modo `authenticated` documentado como override obrigatório (finding 02-06). Fallback `pending-team-growth` aceito explicitamente — proibido falsificar users via SQL (viola D-09 e quebra cost attribution Fase 6). Forward link para 03-HUMAN-UAT.md#uat-03-02 (será resolvido pelo plano paralelo 03-04 da Wave 2). Satisfies TEAM-01 (no que é automatizável; execução real é HUMAN-UAT).
 
 ### Todos Pendentes
 
@@ -109,5 +110,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 03-02-PLAN.md (ONBOARDING.md + nota README, TEAM-02). Plano paralelo 03-03 também concluído (TROUBLESHOOTING.md, TEAM-05). Aguardando demais waves da Fase 3.
+Parou em: Concluído 03-05-PLAN.md (TEAM-SIGNUP-PROCEDURE.md, TEAM-01). Wave 2 paralelo: 03-04 (HUMAN-UAT) executando. Aguardando demais planos da Fase 3.
 Arquivo de retomada: Nenhum
