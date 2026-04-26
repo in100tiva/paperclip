@@ -90,7 +90,14 @@ Plans:
 4. Tooltips, empty states, modais de confirmação e toasts respeitam locale ativo — sem mistura de idiomas em hovers ou prompts modais.
 5. Após fechar Phase 9, varredura manual ou automatizada não encontra strings em inglês na UI quando locale=pt-BR — cobertura de UI declarada completa.
 
-**Plans**: TBD
+**Plans**: 5 plans across 3 waves
+
+Plans:
+- [ ] 09-03a-PLAN.md — Wave 1: Server error code infra (HttpError + *WithCode helpers + error-handler emit + ~40 priority callsites)
+- [ ] 09-03b-PLAN.md — Wave 1: Client translateApiError + ApiError.code + errors.json populate (UI-07)
+- [ ] 09-01-PLAN.md — Wave 2: Admin/Company UI (CompanySettings + CompanyAccess + 9 siblings) — UI-04
+- [ ] 09-02-PLAN.md — Wave 2: Auth forms (Auth + BoardClaim + CliAuth + InviteLanding) — UI-06
+- [ ] 09-04-PLAN.md — Wave 3: Cross-cutting toasts/modais/tooltips + anti-regression — UI-08
 
 **UI hint**: yes
 
@@ -136,7 +143,7 @@ Plans:
 |------|------------------|--------|--------------|
 | 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
 | 8. Tradução UI Core | 1/5 | In Progress|  |
-| 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/0 | Não iniciada | - |
+| 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 0/0 | Não iniciada | - |
 | 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |
 
