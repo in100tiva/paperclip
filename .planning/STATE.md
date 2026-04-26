@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: Fase 7 em progresso (1/5 planos). Plano 07-01 (Wave 0 RED) concluído — 16 dicionários JSON bootstrap + 5 testes RED commitados ancorando todos os 9 requisitos da fase (SETTINGS-01..04, I18N-01..05) antes de qualquer código de produção. Wave 1 (07-02 schema + 07-03 i18n init) destravada para execução paralela.
-last_updated: "2026-04-26T12:10:09.105Z"
+status: "Plano 07-01 (Wave 0 RED) concluído. 16 dicionários JSON bootstrap (8 namespaces × 2 locales) e 5 testes RED commitados — todos os 9 requisitos da fase (SETTINGS-01..04, I18N-01..05) ancorados por pelo menos 1 teste falhante antes de qualquer código de produção. Wave 1 (07-02 schema + 07-03 i18n init) destravada e pode rodar em paralelo (arquivos disjuntos: packages/db+shared vs ui/src/i18n)."
+last_updated: "2026-04-26T12:27:59.243Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Estado do Projeto

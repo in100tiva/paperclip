@@ -11,8 +11,8 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 ### Settings — Toggle de Idioma e Persistência
 
 - [ ] **SETTINGS-01**: Usuário pode alternar idioma em `instance/settings` via radio (pt-BR / en-US)
-- [ ] **SETTINGS-02**: Preferência de idioma persiste por usuário no Supabase (coluna em `user` ou tabela de preferências)
-- [ ] **SETTINGS-03**: Default pt-BR para usuários sem preferência explícita; fallback en-US para chaves ausentes
+- [x] **SETTINGS-02**: Preferência de idioma persiste por usuário no Supabase (coluna em `user` ou tabela de preferências)
+- [x] **SETTINGS-03**: Default pt-BR para usuários sem preferência explícita; fallback en-US para chaves ausentes
 - [ ] **SETTINGS-04**: Mudança de idioma aplica imediatamente na sessão atual sem reload completo da página
 
 ### I18n — Infraestrutura
@@ -21,7 +21,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 - [ ] **I18N-02**: Dicionários `pt-BR` e `en-US` versionados no repo em JSON (ou TS) com convenção de chaves estável
 - [ ] **I18N-03**: Fallback en-US para chaves pt-BR ausentes (e vice-versa) — sem placeholder cru visível ao usuário
 - [ ] **I18N-04**: Detector de chaves não traduzidas em CI ou dev (warn/erro durante build quando chave usada não existe no dicionário)
-- [ ] **I18N-05**: Locale do usuário disponível no context do servidor (para SSR, responses de API e templates de activity log)
+- [x] **I18N-05**: Locale do usuário disponível no context do servidor (para SSR, responses de API e templates de activity log)
 
 ### UI — Tradução Completa da Interface
 
@@ -85,14 +85,14 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | Requisito | Fase | Status |
 |-----------|------|--------|
 | SETTINGS-01 | Fase 7 | Pending |
-| SETTINGS-02 | Fase 7 | Pending |
-| SETTINGS-03 | Fase 7 | Pending |
+| SETTINGS-02 | Fase 7 | Complete |
+| SETTINGS-03 | Fase 7 | Complete |
 | SETTINGS-04 | Fase 7 | Pending |
 | I18N-01 | Fase 7 | Pending |
 | I18N-02 | Fase 7 | Pending |
 | I18N-03 | Fase 7 | Pending |
 | I18N-04 | Fase 7 | Pending |
-| I18N-05 | Fase 7 | Pending |
+| I18N-05 | Fase 7 | Complete |
 | UI-01 | Fase 8 | Pending |
 | UI-02 | Fase 8 | Pending |
 | UI-03 | Fase 8 | Pending |

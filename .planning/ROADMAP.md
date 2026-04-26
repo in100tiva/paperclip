@@ -44,7 +44,7 @@ Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência 
 
 Plans:
 - [x] 07-01-PLAN.md — Wave 0 (RED): 16 bootstrap JSON dicts + 5 failing test files anchoring SETTINGS-01..04 + I18N-01..05
-- [ ] 07-02-PLAN.md — Wave 1: DB migration 0073_add_user_locale.sql + Better Auth additionalFields.locale + Zod localeSchema/refine
+- [x] 07-02-PLAN.md — Wave 1: DB migration 0073_add_user_locale.sql + Better Auth additionalFields.locale + Zod localeSchema/refine
 - [ ] 07-03-PLAN.md — Wave 1: i18next + react-i18next install; ui/src/i18n/{index,resources,i18next.d}.ts; init+missing-keys tests GREEN
 - [ ] 07-04-PLAN.md — Wave 2: server actorMiddleware sets req.locale (3-tier fallback); PATCH /api/auth/profile accepts locale; server tests GREEN
 - [ ] 07-05-PLAN.md — Wave 2: I18nextProvider in main.tsx + ProfileSettings Language toggle (optimistic, await changeLanguage before setQueryData) + UAT-07-01/02 checkpoint
