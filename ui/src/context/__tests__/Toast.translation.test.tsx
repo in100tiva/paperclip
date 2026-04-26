@@ -27,7 +27,7 @@ function ToastTrigger({
       data-testid="trigger"
       onClick={() =>
         pushToast({
-          title: t(`common:toast.${event}` as never, params as never) as string,
+          title: t(`common:toast.${event}` as never, params as never) as unknown as string,
           tone: "success",
         })
       }
