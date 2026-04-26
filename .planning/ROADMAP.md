@@ -19,7 +19,7 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 - [x] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
 - [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
 - [x] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs (artefatos completos, complete-with-pending-UAT — TEAM-04 e TEAM-01 execução real em 03-HUMAN-UAT.md)
-- [ ] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção)
+- [x] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção) (completed 2026-04-26)
 - [ ] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão
 - [ ] **Phase 6: Multi-Projeto + Polish** — Múltiplas companies em paralelo, cost attribution por projeto e fechamento do v1
 
@@ -117,7 +117,7 @@ Planos:
 - [x] 04-02-PLAN.md — Decisão arquitetural detecção: DECISION-DETECTION-STRATEGY.md (reativo primary, pré-emptivo opt, cooldown 30s, retry-after honrado) (SPIKE-03)
 - [x] 04-03-PLAN.md — Protótipo classifier descartável + 6 fixtures stub + tests vitest standalone (SPIKE-02)
 - [x] 04-04-PLAN.md — Harness shell scripts (capture-fixture.sh + test-multi-account-resume.sh) para HUMAN-UAT empírico (SPIKE-04 + SPIKE-05 enabling)
-- [ ] 04-05-PLAN.md — Consolidação: 04-HUMAN-UAT.md (UAT-04-01..03) + FINDINGS-FOR-PHASE-5.md (SPIKE-04 + SPIKE-05)
+- [x] 04-05-PLAN.md — Consolidação: 04-HUMAN-UAT.md (UAT-04-01..03) + FINDINGS-FOR-PHASE-5.md (SPIKE-04 + SPIKE-05)
 
 ### Phase 5: Multi-Account Claude Code Swap (Implementação)
 
@@ -172,6 +172,6 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Fork Hard + Cerimônia de Corte | 2/2 | Complete | 2026-04-25 |
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
-| 4. Spike — Multi-Account Detection | 4/5 | In Progress|  |
+| 4. Spike — Multi-Account Detection | 5/5 | Complete   | 2026-04-26 |
 | 5. Multi-Account Swap (Implementação) | 0/? | Not started | - |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |
