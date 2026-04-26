@@ -4,7 +4,9 @@ import { act } from "react";
 import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import { afterAll, beforeAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import i18n from "@/i18n";
 import { Sidebar } from "./Sidebar";
 
 const mockHeartbeatsApi = vi.hoisted(() => ({
@@ -91,6 +93,16 @@ async function flushReact() {
 
 describe("Sidebar", () => {
   let container: HTMLDivElement;
+  let previousLanguage: string;
+
+  beforeAll(async () => {
+    previousLanguage = i18n.language;
+    await i18n.changeLanguage("en-US");
+  });
+
+  afterAll(async () => {
+    await i18n.changeLanguage(previousLanguage);
+  });
 
   beforeEach(() => {
     container = document.createElement("div");
@@ -114,7 +126,9 @@ describe("Sidebar", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <Sidebar />
+          <I18nextProvider i18n={i18n}>
+            <Sidebar />
+          </I18nextProvider>
         </QueryClientProvider>,
       );
     });
@@ -137,7 +151,9 @@ describe("Sidebar", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <Sidebar />
+          <I18nextProvider i18n={i18n}>
+            <Sidebar />
+          </I18nextProvider>
         </QueryClientProvider>,
       );
     });

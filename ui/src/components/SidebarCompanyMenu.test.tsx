@@ -3,7 +3,9 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import { afterAll, beforeAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import i18n from "@/i18n";
 import { SidebarCompanyMenu } from "./SidebarCompanyMenu";
 
 const mockAuthApi = vi.hoisted(() => ({
@@ -55,6 +57,16 @@ async function flushReact() {
 
 describe("SidebarCompanyMenu", () => {
   let container: HTMLDivElement;
+  let previousLanguage: string;
+
+  beforeAll(async () => {
+    previousLanguage = i18n.language;
+    await i18n.changeLanguage("en-US");
+  });
+
+  afterAll(async () => {
+    await i18n.changeLanguage(previousLanguage);
+  });
 
   beforeEach(() => {
     container = document.createElement("div");
@@ -85,7 +97,9 @@ describe("SidebarCompanyMenu", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <SidebarCompanyMenu />
+          <I18nextProvider i18n={i18n}>
+            <SidebarCompanyMenu />
+          </I18nextProvider>
         </QueryClientProvider>,
       );
     });
