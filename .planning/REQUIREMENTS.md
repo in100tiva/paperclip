@@ -28,7 +28,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 - [x] **UI-01**: Tela inbox traduzida (lista de items, filtros, ações em massa, estados vazios)
 - [x] **UI-02**: Tela projects traduzida (lista, criação, detalhes, edição)
 - [x] **UI-03**: Tela settings traduzida — incluindo a própria seção de idioma e settings de Claude accounts
-- [ ] **UI-04**: Telas admin/company traduzidas (membros, roles, claude accounts pool, cost summary, rotation history)
+- [x] **UI-04**: Telas admin/company traduzidas (membros, roles, claude accounts pool, cost summary, rotation history)
 - [x] **UI-05**: Navegação, sidebar, header, menus e breadcrumbs traduzidos
 - [ ] **UI-06**: Formulários de auth (login, signup, reset password, invite/board-claim) traduzidos
 - [x] **UI-07**: Mensagens de erro, validação de formulários e mensagens de API traduzidas (server emit shape ✓ via 09-03a; client mapping pendente 09-03b)
@@ -96,7 +96,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | UI-01 | Fase 8 | Complete |
 | UI-02 | Fase 8 | Complete |
 | UI-03 | Fase 8 | Complete |
-| UI-04 | Fase 9 | Pending |
+| UI-04 | Fase 9 | Complete |
 | UI-05 | Fase 8 | Complete |
 | UI-06 | Fase 9 | Pending |
 | UI-07 | Fase 9 | Partial (server 09-03a ✓, client 09-03b pendente) |
