@@ -34,10 +34,10 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 
 ### Auth
 
-- [ ] **AUTH-01**: Better Auth funciona contra Postgres do Supabase (schema `user`/`session`/`account`/`verification` com IDs text)
-- [ ] **AUTH-02**: Cookie prefix configurado via `PAPERCLIP_INSTANCE_ID=team-shared` para todos os devs compartilharem mesma sessão lógica
-- [ ] **AUTH-03**: Modo `authenticated` ativo — todas as rotas (exceto signup/login) requerem sessão Better Auth válida
-- [ ] **AUTH-04**: Signup com email/senha disponível para 5+ devs da equipe
+- [x] **AUTH-01**: Better Auth funciona contra Postgres do Supabase (schema `user`/`session`/`account`/`verification` com IDs text)
+- [x] **AUTH-02**: Cookie prefix configurado via `PAPERCLIP_INSTANCE_ID=team-shared` para todos os devs compartilharem mesma sessão lógica
+- [x] **AUTH-03**: Modo `authenticated` ativo — todas as rotas (exceto signup/login) requerem sessão Better Auth válida
+- [x] **AUTH-04**: Signup com email/senha disponível para 5+ devs da equipe
 - [x] **AUTH-05**: Service-role key do Supabase apenas no servidor — nunca exposto no bundle Vite (verificado por pre-commit hook)
 
 ### Equipe
@@ -143,10 +143,10 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | DB-03 | Phase 2 | Pending |
 | DB-04 | Phase 2 | Pending |
 | DB-05 | Phase 2 | Pending |
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
+| AUTH-04 | Phase 2 | Complete |
 | AUTH-05 | Phase 2 | Complete |
 | TEAM-01 | Phase 3 | Pending |
 | TEAM-02 | Phase 3 | Pending |

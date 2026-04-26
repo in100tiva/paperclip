@@ -3,12 +3,12 @@ state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
 status: completed
-last_updated: "2026-04-26T03:42:00.000Z"
+last_updated: "2026-04-26T03:43:56.294Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Estado do Projeto
@@ -23,11 +23,11 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 ## Posição Atual
 
 Fase: 2 de 6 (Migração de Storage para Supabase) — **EM PROGRESSO**
-Plano: Wave 2 (02-03) concluído. Próximo: iniciar Wave 3 (02-04 + 02-05 podem rodar em paralelo).
-Status: Phase 02 Wave 2 done — driver Supavisor-aware online; embedded fallback opt-in; auto-migrations gate ativo; .env.example team-shared
-Última atividade: 2026-04-26 — Plano 02-03 concluído: createDb port-aware (6543→prepare:false, max:5), runtime-config exige PAPERCLIP_DB_MODE para embedded fallback, server promptApplyMigrations recusa non-TTY, drizzle.config prefere SUPABASE_DB_URL, .env.example reescrito com 9 env vars críticas. INFRA-02..06 + DB-02 satisfeitos.
+Plano: Wave 3 em execução paralela (02-04 + 02-05). 02-05 concluído. Próximo: aguardar 02-04 (paralelo) e iniciar 02-06 (E2E smoke test).
+Status: Phase 02 Wave 3 — auth wiring validated; 7-test readiness suite covers AUTH-01..04
+Última atividade: 2026-04-26 — Plano 02-05 concluído: Better Auth ↔ Supabase wiring verificado empiricamente; deriveAuthCookiePrefix('team-shared') = 'paperclip-team-shared' (5 unit tests); createBetterAuthInstance contra Supabase real OK (1 integration test gated por SUPABASE_DB_URL); inline AUTH-01..04 mapping em better-auth.ts. Zero edits estruturais — verification-only. AUTH-01..04 satisfeitos.
 
-Progresso: [██████░░░░] 63% (5 / 8 plans complete)
+Progresso: [█████████░] ~88% (atualizado por update-progress tool)
 
 ## Métricas de Performance
 
@@ -83,6 +83,8 @@ Decisões recentes que afetam o trabalho atual:
 - 02-03: `drizzle.config.ts` lança erro quando nenhum env var presente (drizzle-kit ser invocado sem env apontando para Supabase é misconfig grave que pode aplicar DDL no lugar errado).
 - 02-03: Two-URL convention estabelecido: `DATABASE_URL` = pooler 6543 (transaction, app runtime), `SUPABASE_DB_URL` = pooler 5432 (session, DDL/migrations). Ambos no `.env.example` com TODO_FILL_ME.
 - 02-03: `promptApplyMigrations` em non-TTY retorna `false` (era `true`) — fechamento de Audit F.1 HIGH risk. Watchers/dev-runner/daemon não aplicam migrations sem opt-in (`PAPERCLIP_MIGRATION_AUTO_APPLY=true`) ou TTY interativo.
+- 02-05: Verification-only execution — better-auth.ts módulo preservado intacto (zero edits estruturais), apenas comment block (33 linhas) mapeando AUTH-01..04 a linhas específicas. Readiness suite (7 tests) valida AUTH-01 (integration contra Supabase real, gated por SUPABASE_DB_URL) + AUTH-02 (5 unit tests, cookie prefix paperclip-team-shared empiricamente confirmado).
+- 02-05: Integration test gated por `it.skipIf(skipReason !== null)` baseado em SUPABASE_DB_URL/DATABASE_URL presence — graceful skip sem env, valida wiring real com .env.local. Padrão reusable para futuras fases de testes que requerem secrets.
 
 ### Todos Pendentes
 
@@ -95,5 +97,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 02-03-PLAN.md (DB connection patches + env scaffolding, INFRA-02..06 + DB-02). Wave 2 da Fase 02 completa. Pronto para Wave 3 (02-04 apply-migrations + 02-05 auth-wiring podem executar em paralelo).
+Parou em: Concluído 02-05-PLAN.md (auth wiring validation, AUTH-01..04). Wave 3 paralela (02-04 ainda em execução simultânea). Pronto para 02-06 (E2E smoke test) após 02-04 concluir.
 Arquivo de retomada: Nenhum
