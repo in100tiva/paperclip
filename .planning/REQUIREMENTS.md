@@ -66,7 +66,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 - [x] **MULTI-06**: Patch `claude-local/src/server/parse.ts` adiciona `detectClaudeQuotaExhausted` baseado no spike
 - [x] **MULTI-07**: `services/heartbeat.ts` chama `selectActiveAccount` antes de cada spawn de agente
 - [x] **MULTI-08**: Swap automático: ao detectar exhaustão, drena step atual → checkpoint → swap → resume usando `issue_continuation_summary`
-- [ ] **MULTI-09**: UI `ui/src/pages/ClaudeAccounts.tsx` permite registrar conta, ver status (live/exhausted/cooldown), histórico de rotações
+- [x] **MULTI-09**: UI `ui/src/pages/ClaudeAccounts.tsx` permite registrar conta, ver status (live/exhausted/cooldown), histórico de rotações
 - [x] **MULTI-10**: Activity log emite `claude_account_rotated` com (from, to, reason, agentId) a cada swap
 - [x] **MULTI-11**: Smoke test E2E: agente roda → conta A esgota → swap automático para B → continuidade preservada → cost atribuído corretamente a cada conta
 
@@ -166,7 +166,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | MULTI-06 | Phase 5 | Complete |
 | MULTI-07 | Phase 5 | Complete |
 | MULTI-08 | Phase 5 | Complete |
-| MULTI-09 | Phase 5 | Pending |
+| MULTI-09 | Phase 5 | Complete |
 | MULTI-10 | Phase 5 | Complete |
 | MULTI-11 | Phase 5 | Complete |
 | PROJ-01 | Phase 6 | Complete |
@@ -174,10 +174,10 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | PROJ-03 | Phase 6 | Complete |
 
 **Cobertura:**
-- Requisitos v1: 44 total
-- Mapeados para fases: 44
+- Requisitos v1: 45 total
+- Mapeados para fases: 45
 - Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos: 2026-04-25*
-*Última atualização: 2026-04-25 após criação do roadmap*
+*Última atualização: 2026-04-26 após v1.0 readiness (Phase 6 closure)*
