@@ -166,9 +166,9 @@ Planos:
 
 Planos:
 - [x] 06-01-PLAN.md — Schema additions: companies.claudeAccountPoolMode + claude_accounts.scope + migration 0072 (PROJ-02 schema part) [Wave 1]
-- [ ] 06-02-PLAN.md — claudeAccountCostsService factory + GET cost-summary endpoint + tests (PROJ-03) [Wave 1]
-- [ ] 06-03-PLAN.md — selectActiveAccount pool-mode-aware + tests per_company/shared/isolation (PROJ-02 service) [Wave 2; depende de 06-01]
-- [ ] 06-04-PLAN.md — Validator shared + POST scope + UI CompanySettings toggle + ClaudeAccounts scope/cost section + tests (PROJ-02 UI + PROJ-03 UI) [Wave 2; depende de 06-01,06-02]
+- [x] 06-02-PLAN.md — claudeAccountCostsService factory + GET cost-summary endpoint + tests (PROJ-03) [Wave 1]
+- [x] 06-03-PLAN.md — selectActiveAccount pool-mode-aware + tests per_company/shared/isolation (PROJ-02 service) [Wave 2; depende de 06-01]
+- [x] 06-04-PLAN.md — Validator shared + POST scope + UI CompanySettings toggle + ClaudeAccounts scope/cost section + tests (PROJ-02 UI + PROJ-03 UI) [Wave 2; depende de 06-01,06-02]
 - [ ] 06-05-PLAN.md — MULTI-COMPANY-SMOKE.md (Modo A SQL) + 06-HUMAN-UAT.md UAT-06-01 (PROJ-01) [Wave 3; depende de 06-01..06-04]
 - [ ] 06-06-PLAN.md — V1-READINESS.md + REQUIREMENTS.md rastreabilidade update (closure milestone v1.0) [Wave 4; depende de 06-01..06-05]
 
@@ -186,4 +186,4 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
 | 4. Spike — Multi-Account Detection | 5/5 | Complete   | 2026-04-26 |
 | 5. Multi-Account Swap (Implementação) | 8/8 | Complete   | 2026-04-26 |
-| 6. Multi-Projeto + Polish | 1/6 | In Progress|  |
+| 6. Multi-Projeto + Polish | 4/6 | In Progress|  |
