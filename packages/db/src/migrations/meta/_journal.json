@@ -512,6 +512,13 @@
       "when": 1777193405590,
       "tag": "0072_clumsy_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1777205596969,
+      "tag": "0073_add_user_locale",
+      "breakpoints": true
     }
   ]
 }
