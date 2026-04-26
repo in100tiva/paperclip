@@ -16,7 +16,7 @@ Forkar hard o paperclip, trocar Postgres embedded por Supabase compartilhado man
 
 Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 
-- [ ] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
+- [x] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
 - [ ] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth
 - [ ] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs
 - [ ] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção)
@@ -44,7 +44,7 @@ Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 
 Planos:
 - [x] 01-01-PLAN.md — Importar paperclip, reescrever identidade para ddd, cortar upstream, documentar cerimonia (FORK-01..04)
-- [ ] 01-02-PLAN.md — Smoke test baseline: pnpm install + pnpm dev com embedded Postgres em Windows (FORK-05)
+- [x] 01-02-PLAN.md — Smoke test baseline: pnpm install + pnpm dev com embedded Postgres em Windows (FORK-05)
 
 ### Phase 2: Migração de Storage para Supabase
 
@@ -156,7 +156,7 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 
 | Fase | Planos Completos | Status | Concluída |
 |------|------------------|--------|-----------|
-| 1. Fork Hard + Cerimônia de Corte | 0/2 | Not started | - |
+| 1. Fork Hard + Cerimônia de Corte | 2/2 | Complete | 2026-04-25 |
 | 2. Migração de Storage para Supabase | 0/? | Not started | - |
 | 3. Workflow de Equipe + Onboarding | 0/? | Not started | - |
 | 4. Spike — Multi-Account Detection | 0/? | Not started | - |
