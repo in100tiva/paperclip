@@ -1,5 +1,17 @@
 # DDD — Paperclip da Equipe
 
+## Estado Atual
+
+**Versão entregue:** v1.0 — Fork + Multi-Account (2026-04-26)
+
+Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code (swap automático em exhaustão), multi-company isolation e cost attribution. 45/45 requisitos v1 entregues; 7 UATs pendentes não-bloqueantes (cross-machine, 5+ devs reais, 2 contas Claude reais, cross-browser smoke) — convergência via uso real.
+
+**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.0-*.md` para arquivos detalhados.
+
+**Próximo milestone:** Backlog v2 disponível em `.planning/milestones/v1.0-REQUIREMENTS.md` §"Requisitos v2" (POOL, OBS, AUTH2, RLS, STOR). Inicie próximo ciclo via `/novo-marco`.
+
+---
+
 ## O Que É
 
 Fork hard do [Paperclip](https://github.com/paperclipai/paperclip) — plataforma de orquestração de agentes de IA — adaptado para nossa equipe de devs. Substitui o PostgreSQL embedded por um Supabase compartilhado, permitindo que múltiplos desenvolvedores rodem o app localmente apontando para o mesmo backend, com suporte a troca entre múltiplas contas Claude Code quando tokens se esgotam.

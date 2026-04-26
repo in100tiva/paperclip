@@ -1,0 +1,2 @@
+{"type":"result","is_error":true,"result":"Out of extra usage. Resets at 2026-04-27T00:00:00Z (UTC)."}
+Error: Claude usage limit reached. Resets at 2026-04-27 00:00 UTC.

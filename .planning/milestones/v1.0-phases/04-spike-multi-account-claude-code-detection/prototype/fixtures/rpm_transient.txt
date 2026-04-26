@@ -1,0 +1,2 @@
+{"type":"system","subtype":"error","message":"rate_limit_error: Too many requests. Please try again later.","status":429}
+{"error":{"type":"rate_limit_error","message":"Number of request tokens has exceeded your per-minute rate limit (requests). Please reduce request rate."}}
