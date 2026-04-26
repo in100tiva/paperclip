@@ -39,13 +39,19 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - ✓ Activity log emite `claude_account_rotated` com `swapStrategy` efetivo (resume/fallback_full_context) via split rotation/log emit — Fase 5
 - ✓ Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam — Fase 5 (smoke real validação UAT-05-01 pendente)
 - ✓ Persistir estado dos agentes no Supabase de forma que a troca de conta não perca progresso — Fase 5
+- ✓ Multi-company isolation validado (smoke procedure + UAT real); pool config per-company OU shared via `companies.claudeAccountPoolMode` + `claude_accounts.scope`; `selectActiveAccount` honra pool mode com fail-closed default — Fase 6
+- ✓ Cost attribution por `(companyId, accountId)` via `claudeAccountCostsService.aggregateByCompany` + endpoint `/cost-summary` + UI section — Fase 6
+- ✓ Suportar múltiplos projetos rodando em paralelo no fluxo da equipe — Fase 6
+- ✓ **v1.0 declarado pronto:** 45/45 requisitos completos, 7 UATs pendentes (não-bloqueantes; convergência via uso real), `V1-READINESS.md` formaliza closure — Fase 6
 
 ### Ativos
 
 - [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip *(schema aplicado; RLS opcional v1 ainda pendente)*
 - [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra + procedimentos prontos; cross-machine multi-dev e 5+ devs reais pendentes em `03-HUMAN-UAT.md` — UAT-03-01, UAT-03-02)*
 - [x] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes *(Fase 4 spike — `FINDINGS-FOR-PHASE-5.md`)*
-- [ ] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe *(Fase 6)*
+- [x] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe *(Fase 6)*
+
+**Todos os requisitos ativos do v1.0 estão concluídos.** Próximos requisitos pertencem ao backlog v2 — ver `REQUIREMENTS.md §"Requisitos v2"`.
 
 ### Fora do Escopo
 
@@ -101,4 +107,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 5 completion (UATs pendentes: Fase 3 cross-machine + 5+ devs; Fase 4 captura 429 real; Fase 5 smoke real cross-account + UI manual)*
+*Last updated: 2026-04-26 after Phase 6 completion — v1.0 milestone DECLARED READY (45/45 requirements complete, 7 UATs pendentes não-bloqueantes)*
