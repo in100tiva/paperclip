@@ -43,7 +43,7 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 ### Equipe
 
 - [ ] **TEAM-01**: 5+ devs cadastrados via fluxo de invite/board-claim do paperclip apontando para Supabase compartilhado
-- [ ] **TEAM-02**: README de setup local documenta passo-a-passo: clonar, env vars, login, primeiro run
+- [x] **TEAM-02**: README de setup local documenta passo-a-passo: clonar, env vars, login, primeiro run
 - [ ] **TEAM-03**: Setup script (`pnpm setup`) valida env vars críticas, conexão Supabase, presença do `claude` CLI, login Better Auth
 - [ ] **TEAM-04**: Smoke test E2E: dev A faz login + cria company; dev B em outra máquina vê a mesma company (estado compartilhado funcional)
 - [x] **TEAM-05**: Doc de troubleshooting cobre falhas comuns (Windows NTFS, Supabase no limite de conexões, cookie prefix)
@@ -149,7 +149,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | AUTH-04 | Phase 2 | Complete |
 | AUTH-05 | Phase 2 | Complete |
 | TEAM-01 | Phase 3 | Pending |
-| TEAM-02 | Phase 3 | Pending |
+| TEAM-02 | Phase 3 | Complete |
 | TEAM-03 | Phase 3 | Pending |
 | TEAM-04 | Phase 3 | Pending |
 | TEAM-05 | Phase 3 | Complete |
