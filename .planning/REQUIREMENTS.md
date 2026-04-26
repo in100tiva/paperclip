@@ -33,7 +33,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 - [ ] **UI-06**: Formulários de auth (login, signup, reset password, invite/board-claim) traduzidos
 - [ ] **UI-07**: Mensagens de erro, validação de formulários e mensagens de API traduzidas
 - [ ] **UI-08**: Tooltips, empty states, modais de confirmação e toasts traduzidos
-- [ ] **UI-09**: Templates de entrada do activity log renderizados em pt-BR (incluindo eventos `claude_account_rotated` etc.)
+- [x] **UI-09**: Templates de entrada do activity log renderizados em pt-BR (incluindo eventos `claude_account_rotated` etc.)
 
 ### Agent Messages — Comunicação dos Agentes ao Usuário
 
@@ -101,7 +101,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | UI-06 | Fase 9 | Pending |
 | UI-07 | Fase 9 | Pending |
 | UI-08 | Fase 9 | Pending |
-| UI-09 | Fase 8 | Pending |
+| UI-09 | Fase 8 | Complete |
 | AGENT-MSG-01 | Fase 10 | Pending |
 | AGENT-MSG-02 | Fase 10 | Pending |
 | AGENT-MSG-03 | Fase 10 | Pending |

@@ -71,7 +71,7 @@ Plans:
 - [x] 08-02-PLAN.md — Wave 1: Projects traduzido (UI-02) — 6 arquivos TSX + projects.json + RTL test
 - [x] 08-03-PLAN.md — Wave 1: Settings traduzido (UI-03) — 5 arquivos TSX + settings.json extension + RTL test
 - [x] 08-04-PLAN.md — Wave 1: Nav/Sidebar/Header/Breadcrumb traduzido (UI-05) — 11 arquivos TSX + common.json nav.* + RTL test
-- [ ] 08-05-PLAN.md — Wave 2: Activity log com actionKey + paramsJson (UI-09) — migration 0074 + schema + ActivityRow refactor + 2 testes
+- [x] 08-05-PLAN.md — Wave 2: Activity log com actionKey + paramsJson (UI-09) — migration 0074 + schema + ActivityRow refactor + 2 testes
 
 **UI hint**: yes
 
