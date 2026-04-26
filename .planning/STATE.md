@@ -115,5 +115,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Phase 4 Wave 1 paralela em execução — 04-02 concluído (DECISION-DETECTION-STRATEGY.md, SPIKE-03). Outros planos da Wave (04-01, 04-03, 04-04) podem ter sido fechados em paralelo por agentes separados — verificar arquivos `04-NN-SUMMARY.md` no diretório da fase para status atualizado.
+Parou em: Phase 4 Wave 1 paralela em execução — 04-01 (CLAUDE_429_TAXONOMY.md, SPIKE-01) + 04-02 (DECISION-DETECTION-STRATEGY.md, SPIKE-03) concluídos. Outros planos da Wave (04-03, 04-04) podem ter sido fechados em paralelo por agentes separados — verificar arquivos `04-NN-SUMMARY.md` no diretório da fase para status atualizado.
 Arquivo de retomada: Nenhum
