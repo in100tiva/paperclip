@@ -4,7 +4,9 @@ import { act } from "react";
 import type { ComponentProps, ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import type { ExecutionWorkspace, Issue } from "@paperclipai/shared";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 import type { ProjectWorkspaceSummary } from "../lib/project-workspaces-tab";
 import { ProjectWorkspaceSummaryCard } from "./ProjectWorkspaceSummaryCard";
 
@@ -87,6 +89,13 @@ describe("ProjectWorkspaceSummaryCard", () => {
   let container: HTMLDivElement;
   let writeClipboard: ReturnType<typeof vi.fn>;
 
+  // Phase 8-02 Rule 1: this suite asserts on hardcoded English strings that now
+  // flow through i18next (`useTranslation`). Pin locale to en-US so the
+  // assertions still match while the component renders translated keys.
+  beforeAll(async () => {
+    await i18n.changeLanguage("en-US");
+  });
+
   beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -109,6 +118,7 @@ describe("ProjectWorkspaceSummaryCard", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
+        <I18nextProvider i18n={i18n}>
         <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary()}
@@ -116,7 +126,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+        />
+        </I18nextProvider>,
       );
     });
 
@@ -147,6 +158,7 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
+        <I18nextProvider i18n={i18n}>
         <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
@@ -161,7 +173,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={runtimeSpy}
           onCloseWorkspace={closeSpy}
-        />,
+        />
+        </I18nextProvider>,
       );
     });
 
@@ -180,6 +193,7 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
+        <I18nextProvider i18n={i18n}>
         <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
@@ -189,7 +203,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+        />
+        </I18nextProvider>,
       );
     });
 
@@ -209,6 +224,7 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     await act(async () => {
       root.render(
+        <I18nextProvider i18n={i18n}>
         <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={summary}
@@ -216,7 +232,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+        />
+        </I18nextProvider>,
       );
     });
 
@@ -259,6 +276,7 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
+        <I18nextProvider i18n={i18n}>
         <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
@@ -270,7 +288,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+        />
+        </I18nextProvider>,
       );
     });
 
