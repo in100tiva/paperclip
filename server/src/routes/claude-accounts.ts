@@ -4,6 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
 import { activityLog, claudeAccounts } from "@paperclipai/db";
 import { claudeAccountsService } from "../services/claude-accounts.js";
+import { claudeAccountCostsService } from "../services/claude-account-costs.js";
 import { ACTIVITY_ACTION_CLAUDE_ACCOUNT_ROTATED } from "../services/activity-log.js";
 import { validate } from "../middleware/validate.js";
 import { assertCompanyAccess } from "./authz.js";
@@ -40,6 +41,14 @@ const patchAccountSchema = z.object({
   label: z.string().trim().min(1).max(100).optional(),
 });
 
+// 06-02 / D-11 — query schema for cost-summary endpoint. ISO 8601 datetimes
+// with timezone offset; both bounds optional (caller can request open-ended
+// range or a single bound).
+const costSummaryQuerySchema = z.object({
+  from: z.string().datetime({ offset: true }).optional(),
+  to: z.string().datetime({ offset: true }).optional(),
+});
+
 /**
  * D-29: only owner/admin can mutate the pool. assertCompanyAccess already
  * rejects viewers for non-safe methods, so we additionally reject operators here.
@@ -72,6 +81,7 @@ function getActorUserId(req: Request): string | null {
 export function claudeAccountsRoutes(db: Db) {
   const router = Router();
   const svc = claudeAccountsService(db);
+  const costsSvc = claudeAccountCostsService(db);
 
   // GET list — D-26
   router.get("/companies/:companyId/claude-accounts", async (req, res) => {
@@ -100,6 +110,34 @@ export function claudeAccountsRoutes(db: Db) {
       .limit(limit);
     res.json({ entries: rows });
   });
+
+  // GET cost summary — D-11 / PROJ-03 (Phase 6).
+  // Permission: any company member (read-only). Query params from/to are ISO
+  // 8601 datetimes (with offset), both optional. Declared before the generic
+  // PATCH /:accountId so Express does not match "cost-summary" as an accountId.
+  router.get(
+    "/companies/:companyId/claude-accounts/cost-summary",
+    async (req, res) => {
+      assertCompanyAccess(req, String(req.params.companyId));
+      const parsed = costSummaryQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        res.status(400).json({
+          error: "Invalid query parameters",
+          issues: parsed.error.issues,
+        });
+        return;
+      }
+      const range = {
+        from: parsed.data.from ? new Date(parsed.data.from) : undefined,
+        to: parsed.data.to ? new Date(parsed.data.to) : undefined,
+      };
+      const rows = await costsSvc.aggregateByCompany(
+        String(req.params.companyId),
+        range,
+      );
+      res.json({ rows });
+    },
+  );
 
   // POST create — D-26 / D-29 (owner|admin only)
   router.post(
