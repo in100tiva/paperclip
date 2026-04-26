@@ -2,14 +2,13 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: "Plano 08-04 concluído em ~10min (3 commits atomic — `36c8062` common.json estendido com nav.* sub-tree (14 sub-trees, ~80 leaf keys; preservou Phase 7 + 08-01 actions.*) + `a2b7033` 11-file navigation surface migration to t() (Sidebar/InstanceSidebar/SidebarAccountMenu/SidebarCompanyMenu/SidebarAgents/SidebarProjects/BreadcrumbBar/MobileBottomNav/Layout/CompanyRail/CompanySwitcher) + `c4cf623` Sidebar.translation.test.tsx RTL probe + 3 Rule 1 fixture fixes atomic). Navigation surface (1565+ LOC across 11 files) totalmente traduzido pt-BR/en-US. Padrão novo: brand-preserving interpolation 'Paperclip v{{version}}' — brand stays literal inside i18next template, só {{version}} interpola; RTL probe asserta identical output 'Paperclip v1.2.3' across both locales. Pitfall 2 enforced architecturally — BreadcrumbBar.tsx tem 1 t() call (aria-label apenas); crumb labels owned by pages via setBreadcrumbs (08-01/08-02/08-03 já honram; pages fora do escopo Phase 8 mantêm hardcoded até Phase 9). Inner-component useTranslation pattern aplicado em SortableProjectItem (3rd application after 8-02 OverviewContent/ColorPicker e 8-03 StatusBadge/ClaudeAccountRow). MobileBottomNav items array via t() inside useMemo com [t] dep — canonical react-i18next pattern. Desvios: 3 auto-fixes Rule 1 (Sidebar.test.tsx + SidebarAccountMenu.test.tsx + SidebarCompanyMenu.test.tsx wrapped em I18nextProvider + beforeAll/afterAll en-US locale pin — 4ª aplicação do fixture-fix protocol; landed atomic com Task 3 ao invés de Task 2 porque fixture breaks só foram descobertos quando Task 3 rodou full suite). Full UI suite **645/645 GREEN** (was 643, +2 novos probe tests); CI=true missing-keys vitest GREEN; pnpm --filter @paperclipai/ui typecheck exit 0. UI-05 satisfied. Self-check PASSED."
-last_updated: "2026-04-26T20:54:13.132Z"
+status: verifying
+last_updated: "2026-04-26T20:59:37.129Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 10
   completed_plans: 10
-  phase_8_status: complete
 ---
 
 # Estado do Projeto
