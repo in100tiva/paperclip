@@ -18,16 +18,16 @@ Requisitos para o v1 do fork. Cada um mapeia para uma fase do roadmap.
 ### Infra
 
 - [x] **INFRA-01**: `MIGRATION_AUDIT.md` mapeia uso de `LISTEN/NOTIFY`, `pg_advisory_lock`, `CREATE TEMP`, prepared statements e transactions long-lived no código do paperclip
-- [ ] **INFRA-02**: `packages/db/src/client.ts` usa `prepare: false` quando connection string tem porta 6543 (Supavisor pooler)
-- [ ] **INFRA-03**: `packages/db/src/runtime-config.ts` privilegia `DATABASE_URL` Supabase sobre embedded Postgres
-- [ ] **INFRA-04**: `.env.example` lista `DATABASE_URL` (pooler 6543), `SUPABASE_DB_URL` (direct 5432 para DDL), `BETTER_AUTH_SECRET`, `PAPERCLIP_INSTANCE_ID`
-- [ ] **INFRA-05**: Pool de conexões configurado com `max: 5`, `idle_timeout: 20` por instância dev (não saturar Supabase free tier)
-- [ ] **INFRA-06**: Embedded Postgres permanece como fallback opt-in mas desabilitado por default
+- [x] **INFRA-02**: `packages/db/src/client.ts` usa `prepare: false` quando connection string tem porta 6543 (Supavisor pooler)
+- [x] **INFRA-03**: `packages/db/src/runtime-config.ts` privilegia `DATABASE_URL` Supabase sobre embedded Postgres
+- [x] **INFRA-04**: `.env.example` lista `DATABASE_URL` (pooler 6543), `SUPABASE_DB_URL` (direct 5432 para DDL), `BETTER_AUTH_SECRET`, `PAPERCLIP_INSTANCE_ID`
+- [x] **INFRA-05**: Pool de conexões configurado com `max: 5`, `idle_timeout: 20` por instância dev (não saturar Supabase free tier)
+- [x] **INFRA-06**: Embedded Postgres permanece como fallback opt-in mas desabilitado por default
 
 ### Banco de Dados
 
 - [ ] **DB-01**: Migrations Drizzle aplicadas no projeto Supabase `bxlczioxgizgvtznukwt`
-- [ ] **DB-02**: Auto-migrations no startup desabilitadas — startup falha rápido se schema estiver desatualizado
+- [x] **DB-02**: Auto-migrations no startup desabilitadas — startup falha rápido se schema estiver desatualizado
 - [ ] **DB-03**: Pipeline GitHub Actions é único caminho que roda `pnpm db:migrate` no Supabase (em merge para main)
 - [ ] **DB-04**: PRs com mudança de schema requerem aprovação obrigatória antes de merge
 - [ ] **DB-05**: Drizzle-kit é fonte única de verdade — não usar `supabase migration new` em paralelo
@@ -133,13 +133,13 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | FORK-04 | Phase 1 | Complete |
 | FORK-05 | Phase 1 | Complete |
 | INFRA-01 | Phase 2 | Complete |
-| INFRA-02 | Phase 2 | Pending |
-| INFRA-03 | Phase 2 | Pending |
-| INFRA-04 | Phase 2 | Pending |
-| INFRA-05 | Phase 2 | Pending |
-| INFRA-06 | Phase 2 | Pending |
+| INFRA-02 | Phase 2 | Complete |
+| INFRA-03 | Phase 2 | Complete |
+| INFRA-04 | Phase 2 | Complete |
+| INFRA-05 | Phase 2 | Complete |
+| INFRA-06 | Phase 2 | Complete |
 | DB-01 | Phase 2 | Pending |
-| DB-02 | Phase 2 | Pending |
+| DB-02 | Phase 2 | Complete |
 | DB-03 | Phase 2 | Pending |
 | DB-04 | Phase 2 | Pending |
 | DB-05 | Phase 2 | Pending |

@@ -3,12 +3,12 @@ state_version: 1.0
 milestone: v1.0
 milestone_name: Fork + Multi-Account
 status: completed
-last_updated: "2026-04-26T02:54:51.073Z"
+last_updated: "2026-04-26T03:42:00.000Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 8
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Estado do Projeto
@@ -23,31 +23,31 @@ Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
 ## Posição Atual
 
 Fase: 2 de 6 (Migração de Storage para Supabase) — **EM PROGRESSO**
-Plano: Wave 1 completa (02-01 + 02-02 ambos concluídos em paralelo). Próximo: iniciar Wave 2 (02-03).
-Status: Phase 02 Wave 1 done — pre-commit guard online + migration audit publicado
-Última atividade: 2026-04-26 — Plano 02-02 concluído: husky 9.1.7 + scripts/check-no-service-role-leak.mjs (7/7 vitest cases pass). Pre-commit hook bloqueia JWT em ui/src/** + VITE_*SERVICE_ROLE/SECRET* em qualquer arquivo. AUTH-05 satisfeito.
+Plano: Wave 2 (02-03) concluído. Próximo: iniciar Wave 3 (02-04 + 02-05 podem rodar em paralelo).
+Status: Phase 02 Wave 2 done — driver Supavisor-aware online; embedded fallback opt-in; auto-migrations gate ativo; .env.example team-shared
+Última atividade: 2026-04-26 — Plano 02-03 concluído: createDb port-aware (6543→prepare:false, max:5), runtime-config exige PAPERCLIP_DB_MODE para embedded fallback, server promptApplyMigrations recusa non-TTY, drizzle.config prefere SUPABASE_DB_URL, .env.example reescrito com 9 env vars críticas. INFRA-02..06 + DB-02 satisfeitos.
 
-Progresso: [█████░░░░░] 50% (4 / 8 plans complete)
+Progresso: [██████░░░░] 63% (5 / 8 plans complete)
 
 ## Métricas de Performance
 
 **Velocidade:**
 
-- Total de planos concluídos: 4
-- Duração média: ~7 min
-- Tempo total de execução: 0h 29min (3min + ~15min + ~6min + ~5min)
+- Total de planos concluídos: 5
+- Duração média: ~13 min
+- Tempo total de execução: 1h 09min (3min + ~15min + ~6min + ~5min + ~40min)
 
 **Por Fase:**
 
 | Fase | Planos | Total | Média/Plano |
 |------|--------|-------|-------------|
 | 01-fork-hard | 2 | ~18min | ~9min |
-| 02-supabase | 2+ | ~11min+ | ~5.5min |
+| 02-supabase | 3+ | ~51min+ | ~17min |
 
 **Tendência Recente:**
 
-- Últimos 5 planos: 01-01 (3min), 01-02 (~15min), 02-01 (~6min), 02-02 (~5min)
-- Tendência: 02-02 TDD execution rapid — checker tests + impl + husky wiring fluiram sem bloqueios; pnpm install (2m11s) foi a maior parte do wall-clock.
+- Últimos 5 planos: 01-02 (~15min), 02-01 (~6min), 02-02 (~5min), 02-03 (~40min)
+- Tendência: 02-03 mais longo — TDD para client.ts + 6 arquivos tocados + alinhamento de teste runtime-config existente (Regra 1 deviation). Server vitest suite completa demorou ~28min (suite tem 1345 testes, 64 falhas pré-existentes em workspace-runtime no Windows; nada relacionado às mudanças deste plano).
 
 *Atualizado após cada conclusão de plano*
 
@@ -78,6 +78,11 @@ Decisões recentes que afetam o trabalho atual:
 - 02-02: Pre-commit guard escolheu husky@9 (idiomatic single-line hook) em vez de simple-git-hooks ou lint-staged-only. Husky se auto-instala via `prepare` script — zero fricção para devs novos.
 - 02-02: Path classification rule: `ui/src/**` + `*.tsx`/`*.jsx` são client-side (forbidden for JWTs); `server/**`, `packages/**`, `scripts/**` são livres. VITE_*SERVICE_ROLE/SECRET* names são bloqueados em qualquer arquivo (env files inclusive).
 - 02-02: Standalone vitest config (`scripts/check-no-service-role-leak.vitest.config.mjs`) necessária — root vitest.config.ts declara 12 workspace projects, nenhum inclui `scripts/`. Adicionado como artefato versionado para verifiability.
+- 02-03: `buildPostgresOptions` retorna `undefined` para portas ≠ 6543/5432 — preserva default postgres-js do embedded sem fricção em vez de expor options vazio.
+- 02-03: Embedded fallback agora opt-in via `PAPERCLIP_DB_MODE=embedded-postgres`; sem flag E sem DATABASE_URL → throw acionável (fail-fast detecta misconfig imediatamente, em vez de cair silenciosamente em embedded).
+- 02-03: `drizzle.config.ts` lança erro quando nenhum env var presente (drizzle-kit ser invocado sem env apontando para Supabase é misconfig grave que pode aplicar DDL no lugar errado).
+- 02-03: Two-URL convention estabelecido: `DATABASE_URL` = pooler 6543 (transaction, app runtime), `SUPABASE_DB_URL` = pooler 5432 (session, DDL/migrations). Ambos no `.env.example` com TODO_FILL_ME.
+- 02-03: `promptApplyMigrations` em non-TTY retorna `false` (era `true`) — fechamento de Audit F.1 HIGH risk. Watchers/dev-runner/daemon não aplicam migrations sem opt-in (`PAPERCLIP_MIGRATION_AUTO_APPLY=true`) ou TTY interativo.
 
 ### Todos Pendentes
 
@@ -90,5 +95,5 @@ Nenhum ainda.
 ## Continuidade de Sessão
 
 Última sessão: 2026-04-26
-Parou em: Concluído 02-02-PLAN.md (pre-commit leak guard, AUTH-05). Wave 1 da Fase 02 completa (02-01 + 02-02 paralelos). Pronto para Wave 2 (02-03 schema/migrations).
+Parou em: Concluído 02-03-PLAN.md (DB connection patches + env scaffolding, INFRA-02..06 + DB-02). Wave 2 da Fase 02 completa. Pronto para Wave 3 (02-04 apply-migrations + 02-05 auth-wiring podem executar em paralelo).
 Arquivo de retomada: Nenhum
