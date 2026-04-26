@@ -94,7 +94,7 @@ Plans:
 
 Plans:
 - [x] 09-03a-PLAN.md — Wave 1: Server error code infra (HttpError + *WithCode helpers + error-handler emit + ~40 priority callsites)
-- [ ] 09-03b-PLAN.md — Wave 1: Client translateApiError + ApiError.code + errors.json populate (UI-07)
+- [x] 09-03b-PLAN.md — Wave 1: Client translateApiError + ApiError.code + errors.json populate (UI-07)
 - [ ] 09-01-PLAN.md — Wave 2: Admin/Company UI (CompanySettings + CompanyAccess + 9 siblings) — UI-04
 - [ ] 09-02-PLAN.md — Wave 2: Auth forms (Auth + BoardClaim + CliAuth + InviteLanding) — UI-06
 - [ ] 09-04-PLAN.md — Wave 3: Cross-cutting toasts/modais/tooltips + anti-regression — UI-08
