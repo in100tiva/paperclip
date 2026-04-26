@@ -55,6 +55,17 @@
 
 -
 
+## Schema/Migration Changes (DB-04)
+
+If this PR modifies `packages/db/src/schema/**` OR adds a file in `packages/db/src/migrations/**`:
+
+- [ ] **Reviewer approval is mandatory.** Schema changes against the shared Supabase project (`bxlczioxgizgvtznukwt`) require explicit approval from at least one other team member before merge — they will be auto-applied by `.github/workflows/db-migrate.yml` upon merge to `main`.
+- [ ] Migration was generated via `pnpm db:generate` (drizzle-kit). **Do not** hand-write migration SQL or use `supabase migration new` (DB-05: drizzle-kit is the single source of truth).
+- [ ] No `DROP TABLE` / `DROP COLUMN` / `ALTER COLUMN ... DROP DEFAULT` without a documented data migration path in this PR description.
+- [ ] Schema change is backwards-compatible with the currently-deployed app (or this PR atomically updates schema + server + ui).
+
+If this PR does NOT modify schema, leave the boxes unchecked and add `N/A`.
+
 ## Checklist
 
 - [ ] I have included a thinking path that traces from project context to this change
