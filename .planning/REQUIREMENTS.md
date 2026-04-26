@@ -17,10 +17,10 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 
 ### I18n — Infraestrutura
 
-- [ ] **I18N-01**: Biblioteca i18n integrada (i18next + react-i18next ou equivalente) com namespaces por área funcional
-- [ ] **I18N-02**: Dicionários `pt-BR` e `en-US` versionados no repo em JSON (ou TS) com convenção de chaves estável
-- [ ] **I18N-03**: Fallback en-US para chaves pt-BR ausentes (e vice-versa) — sem placeholder cru visível ao usuário
-- [ ] **I18N-04**: Detector de chaves não traduzidas em CI ou dev (warn/erro durante build quando chave usada não existe no dicionário)
+- [x] **I18N-01**: Biblioteca i18n integrada (i18next + react-i18next ou equivalente) com namespaces por área funcional
+- [x] **I18N-02**: Dicionários `pt-BR` e `en-US` versionados no repo em JSON (ou TS) com convenção de chaves estável
+- [x] **I18N-03**: Fallback en-US para chaves pt-BR ausentes (e vice-versa) — sem placeholder cru visível ao usuário
+- [x] **I18N-04**: Detector de chaves não traduzidas em CI ou dev (warn/erro durante build quando chave usada não existe no dicionário)
 - [x] **I18N-05**: Locale do usuário disponível no context do servidor (para SSR, responses de API e templates de activity log)
 
 ### UI — Tradução Completa da Interface
@@ -88,10 +88,10 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | SETTINGS-02 | Fase 7 | Complete |
 | SETTINGS-03 | Fase 7 | Complete |
 | SETTINGS-04 | Fase 7 | Pending |
-| I18N-01 | Fase 7 | Pending |
-| I18N-02 | Fase 7 | Pending |
-| I18N-03 | Fase 7 | Pending |
-| I18N-04 | Fase 7 | Pending |
+| I18N-01 | Fase 7 | Complete |
+| I18N-02 | Fase 7 | Complete |
+| I18N-03 | Fase 7 | Complete |
+| I18N-04 | Fase 7 | Complete |
 | I18N-05 | Fase 7 | Complete |
 | UI-01 | Fase 8 | Pending |
 | UI-02 | Fase 8 | Pending |
