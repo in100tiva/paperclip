@@ -16,6 +16,7 @@ data/
 .pnpm-install.log
 .pnpm-dev.log
 .pnpm-dev.snapshot.log
+.pnpm-dev.pid
 tmp-*
 cli/tmp/
 
