@@ -84,10 +84,12 @@ describe("resolveDatabaseTarget", () => {
     });
   });
 
-  it("falls back to embedded postgres settings from config", () => {
+  it("falls back to embedded postgres settings when PAPERCLIP_DB_MODE=embedded-postgres", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "paperclip-db-runtime-"));
     const configPath = path.join(tempDir, "instance", "config.json");
     process.env.PAPERCLIP_CONFIG = configPath;
+    // Phase 2 (INFRA-06): embedded fallback now requires explicit opt-in.
+    process.env.PAPERCLIP_DB_MODE = "embedded-postgres";
     writeJson(configPath, {
       database: {
         mode: "embedded-postgres",
@@ -104,5 +106,21 @@ describe("resolveDatabaseTarget", () => {
       port: 55444,
       source: "embedded-postgres@55444",
     });
+  });
+
+  it("throws actionable error when neither DATABASE_URL nor PAPERCLIP_DB_MODE is set", () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "paperclip-db-runtime-"));
+    const configPath = path.join(tempDir, "instance", "config.json");
+    process.env.PAPERCLIP_CONFIG = configPath;
+    delete process.env.DATABASE_URL;
+    delete process.env.PAPERCLIP_DB_MODE;
+    writeJson(configPath, {
+      database: {
+        mode: "embedded-postgres",
+        embeddedPostgresPort: 54329,
+      },
+    });
+
+    expect(() => resolveDatabaseTarget()).toThrow(/No database target configured/);
   });
 });
