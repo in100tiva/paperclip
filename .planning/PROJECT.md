@@ -20,16 +20,20 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - ✓ Better Auth funcional contra Postgres do Supabase com cookie prefix `paperclip-team-shared` — Fase 2 (smoke 7/7 PASS, single-machine)
 - ✓ Pre-commit hook detectando leaks de service-role key (`eyJ...` em arquivos client-side) — Fase 2
 - ✓ Auditoria de acoplamentos Postgres-embedded → Supavisor (LISTEN/NOTIFY, advisory locks, prepared statements, long-lived txs) documentada em `MIGRATION_AUDIT.md` — Fase 2
+- ✓ Setup script `pnpm run setup` valida ambiente do dev novo (Node, pnpm, env vars, ping Supabase, schema Better Auth, claude CLI) com fail-fast acionável — Fase 3
+- ✓ `ONBOARDING.md` (pt-br, 7 seções, <30min target) e `TROUBLESHOOTING.md` (7 problemas conhecidos: Windows NTFS, stale registry, limite Supabase, cookie prefix, schema desatualizado, claude CLI ausente, prepared statements vs pooler) na raiz do repo — Fase 3
+- ✓ Procedimento documentado de cadastro coletivo (`TEAM-SIGNUP-PROCEDURE.md`) reusando fluxo de invite/board-claim do paperclip; bootstrap_ceo via script existente — Fase 3
+- ✓ Procedimento de smoke E2E cross-machine documentado (`CROSS-MACHINE-SMOKE.md`) com fallback single-host aceito — Fase 3
+- ✓ Documentado setup local para qualquer dev clonar o repo e começar a usar sem fricção — Fase 3
 
 ### Ativos
 
 - [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip *(schema aplicado; RLS opcional v1 ainda pendente)*
-- [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra pronta; cross-machine multi-dev valida em Phase 3 TEAM-04)*
+- [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra + procedimentos prontos; cross-machine multi-dev e 5+ devs reais pendentes em `03-HUMAN-UAT.md` — UAT-03-01, UAT-03-02)*
 - [ ] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes
 - [ ] Implementar troca de conta Claude Code com retomada do trabalho dos agentes de onde pararam
 - [ ] Persistir estado dos agentes no Supabase de forma que a troca de conta não perca progresso
 - [ ] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe
-- [ ] Documentar setup local para qualquer dev clonar o repo e começar a usar sem fricção
 
 ### Fora do Escopo
 
@@ -85,4 +89,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 2 completion*
+*Last updated: 2026-04-26 after Phase 3 completion (UAT pendente: cross-machine smoke + 5+ devs reais)*
