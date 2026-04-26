@@ -86,10 +86,14 @@ Planos:
 4. Smoke test E2E executado: dev A faz login + cria company; dev B em outra máquina vê a mesma company sem sincronização manual.
 5. `TROUBLESHOOTING.md` cobre falhas comuns: Windows NTFS, Supabase no limite de conexões, Better Auth cookie prefix, schemas desatualizados.
 
-**Plans**: A definir
+**Plans**: 5 plans
 
 Planos:
-- [ ] 03-01: A definir durante `/planejar-fase 3`
+- [ ] 03-01-PLAN.md — Setup script `pnpm setup` validando ambiente local (TEAM-03)
+- [ ] 03-02-PLAN.md — ONBOARDING.md pt-br + nota no README apontando para ele (TEAM-02)
+- [ ] 03-03-PLAN.md — TROUBLESHOOTING.md pt-br cobrindo 7 problemas conhecidos (TEAM-05)
+- [ ] 03-04-PLAN.md — Procedimento smoke E2E cross-machine + 03-HUMAN-UAT.md (TEAM-04)
+- [ ] 03-05-PLAN.md — Procedimento de cadastro coletivo de 5+ devs via fluxo existente (TEAM-01)
 
 ### Phase 4: Spike — Multi-Account Claude Code Detection
 
@@ -163,7 +167,7 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 |------|------------------|--------|-----------|
 | 1. Fork Hard + Cerimônia de Corte | 2/2 | Complete | 2026-04-25 |
 | 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
-| 3. Workflow de Equipe + Onboarding | 0/? | Not started | - |
+| 3. Workflow de Equipe + Onboarding | 0/5 | Planned | - |
 | 4. Spike — Multi-Account Detection | 0/? | Not started | - |
 | 5. Multi-Account Swap (Implementação) | 0/? | Not started | - |
 | 6. Multi-Projeto + Polish | 0/? | Not started | - |
