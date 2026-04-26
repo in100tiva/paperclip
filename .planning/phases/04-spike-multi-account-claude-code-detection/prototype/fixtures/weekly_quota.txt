@@ -1,2 +1,0 @@
-{"type":"result","is_error":true,"result":"Weekly limit reached. Resets at 2026-05-03T00:00:00Z (next Sunday UTC)."}
-Error: weekly limit reached. resets at 2026-05-03 00:00 UTC.
