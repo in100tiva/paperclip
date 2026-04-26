@@ -11,5 +11,104 @@
     "filter": "Filtrar",
     "close": "Fechar",
     "remove": "Remover"
+  },
+  "nav": {
+    "new-issue": "Nova tarefa",
+    "search": "Buscar",
+    "sections": {
+      "work": "Trabalho",
+      "company": "Empresa"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "inbox": "Inbox",
+      "issues": "Tarefas",
+      "routines": "Rotinas",
+      "goals": "Metas",
+      "workspaces": "Workspaces",
+      "org": "Organização",
+      "skills": "Skills",
+      "costs": "Custos",
+      "activity": "Atividade",
+      "settings": "Configurações"
+    },
+    "mobile": {
+      "home": "Início",
+      "create": "Criar",
+      "agents": "Agentes",
+      "aria-label": "Navegação móvel"
+    },
+    "instance-settings": {
+      "title": "Configurações da instância",
+      "items": {
+        "profile": "Perfil",
+        "general": "Geral",
+        "access": "Acesso",
+        "heartbeats": "Heartbeats",
+        "experimental": "Experimental",
+        "plugins": "Plugins",
+        "adapters": "Adaptadores"
+      }
+    },
+    "account-menu": {
+      "open": "Abrir menu da conta",
+      "view-profile": "Ver perfil",
+      "view-profile-description": "Abra seu ledger de atividade, tarefas e uso.",
+      "edit-profile": "Editar perfil",
+      "edit-profile-description": "Atualize seu nome de exibição e avatar.",
+      "instance-settings": "Configurações da instância",
+      "instance-settings-description": "Volte para a última página de configurações que abriu.",
+      "documentation": "Documentação",
+      "documentation-description": "Abra a documentação do Paperclip em uma nova aba.",
+      "switch-to-light": "Trocar para modo claro",
+      "switch-to-dark": "Trocar para modo escuro",
+      "switch-theme-description": "Alterne a aparência do app.",
+      "sign-out": "Sair",
+      "signing-out": "Saindo…",
+      "sign-out-description": "Encerre esta sessão do navegador.",
+      "account-badge": "Conta",
+      "local-badge": "Local",
+      "signed-in": "Conectado",
+      "local-board": "Board do workspace local",
+      "fallback-name": "Board",
+      "version": "Paperclip v{{version}}"
+    },
+    "company-menu": {
+      "open": "Abrir menu da empresa",
+      "open-named": "Abrir menu de {{name}}",
+      "select": "Selecionar empresa",
+      "fallback-label": "Empresa",
+      "invite-people": "Convidar pessoas",
+      "invite-people-named": "Convidar pessoas para {{name}}",
+      "company-settings": "Configurações da empresa"
+    },
+    "company-rail": {
+      "add-company": "Adicionar empresa"
+    },
+    "company-switcher": {
+      "select-placeholder": "Selecionar empresa",
+      "companies-label": "Empresas",
+      "no-companies": "Nenhuma empresa",
+      "company-settings": "Configurações da empresa",
+      "manage-companies": "Gerenciar empresas"
+    },
+    "agents-section": {
+      "title": "Agentes",
+      "new-agent": "Novo agente",
+      "live-suffix": "ao vivo",
+      "paused-by-budget": "Agente pausado por orçamento"
+    },
+    "projects-section": {
+      "title": "Projetos",
+      "new-project": "Novo projeto",
+      "paused-by-budget": "Projeto pausado por orçamento"
+    },
+    "breadcrumb": {
+      "open-sidebar": "Abrir barra lateral",
+      "close-sidebar": "Fechar barra lateral"
+    },
+    "layout": {
+      "skip-to-main": "Ir para o conteúdo principal"
+    }
   }
 }

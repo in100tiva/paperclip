@@ -11,5 +11,104 @@
     "filter": "Filter",
     "close": "Close",
     "remove": "Remove"
+  },
+  "nav": {
+    "new-issue": "New Issue",
+    "search": "Search",
+    "sections": {
+      "work": "Work",
+      "company": "Company"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "inbox": "Inbox",
+      "issues": "Issues",
+      "routines": "Routines",
+      "goals": "Goals",
+      "workspaces": "Workspaces",
+      "org": "Org",
+      "skills": "Skills",
+      "costs": "Costs",
+      "activity": "Activity",
+      "settings": "Settings"
+    },
+    "mobile": {
+      "home": "Home",
+      "create": "Create",
+      "agents": "Agents",
+      "aria-label": "Mobile navigation"
+    },
+    "instance-settings": {
+      "title": "Instance Settings",
+      "items": {
+        "profile": "Profile",
+        "general": "General",
+        "access": "Access",
+        "heartbeats": "Heartbeats",
+        "experimental": "Experimental",
+        "plugins": "Plugins",
+        "adapters": "Adapters"
+      }
+    },
+    "account-menu": {
+      "open": "Open account menu",
+      "view-profile": "View profile",
+      "view-profile-description": "Open your activity, task, and usage ledger.",
+      "edit-profile": "Edit profile",
+      "edit-profile-description": "Update your display name and avatar.",
+      "instance-settings": "Instance settings",
+      "instance-settings-description": "Jump back to the last settings page you opened.",
+      "documentation": "Documentation",
+      "documentation-description": "Open Paperclip docs in a new tab.",
+      "switch-to-light": "Switch to light mode",
+      "switch-to-dark": "Switch to dark mode",
+      "switch-theme-description": "Toggle the app appearance.",
+      "sign-out": "Sign out",
+      "signing-out": "Signing out…",
+      "sign-out-description": "End this browser session.",
+      "account-badge": "Account",
+      "local-badge": "Local",
+      "signed-in": "Signed in",
+      "local-board": "Local workspace board",
+      "fallback-name": "Board",
+      "version": "Paperclip v{{version}}"
+    },
+    "company-menu": {
+      "open": "Open company menu",
+      "open-named": "Open {{name}} menu",
+      "select": "Select company",
+      "fallback-label": "Company",
+      "invite-people": "Invite people",
+      "invite-people-named": "Invite people to {{name}}",
+      "company-settings": "Company settings"
+    },
+    "company-rail": {
+      "add-company": "Add company"
+    },
+    "company-switcher": {
+      "select-placeholder": "Select company",
+      "companies-label": "Companies",
+      "no-companies": "No companies",
+      "company-settings": "Company Settings",
+      "manage-companies": "Manage Companies"
+    },
+    "agents-section": {
+      "title": "Agents",
+      "new-agent": "New agent",
+      "live-suffix": "live",
+      "paused-by-budget": "Agent paused by budget"
+    },
+    "projects-section": {
+      "title": "Projects",
+      "new-project": "New project",
+      "paused-by-budget": "Project paused by budget"
+    },
+    "breadcrumb": {
+      "open-sidebar": "Open sidebar",
+      "close-sidebar": "Close sidebar"
+    },
+    "layout": {
+      "skip-to-main": "Skip to Main Content"
+    }
   }
 }
