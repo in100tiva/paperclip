@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { KeyRound, Power } from "lucide-react";
 import {
   claudeAccountsApi,
@@ -36,17 +37,20 @@ const STATUS_VARIANT: Record<ClaudeAccountStatus, "default" | "secondary" | "des
   disabled: "outline",
 };
 
-const STATUS_LABEL: Record<ClaudeAccountStatus, string> = {
-  live: "Live",
-  exhausted: "Exhausted",
-  cooldown: "Cooldown",
-  disabled: "Disabled",
+// Static lookup map (Phase 8-02 PROJECT_STATUS_KEY pattern) — bridges typed t()
+// to dynamic enum keys without violating the augmented type's literal-key requirement.
+const STATUS_KEY: Record<ClaudeAccountStatus, "settings:claude-accounts.status.live" | "settings:claude-accounts.status.exhausted" | "settings:claude-accounts.status.cooldown" | "settings:claude-accounts.status.disabled"> = {
+  live: "settings:claude-accounts.status.live",
+  exhausted: "settings:claude-accounts.status.exhausted",
+  cooldown: "settings:claude-accounts.status.cooldown",
+  disabled: "settings:claude-accounts.status.disabled",
 };
 
 function StatusBadge({ status }: { status: ClaudeAccountStatus }) {
+  const { t } = useTranslation(["settings", "common"]);
   return (
     <Badge variant={STATUS_VARIANT[status]} data-status={status}>
-      {STATUS_LABEL[status]}
+      {t(STATUS_KEY[status])}
     </Badge>
   );
 }
@@ -68,6 +72,7 @@ export function ClaudeAccounts() {
   const { setBreadcrumbs } = useBreadcrumbs();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation(["settings", "common"]);
   const [newLabel, setNewLabel] = useState("");
   const [newSlug, setNewSlug] = useState("");
   // Phase 6 / D-05 / PROJ-02 — scope choice on register
@@ -75,11 +80,11 @@ export function ClaudeAccounts() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings", href: "/company/settings" },
-      { label: "Claude Accounts" },
+      { label: selectedCompany?.name ?? t("settings:common.company-fallback"), href: "/dashboard" },
+      { label: t("settings:common.settings-crumb"), href: "/company/settings" },
+      { label: t("settings:claude-accounts.crumb") },
     ]);
-  }, [selectedCompany?.name, setBreadcrumbs]);
+  }, [selectedCompany?.name, setBreadcrumbs, t]);
 
   const accountsKey = ["claude-accounts", "list", selectedCompanyId ?? ""] as const;
   const historyKey = ["claude-accounts", "rotation-history", selectedCompanyId ?? ""] as const;
@@ -112,8 +117,8 @@ export function ClaudeAccounts() {
     }) => claudeAccountsApi.create(selectedCompanyId!, input),
     onSuccess: async () => {
       pushToast({
-        title: "Claude account registered",
-        body: "Run `claude login` inside the slug directory to activate the new account.",
+        title: t("settings:claude-accounts.register.success-title"),
+        body: t("settings:claude-accounts.register.success-body"),
         tone: "success",
       });
       setNewLabel("");
@@ -123,8 +128,8 @@ export function ClaudeAccounts() {
     },
     onError: (err) => {
       pushToast({
-        title: "Failed to register Claude account",
-        body: err instanceof Error ? err.message : "Unknown error",
+        title: t("settings:claude-accounts.register.error-title"),
+        body: err instanceof Error ? err.message : t("settings:claude-accounts.register.unknown-error"),
         tone: "error",
       });
     },
@@ -138,8 +143,8 @@ export function ClaudeAccounts() {
     },
     onError: (err) => {
       pushToast({
-        title: "Failed to update Claude account",
-        body: err instanceof Error ? err.message : "Unknown error",
+        title: t("settings:claude-accounts.list.update-failed"),
+        body: err instanceof Error ? err.message : t("settings:claude-accounts.register.unknown-error"),
         tone: "error",
       });
     },
@@ -155,21 +160,21 @@ export function ClaudeAccounts() {
 
   if (!selectedCompanyId) {
     return (
-      <div className="text-sm text-muted-foreground">Select a company to manage Claude accounts.</div>
+      <div className="text-sm text-muted-foreground">{t("settings:claude-accounts.select-company")}</div>
     );
   }
 
   if (accountsQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading Claude accounts…</div>;
+    return <div className="text-sm text-muted-foreground">{t("settings:claude-accounts.loading")}</div>;
   }
 
   if (accountsQuery.error) {
     const message =
       accountsQuery.error instanceof ApiError && accountsQuery.error.status === 403
-        ? "You do not have permission to view Claude accounts for this company."
+        ? t("settings:claude-accounts.load-forbidden")
         : accountsQuery.error instanceof Error
           ? accountsQuery.error.message
-          : "Failed to load Claude accounts.";
+          : t("settings:claude-accounts.load-failed");
     return <div className="text-sm text-destructive">{message}</div>;
   }
 
@@ -181,32 +186,30 @@ export function ClaudeAccounts() {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <KeyRound className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Claude Accounts</h1>
+          <h1 className="text-lg font-semibold">{t("settings:claude-accounts.title")}</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Manage the pool of Claude Code accounts available to this company. Agents rotate
-          across live accounts when one hits a 429 quota window.
+          {t("settings:claude-accounts.description")}
         </p>
       </div>
 
       <section className="space-y-4 rounded-xl border border-border p-5">
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold">Register account</h2>
+          <h2 className="text-sm font-semibold">{t("settings:claude-accounts.register.title")}</h2>
           <p className="text-sm text-muted-foreground">
-            Reserve a slot in the pool. After saving, run <code className="rounded bg-muted px-1">claude login</code>
-            {" "}inside <code className="rounded bg-muted px-1">~/.paperclip/claude-accounts/&lt;slug&gt;/</code> on
-            the host machine to seed credentials.
+            {t("settings:claude-accounts.register.description-prefix")} <code className="rounded bg-muted px-1">claude login</code>
+            {" "}{t("settings:claude-accounts.register.description-middle")} <code className="rounded bg-muted px-1">~/.paperclip/claude-accounts/&lt;slug&gt;/</code> {t("settings:claude-accounts.register.description-suffix")}
           </p>
         </div>
         <form className="space-y-3" onSubmit={handleSubmit}>
           <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
             <label className="space-y-1 text-sm">
-              <span className="block text-xs font-medium text-muted-foreground">Label</span>
+              <span className="block text-xs font-medium text-muted-foreground">{t("settings:claude-accounts.register.label")}</span>
               <input
                 type="text"
                 value={newLabel}
                 onChange={(e) => setNewLabel(e.target.value)}
-                placeholder="Account A"
+                placeholder={t("settings:claude-accounts.register.label-placeholder")}
                 required
                 maxLength={100}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
@@ -214,28 +217,30 @@ export function ClaudeAccounts() {
               />
             </label>
             <label className="space-y-1 text-sm">
-              <span className="block text-xs font-medium text-muted-foreground">Config dir slug</span>
+              <span className="block text-xs font-medium text-muted-foreground">{t("settings:claude-accounts.register.slug")}</span>
               <input
                 type="text"
                 value={newSlug}
                 onChange={(e) => setNewSlug(e.target.value)}
-                placeholder="a"
+                placeholder={t("settings:claude-accounts.register.slug-placeholder")}
                 required
                 pattern={SLUG_PATTERN}
-                title="Lowercase letters, digits, dashes; 1-63 chars; must start with a letter or digit"
+                title={t("settings:claude-accounts.register.slug-title")}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
                 data-testid="claude-account-slug"
               />
             </label>
             <div className="flex items-end">
               <Button type="submit" disabled={createMutation.isPending}>
-                {createMutation.isPending ? "Registering…" : "Register"}
+                {createMutation.isPending
+                  ? t("settings:claude-accounts.register.submitting")
+                  : t("settings:claude-accounts.register.submit")}
               </Button>
             </div>
           </div>
           {/* Phase 6 / D-05 / PROJ-02 — scope radio */}
           <div className="space-y-1 text-sm">
-            <span className="block text-xs font-medium text-muted-foreground">Scope</span>
+            <span className="block text-xs font-medium text-muted-foreground">{t("settings:claude-accounts.register.scope")}</span>
             <div className="flex flex-wrap gap-4">
               <label className="flex items-center gap-2">
                 <input
@@ -246,7 +251,7 @@ export function ClaudeAccounts() {
                   onChange={() => setNewScope("company")}
                   data-testid="scope-company"
                 />
-                This company only
+                {t("settings:claude-accounts.register.scope-company")}
               </label>
               <label className="flex items-center gap-2">
                 <input
@@ -257,7 +262,7 @@ export function ClaudeAccounts() {
                   onChange={() => setNewScope("shared")}
                   data-testid="scope-shared"
                 />
-                Shared with all companies (in shared mode)
+                {t("settings:claude-accounts.register.scope-shared")}
               </label>
             </div>
           </div>
@@ -266,27 +271,27 @@ export function ClaudeAccounts() {
 
       <section className="rounded-xl border border-border">
         <div className="px-5 py-4">
-          <h2 className="text-sm font-semibold">Accounts</h2>
+          <h2 className="text-sm font-semibold">{t("settings:claude-accounts.list.title")}</h2>
           <p className="text-sm text-muted-foreground">
-            Round-robin pool sorted by last-used. Disabled accounts stay out of rotation.
+            {t("settings:claude-accounts.list.description")}
           </p>
         </div>
         {accounts.length === 0 ? (
           <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            No Claude accounts registered yet.
+            {t("settings:claude-accounts.list.empty")}
           </div>
         ) : (
           <div className="overflow-x-auto border-t border-border">
             <table className="min-w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Label</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Slug</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Scope</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Status</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Last used</th>
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Exhausted until</th>
-                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">Action</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-label")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-slug")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-scope")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-status")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-last-used")}</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-exhausted-until")}</th>
+                  <th className="px-5 py-3 text-right font-medium text-muted-foreground">{t("settings:claude-accounts.list.header-action")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -309,40 +314,39 @@ export function ClaudeAccounts() {
       {/* Phase 6 / D-10 / D-12 / PROJ-03 — Cost summary aggregated per Claude account */}
       <section className="rounded-xl border border-border">
         <div className="px-5 py-4">
-          <h2 className="text-sm font-semibold">Cost summary</h2>
+          <h2 className="text-sm font-semibold">{t("settings:claude-accounts.costs.title")}</h2>
           <p className="text-sm text-muted-foreground">
-            Aggregated spend per Claude account for this company. Default range: since
-            current month start.
+            {t("settings:claude-accounts.costs.description")}
           </p>
         </div>
         {costsQuery.isLoading ? (
           <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            Loading cost summary…
+            {t("settings:claude-accounts.costs.loading")}
           </div>
         ) : !costsQuery.data || costsQuery.data.rows.length === 0 ? (
           <div
             className="border-t border-border px-5 py-8 text-sm text-muted-foreground"
             data-testid="costs-empty"
           >
-            No usage recorded yet.
+            {t("settings:claude-accounts.costs.empty")}
           </div>
         ) : (
           <div className="overflow-x-auto border-t border-border">
             <table className="min-w-full text-left text-sm" data-testid="costs-table">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="px-5 py-3 font-medium text-muted-foreground">Account</th>
+                  <th className="px-5 py-3 font-medium text-muted-foreground">{t("settings:claude-accounts.costs.header-account")}</th>
                   <th className="px-5 py-3 text-right font-medium text-muted-foreground">
-                    Cost (USD)
+                    {t("settings:claude-accounts.costs.header-cost-usd")}
                   </th>
                   <th className="px-5 py-3 text-right font-medium text-muted-foreground">
-                    Input tokens
+                    {t("settings:claude-accounts.costs.header-input-tokens")}
                   </th>
                   <th className="px-5 py-3 text-right font-medium text-muted-foreground">
-                    Output tokens
+                    {t("settings:claude-accounts.costs.header-output-tokens")}
                   </th>
                   <th className="px-5 py-3 text-right font-medium text-muted-foreground">
-                    Steps
+                    {t("settings:claude-accounts.costs.header-steps")}
                   </th>
                 </tr>
               </thead>
@@ -373,19 +377,18 @@ export function ClaudeAccounts() {
 
       <section className="rounded-xl border border-border">
         <div className="px-5 py-4">
-          <h2 className="text-sm font-semibold">Rotation history</h2>
+          <h2 className="text-sm font-semibold">{t("settings:claude-accounts.history.title")}</h2>
           <p className="text-sm text-muted-foreground">
-            Last 50 swap events emitted by the heartbeat. Strategy column reflects whether
-            the resume worked or fell back to a full-context re-prompt.
+            {t("settings:claude-accounts.history.description")}
           </p>
         </div>
         {historyQuery.isLoading ? (
           <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            Loading rotation history…
+            {t("settings:claude-accounts.history.loading")}
           </div>
         ) : historyEntries.length === 0 ? (
           <div className="border-t border-border px-5 py-8 text-sm text-muted-foreground">
-            No rotations recorded yet.
+            {t("settings:claude-accounts.history.empty")}
           </div>
         ) : (
           <ul className="divide-y divide-border border-t border-border">
@@ -396,7 +399,7 @@ export function ClaudeAccounts() {
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-muted-foreground">{formatTimestamp(entry.createdAt)}</span>
                     <span>
-                      Agent <code>{shortId(details?.agentId ?? entry.agentId)}</code> swapped{" "}
+                      {t("settings:claude-accounts.history.agent-prefix")} <code>{shortId(details?.agentId ?? entry.agentId)}</code> {t("settings:claude-accounts.history.swapped")}{" "}
                       <code>{shortId(details?.fromAccountId)}</code> →{" "}
                       <code>{shortId(details?.toAccountId)}</code>
                     </span>
@@ -407,7 +410,7 @@ export function ClaudeAccounts() {
                       <Badge variant="secondary">{details.errorFamily}</Badge>
                     ) : null}
                     {details?.swapStrategy ? (
-                      <Badge variant="outline">strategy: {details.swapStrategy}</Badge>
+                      <Badge variant="outline">{t("settings:claude-accounts.history.strategy", { strategy: details.swapStrategy })}</Badge>
                     ) : null}
                     {details?.swapStatus ? (
                       <Badge variant={details.swapStatus === "succeeded" ? "default" : "destructive"}>
@@ -434,9 +437,12 @@ function ClaudeAccountRow({
   onToggle: (nextStatus: ClaudeAccountStatus) => void;
   pending: boolean;
 }) {
+  const { t } = useTranslation(["settings", "common"]);
   const isDisabled = account.status === "disabled";
   const nextStatus: ClaudeAccountStatus = isDisabled ? "live" : "disabled";
-  const actionLabel = isDisabled ? "Enable" : "Disable";
+  const actionLabel = isDisabled
+    ? t("settings:claude-accounts.list.enable")
+    : t("settings:claude-accounts.list.disable");
   return (
     <tr className="border-b border-border last:border-b-0">
       <td className="px-5 py-3 align-top">{account.label}</td>
@@ -446,11 +452,11 @@ function ClaudeAccountRow({
       <td className="px-5 py-3 align-top" data-testid={`scope-cell-${account.id}`}>
         {account.scope === "shared" ? (
           <Badge variant="secondary" data-scope="shared">
-            shared
+            {t("settings:claude-accounts.list.scope-shared")}
           </Badge>
         ) : (
           <span className="text-xs text-muted-foreground" data-scope="company">
-            company
+            {t("settings:claude-accounts.list.scope-company")}
           </span>
         )}
       </td>

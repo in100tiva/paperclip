@@ -48,10 +48,13 @@
       "daily": "Diário",
       "weekly": "Semanal",
       "monthly": "Mensal",
+      "days": "{{count}} dia",
       "days_one": "{{count}} dia",
       "days_other": "{{count}} dias",
+      "weeks": "{{count}} semana",
       "weeks_one": "{{count}} semana",
       "weeks_other": "{{count}} semanas",
+      "months": "{{count}} mês",
       "months_one": "{{count}} mês",
       "months_other": "{{count}} meses"
     },
@@ -91,6 +94,7 @@
     "on": "Ligado",
     "off": "Desligado",
     "never": "nunca",
+    "company": "{{count}} empresa",
     "company_one": "{{count}} empresa",
     "company_other": "{{count}} empresas",
     "agent-config-title": "Configuração completa do agente",
@@ -100,8 +104,10 @@
       "enable-timer": "Ativar timer heartbeat",
       "disable-timer": "Desativar timer heartbeat",
       "saving": "…",
+      "confirm-disable-all": "Desativar timer heartbeats para os {{count}} agentes habilitados?",
       "confirm-disable-all_one": "Desativar timer heartbeats para o {{count}} agente habilitado?",
       "confirm-disable-all_other": "Desativar timer heartbeats para os {{count}} agentes habilitados?",
+      "disable-failed": "Falha ao desativar {{failures}} de {{total}} timer heartbeats. Primeiro erro: {{detail}}",
       "disable-failed_one": "Falha ao desativar 1 timer heartbeat: {{detail}}",
       "disable-failed_other": "Falha ao desativar {{failures}} de {{total}} timer heartbeats. Primeiro erro: {{detail}}"
     }

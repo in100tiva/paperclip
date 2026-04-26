@@ -48,10 +48,13 @@
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly",
+      "days": "{{count}} day",
       "days_one": "{{count}} day",
       "days_other": "{{count}} days",
+      "weeks": "{{count}} week",
       "weeks_one": "{{count}} week",
       "weeks_other": "{{count}} weeks",
+      "months": "{{count}} month",
       "months_one": "{{count}} month",
       "months_other": "{{count}} months"
     },
@@ -91,6 +94,7 @@
     "on": "On",
     "off": "Off",
     "never": "never",
+    "company": "{{count}} company",
     "company_one": "{{count}} company",
     "company_other": "{{count}} companies",
     "agent-config-title": "Full agent config",
@@ -100,8 +104,10 @@
       "enable-timer": "Enable Timer Heartbeat",
       "disable-timer": "Disable Timer Heartbeat",
       "saving": "...",
+      "confirm-disable-all": "Disable timer heartbeats for all {{count}} enabled agents?",
       "confirm-disable-all_one": "Disable timer heartbeats for {{count}} enabled agent?",
       "confirm-disable-all_other": "Disable timer heartbeats for all {{count}} enabled agents?",
+      "disable-failed": "Failed to disable {{failures}} of {{total}} timer heartbeats. First error: {{detail}}",
       "disable-failed_one": "Failed to disable 1 timer heartbeat: {{detail}}",
       "disable-failed_other": "Failed to disable {{failures}} of {{total}} timer heartbeats. First error: {{detail}}"
     }
