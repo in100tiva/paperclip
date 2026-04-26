@@ -8,6 +8,7 @@ import {
   claudeAccounts,
   agentAccountBindings,
   agentStepExecutions,
+  companies,
 } from "@paperclipai/db";
 import {
   logActivity,
@@ -45,6 +46,12 @@ export interface ClaudeAccount {
   label: string;
   configDirSlug: string;
   status: ClaudeAccountStatus;
+  /**
+   * Phase 6 / D-05 / PROJ-02. 'company' = exclusiva da companyId (semântica
+   * Fase 5 — default). 'shared' = qualquer company com
+   * `companies.claudeAccountPoolMode='shared'` pode usá-la.
+   */
+  scope: "company" | "shared";
   lastQuotaWindowsJson: QuotaWindowsMap;
   exhaustedUntil: Date | null;
   lastUsedAt: Date | null;
@@ -179,17 +186,47 @@ export function claudeAccountsService(db: Db) {
         // sticky/manual but the pinned account isn't live → fall back to auto-select
       }
 
-      // Step 2: lazy cooldown sweep — exhausted accounts whose window has passed
+      // Step 2a: resolve pool mode for this company (Phase 6 / D-06 / PROJ-02).
+      // Reads `companies.claudeAccountPoolMode`; unknown values fail-closed to
+      // 'per_company' to prevent accidental cross-tenant leakage.
+      const companyRows = await db
+        .select({ poolMode: companies.claudeAccountPoolMode })
+        .from(companies)
+        .where(eq(companies.id, input.companyId))
+        .limit(1);
+      const rawMode = companyRows[0]?.poolMode ?? "per_company";
+      const poolMode: "per_company" | "shared" =
+        rawMode === "shared" ? "shared" : "per_company";
+
+      // Step 2b: lazy cooldown sweep — exhausted accounts whose window has passed.
+      // Sweep stays scoped to own companyId (per Phase 5 semantics): for shared
+      // accounts owned by other companies, the candidates query below already
+      // covers the case via `lt(exhaustedUntil, now)` — sweep is an
+      // optimization, not a correctness gate.
       await sweepCooldown(input.companyId, now);
 
-      // Step 3: query candidates
+      // Step 3: query candidates with pool-mode-aware scope filter (D-06).
       const cooldownThreshold = new Date(now.getTime() - cooldown * 1000);
+      const scopeFilter =
+        poolMode === "shared"
+          ? or(
+              and(
+                eq(claudeAccounts.companyId, input.companyId),
+                eq(claudeAccounts.scope, "company"),
+              ),
+              eq(claudeAccounts.scope, "shared"),
+            )
+          : and(
+              eq(claudeAccounts.companyId, input.companyId),
+              eq(claudeAccounts.scope, "company"),
+            );
+
       const candidates = await db
         .select()
         .from(claudeAccounts)
         .where(
           and(
-            eq(claudeAccounts.companyId, input.companyId),
+            scopeFilter,
             eq(claudeAccounts.status, "live"),
             or(
               isNull(claudeAccounts.exhaustedUntil),
@@ -476,6 +513,9 @@ export function claudeAccountsService(db: Db) {
 // ============================================================
 
 function rowToAccount(row: typeof claudeAccounts.$inferSelect): ClaudeAccount {
+  // D-08 fallback: rows pre-Phase 6 default to 'company' if scope is missing.
+  const rawScope = (row as { scope?: string }).scope ?? "company";
+  const scope: "company" | "shared" = rawScope === "shared" ? "shared" : "company";
   return {
     id: row.id,
     companyId: row.companyId,
@@ -483,6 +523,7 @@ function rowToAccount(row: typeof claudeAccounts.$inferSelect): ClaudeAccount {
     label: row.label,
     configDirSlug: row.configDirSlug,
     status: row.status as ClaudeAccountStatus,
+    scope,
     lastQuotaWindowsJson: (row.lastQuotaWindowsJson as QuotaWindowsMap) ?? {},
     exhaustedUntil: row.exhaustedUntil,
     lastUsedAt: row.lastUsedAt,

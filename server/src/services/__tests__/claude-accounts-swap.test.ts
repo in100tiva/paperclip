@@ -48,6 +48,7 @@ const accountB = {
   label: "Account B",
   configDirSlug: "b",
   status: "live" as const,
+  scope: "company" as const,
   lastQuotaWindowsJson: {},
   exhaustedUntil: null,
   lastUsedAt: null,
