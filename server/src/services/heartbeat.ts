@@ -6146,6 +6146,8 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
               agentId: deferred.agentId,
               runId: run.id,
               action: "issue.updated",
+              actionKey: "issue.updated",
+              paramsJson: { title: issue.title },
               entityType: "issue",
               entityId: issue.id,
               details: {

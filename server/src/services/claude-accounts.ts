@@ -419,6 +419,8 @@ export function claudeAccountsService(db: Db) {
       actorType: "system",
       actorId: pending.actorId,
       action: ACTIVITY_ACTION_CLAUDE_ACCOUNT_ROTATED,
+      actionKey: "claude-account-rotated",
+      paramsJson: { reason: pending.reason },
       entityType: "agent",
       entityId: pending.agentId,
       agentId: pending.agentId,

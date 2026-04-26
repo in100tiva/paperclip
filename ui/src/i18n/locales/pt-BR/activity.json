@@ -1,1 +1,60 @@
-{}
+{
+  "issue": {
+    "created": "criou",
+    "updated": "atualizou",
+    "checked-out": "checou",
+    "released": "liberou",
+    "comment-added": "comentou em",
+    "comment-cancelled": "cancelou comentário em fila em",
+    "attachment-added": "anexou arquivo em",
+    "attachment-removed": "removeu anexo de",
+    "document-created": "criou documento em",
+    "document-updated": "atualizou documento em",
+    "document-deleted": "deletou documento de",
+    "commented": "comentou em",
+    "deleted": "deletou",
+    "blockers-updated": "atualizou bloqueadores de",
+    "reviewers-updated": "atualizou revisores de",
+    "approvers-updated": "atualizou aprovadores de"
+  },
+  "agent": {
+    "created": "criou",
+    "updated": "atualizou",
+    "paused": "pausou",
+    "resumed": "retomou",
+    "terminated": "terminou",
+    "key-created": "criou chave de API para",
+    "budget-updated": "atualizou orçamento de",
+    "runtime-session-reset": "reiniciou sessão de"
+  },
+  "heartbeat": {
+    "invoked": "invocou heartbeat para",
+    "cancelled": "cancelou heartbeat para"
+  },
+  "approval": {
+    "created": "solicitou aprovação",
+    "approved": "aprovou",
+    "rejected": "rejeitou"
+  },
+  "project": {
+    "created": "criou",
+    "updated": "atualizou",
+    "deleted": "deletou"
+  },
+  "goal": {
+    "created": "criou",
+    "updated": "atualizou",
+    "deleted": "deletou"
+  },
+  "cost": {
+    "reported": "reportou custo para",
+    "recorded": "registrou custo para"
+  },
+  "company": {
+    "created": "criou empresa",
+    "updated": "atualizou empresa",
+    "archived": "arquivou",
+    "budget-updated": "atualizou orçamento de"
+  },
+  "claude-account-rotated": "trocou conta Claude (motivo: {{reason}})"
+}

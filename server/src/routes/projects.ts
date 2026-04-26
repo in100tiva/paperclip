@@ -160,6 +160,8 @@ export function projectRoutes(db: Db) {
       actorId: actor.actorId,
       agentId: actor.agentId,
       action: "project.created",
+      actionKey: "project.created",
+      paramsJson: { name: project.name },
       entityType: "project",
       entityId: project.id,
       details: {
@@ -214,6 +216,8 @@ export function projectRoutes(db: Db) {
       actorId: actor.actorId,
       agentId: actor.agentId,
       action: "project.updated",
+      actionKey: "project.updated",
+      paramsJson: { name: project.name },
       entityType: "project",
       entityId: project.id,
       details: {
@@ -647,6 +651,8 @@ export function projectRoutes(db: Db) {
       actorId: actor.actorId,
       agentId: actor.agentId,
       action: "project.deleted",
+      actionKey: "project.deleted",
+      paramsJson: { name: project.name },
       entityType: "project",
       entityId: project.id,
     });

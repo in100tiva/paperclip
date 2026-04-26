@@ -1,1 +1,60 @@
-{}
+{
+  "issue": {
+    "created": "created",
+    "updated": "updated",
+    "checked-out": "checked out",
+    "released": "released",
+    "comment-added": "commented on",
+    "comment-cancelled": "cancelled a queued comment on",
+    "attachment-added": "attached file to",
+    "attachment-removed": "removed attachment from",
+    "document-created": "created document for",
+    "document-updated": "updated document on",
+    "document-deleted": "deleted document from",
+    "commented": "commented on",
+    "deleted": "deleted",
+    "blockers-updated": "updated blockers of",
+    "reviewers-updated": "updated reviewers of",
+    "approvers-updated": "updated approvers of"
+  },
+  "agent": {
+    "created": "created",
+    "updated": "updated",
+    "paused": "paused",
+    "resumed": "resumed",
+    "terminated": "terminated",
+    "key-created": "created API key for",
+    "budget-updated": "updated budget for",
+    "runtime-session-reset": "reset session for"
+  },
+  "heartbeat": {
+    "invoked": "invoked heartbeat for",
+    "cancelled": "cancelled heartbeat for"
+  },
+  "approval": {
+    "created": "requested approval",
+    "approved": "approved",
+    "rejected": "rejected"
+  },
+  "project": {
+    "created": "created",
+    "updated": "updated",
+    "deleted": "deleted"
+  },
+  "goal": {
+    "created": "created",
+    "updated": "updated",
+    "deleted": "deleted"
+  },
+  "cost": {
+    "reported": "reported cost for",
+    "recorded": "recorded cost for"
+  },
+  "company": {
+    "created": "created company",
+    "updated": "updated company",
+    "archived": "archived",
+    "budget-updated": "updated budget for"
+  },
+  "claude-account-rotated": "rotated Claude account (reason: {{reason}})"
+}

@@ -455,6 +455,8 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
         agentId: null,
         runId: null,
         action: "issue.updated",
+        actionKey: "issue.updated",
+        paramsJson: { title: candidate.title },
         entityType: "issue",
         entityId: candidate.id,
         details: {
@@ -1385,6 +1387,8 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
       agentId: null,
       runId: null,
       action: "issue.updated",
+      actionKey: "issue.updated",
+      paramsJson: { title: input.issue.title },
       entityType: "issue",
       entityId: input.issue.id,
       details: {

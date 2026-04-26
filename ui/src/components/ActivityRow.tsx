@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "@/lib/router";
 import { Identity } from "./Identity";
 import { IssueReferenceActivitySummary } from "./IssueReferenceActivitySummary";
@@ -28,7 +29,26 @@ interface ActivityRowProps {
 }
 
 export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, entityTitleMap, className }: ActivityRowProps) {
-  const verb = formatActivityVerb(event.action, event.details, { agentMap, userProfileMap });
+  const { t } = useTranslation(["activity"]);
+
+  // Preferred path: server emitted actionKey (kebab-case) — translate via t()
+  // Fallback path: legacy entries without actionKey use formatActivityVerb()
+  // i18n-allowlist: activity.* keys driven dynamically by event.actionKey
+  let verb: string;
+  let isLegacy = false;
+  if (event.actionKey) {
+    const params = (event.paramsJson ?? {}) as Record<string, unknown>;
+    const translated = t(`activity:${event.actionKey}`, { ...params, defaultValue: "" });
+    if (translated && typeof translated === "string" && translated.length > 0) {
+      verb = translated;
+    } else {
+      verb = formatActivityVerb(event.action, event.details, { agentMap, userProfileMap });
+      isLegacy = true;
+    }
+  } else {
+    verb = formatActivityVerb(event.action, event.details, { agentMap, userProfileMap });
+    isLegacy = true;
+  }
 
   const isHeartbeatEvent = event.entityType === "heartbeat_run";
   const heartbeatAgentId = isHeartbeatEvent
@@ -63,6 +83,9 @@ export function ActivityRow({ event, agentMap, userProfileMap, entityNameMap, en
           <span className="text-muted-foreground ml-1">{verb} </span>
           {name && <span className="font-medium">{name}</span>}
           {entityTitle && <span className="text-muted-foreground ml-1">— {entityTitle}</span>}
+          {isLegacy && (
+            <span className="ml-1 text-xs italic text-muted-foreground">(legado)</span>
+          )}
         </p>
         <span className="text-xs text-muted-foreground shrink-0 pt-0.5">{timeAgo(event.createdAt)}</span>
       </div>

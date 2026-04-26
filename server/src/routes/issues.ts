@@ -1421,6 +1421,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.document_deleted",
+      actionKey: "issue.document-deleted",
+      paramsJson: {},
       entityType: "issue",
       entityId: issue.id,
       details: {
@@ -1790,6 +1792,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.created",
+      actionKey: "issue.created",
+      paramsJson: { title: issue.title },
       entityType: "issue",
       entityId: issue.id,
       details: {
@@ -1976,6 +1980,8 @@ export function issueRoutes(
             agentId: actor.agentId,
             runId: actor.runId,
             action: "heartbeat.cancelled",
+            actionKey: "heartbeat.cancelled",
+            paramsJson: {},
             entityType: "heartbeat_run",
             entityId: cancelled.id,
             details: { agentId: cancelled.agentId, source: "issue_comment_interrupt", issueId: existing.id },
@@ -2154,6 +2160,8 @@ export function issueRoutes(
             agentId: actor.agentId,
             runId: actor.runId,
             action: "heartbeat.cancelled",
+            actionKey: "heartbeat.cancelled",
+            paramsJson: {},
             entityType: "heartbeat_run",
             entityId: cancelled.id,
             details: { agentId: cancelled.agentId, source: "issue_status_cancelled", issueId: existing.id },
@@ -2232,6 +2240,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.updated",
+      actionKey: "issue.updated",
+      paramsJson: { title: issue.title },
       entityType: "issue",
       entityId: issue.id,
       details: {
@@ -2270,6 +2280,8 @@ export function issueRoutes(
           agentId: actor.agentId,
           runId: actor.runId,
           action: "issue.blockers_updated",
+          actionKey: "issue.blockers-updated",
+          paramsJson: { title: issue.title },
           entityType: "issue",
           entityId: issue.id,
           details: {
@@ -2298,6 +2310,8 @@ export function issueRoutes(
         agentId: actor.agentId,
         runId: actor.runId,
         action: "issue.reviewers_updated",
+        actionKey: "issue.reviewers-updated",
+        paramsJson: { title: issue.title },
         entityType: "issue",
         entityId: issue.id,
         details: {
@@ -2318,6 +2332,8 @@ export function issueRoutes(
         agentId: actor.agentId,
         runId: actor.runId,
         action: "issue.approvers_updated",
+        actionKey: "issue.approvers-updated",
+        paramsJson: { title: issue.title },
         entityType: "issue",
         entityId: issue.id,
         details: {
@@ -2375,6 +2391,8 @@ export function issueRoutes(
         agentId: actor.agentId,
         runId: actor.runId,
         action: "issue.comment_added",
+        actionKey: "issue.comment-added",
+        paramsJson: { title: issue.title },
         entityType: "issue",
         entityId: issue.id,
         details: {
@@ -2679,6 +2697,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.deleted",
+      actionKey: "issue.deleted",
+      paramsJson: { title: issue.title },
       entityType: "issue",
       entityId: issue.id,
     });
@@ -2731,6 +2751,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.checked_out",
+      actionKey: "issue.checked-out",
+      paramsJson: { title: issue.title },
       entityType: "issue",
       entityId: issue.id,
       details: { agentId: req.body.agentId },
@@ -2790,6 +2812,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.released",
+      actionKey: "issue.released",
+      paramsJson: { title: released.title },
       entityType: "issue",
       entityId: released.id,
     });
@@ -2990,6 +3014,8 @@ export function issueRoutes(
           agentId: actor.agentId,
           runId: actor.runId,
           action: "issue.updated",
+          actionKey: "issue.updated",
+          paramsJson: { title: issue.title },
           entityType: "issue",
           entityId: issue.id,
           details: {
@@ -3208,6 +3234,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.comment_cancelled",
+      actionKey: "issue.comment-cancelled",
+      paramsJson: { title: issue.title },
       entityType: "issue",
       entityId: issue.id,
       details: {
@@ -3368,6 +3396,8 @@ export function issueRoutes(
         agentId: actor.agentId,
         runId: actor.runId,
         action: "issue.updated",
+        actionKey: "issue.updated",
+        paramsJson: { title: currentIssue.title },
         entityType: "issue",
         entityId: currentIssue.id,
         details: {
@@ -3399,6 +3429,8 @@ export function issueRoutes(
             agentId: actor.agentId,
             runId: actor.runId,
             action: "heartbeat.cancelled",
+            actionKey: "heartbeat.cancelled",
+            paramsJson: {},
             entityType: "heartbeat_run",
             entityId: cancelled.id,
             details: { agentId: cancelled.agentId, source: "issue_comment_interrupt", issueId: currentIssue.id },
@@ -3431,6 +3463,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.comment_added",
+      actionKey: "issue.comment-added",
+      paramsJson: { title: currentIssue.title },
       entityType: "issue",
       entityId: currentIssue.id,
       details: {
@@ -3751,6 +3785,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.attachment_added",
+      actionKey: "issue.attachment-added",
+      paramsJson: { filename: attachment.originalFilename ?? "" },
       entityType: "issue",
       entityId: issueId,
       details: {
@@ -3827,6 +3863,8 @@ export function issueRoutes(
       agentId: actor.agentId,
       runId: actor.runId,
       action: "issue.attachment_removed",
+      actionKey: "issue.attachment-removed",
+      paramsJson: { filename: removed.originalFilename ?? "" },
       entityType: "issue",
       entityId: removed.issueId,
       details: {
