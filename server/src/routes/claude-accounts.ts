@@ -34,11 +34,16 @@ const createAccountSchema = z.object({
     .string()
     .trim()
     .regex(SLUG_REGEX, "Slug must be lowercase letters/digits/dashes, 1-63 chars, must start with [a-z0-9]"),
+  // Phase 6 / D-05 / PROJ-02. Default 'company' preserves Phase 5 semantics.
+  scope: z.enum(["company", "shared"]).optional().default("company"),
 });
 
 const patchAccountSchema = z.object({
   status: z.enum(["live", "disabled"]).optional(),
   label: z.string().trim().min(1).max(100).optional(),
+  // Phase 6 / D-05. Allow promoting/demoting an existing account between scopes
+  // without delete-and-recreate.
+  scope: z.enum(["company", "shared"]).optional(),
 });
 
 // 06-02 / D-11 — query schema for cost-summary endpoint. ISO 8601 datetimes
@@ -160,6 +165,9 @@ export function claudeAccountsRoutes(db: Db) {
             label: body.label,
             configDirSlug: body.configDirSlug,
             status: "live",
+            // Phase 6 / D-05 / PROJ-02. Default 'company' (set by zod) preserves
+            // Phase 5 semantics; 'shared' opts into the cross-company pool.
+            scope: body.scope,
           })
           .returning();
         res.status(201).json({ account: created });
@@ -189,6 +197,8 @@ export function claudeAccountsRoutes(db: Db) {
       const updates: Record<string, unknown> = { updatedAt: new Date() };
       if (body.status !== undefined) updates.status = body.status;
       if (body.label !== undefined) updates.label = body.label;
+      // Phase 6 / D-05 / PROJ-02
+      if (body.scope !== undefined) updates.scope = body.scope;
 
       const [updated] = await db
         .update(claudeAccounts)

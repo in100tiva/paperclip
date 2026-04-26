@@ -25,6 +25,12 @@ export const updateCompanySchema = createCompanySchema
     feedbackDataSharingTermsVersion: feedbackDataSharingTermsVersionSchema,
     brandColor: brandColorSchema,
     logoAssetId: logoAssetIdSchema,
+    /**
+     * Phase 6 / D-04 / PROJ-02. Pool mode for Claude accounts.
+     * - 'per_company' (default): isolated — agents only rotate within own company's accounts
+     * - 'shared': can also use accounts marked scope='shared' from any company
+     */
+    claudeAccountPoolMode: z.enum(["per_company", "shared"]).optional(),
   });
 
 export type UpdateCompany = z.infer<typeof updateCompanySchema>;

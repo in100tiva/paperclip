@@ -52,6 +52,8 @@ export function companyService(db: Db) {
     feedbackDataSharingTermsVersion: companies.feedbackDataSharingTermsVersion,
     brandColor: companies.brandColor,
     logoAssetId: companyLogos.assetId,
+    // Phase 6 / D-04 / PROJ-02
+    claudeAccountPoolMode: companies.claudeAccountPoolMode,
     createdAt: companies.createdAt,
     updatedAt: companies.updatedAt,
   };

@@ -19,6 +19,10 @@ export interface Company {
   brandColor: string | null;
   logoAssetId: string | null;
   logoUrl: string | null;
+  /**
+   * Phase 6 / D-04 / PROJ-02. 'per_company' (default) | 'shared'.
+   */
+  claudeAccountPoolMode: "per_company" | "shared";
   createdAt: Date;
   updatedAt: Date;
 }
