@@ -1,1 +1,121 @@
-{}
+{
+  "generic": {
+    "unknown": "Algo deu errado.",
+    "network-error": "Erro de rede. Verifique sua conexão.",
+    "internal-server-error": "Erro interno do servidor."
+  },
+  "validation": {
+    "error": "Erro de validação",
+    "required": "Este campo é obrigatório.",
+    "required-fields": "Preencha todos os campos obrigatórios.",
+    "invalid_string": "Valor inválido.",
+    "invalid_email": "Email inválido.",
+    "too_small": "Valor muito curto.",
+    "too_big": "Valor muito longo.",
+    "company-id-required": "\"companyId\" deve ser uma string não vazia quando informado.",
+    "query": {
+      "invalid": "Valor de consulta inválido para {{field}}."
+    },
+    "email": { "invalid": "Endereço de email inválido." },
+    "password": { "too-short": "Senha muito curta. Mínimo 8 caracteres." }
+  },
+  "auth": {
+    "user-already-exists": "Já existe uma conta para {{email}}. Entre abaixo para continuar.",
+    "invalid-email-or-password": "Email ou senha não correspondem a uma conta Paperclip.",
+    "request-failed-401": "Email ou senha inválidos.",
+    "request-failed-422": "Talvez já exista uma conta para {{email}}. Tente fazer login.",
+    "session-expired": "Sessão expirada.",
+    "invalid-credentials": "Credenciais inválidas.",
+    "forbidden": "Você não tem permissão para esta ação.",
+    "user-required": "Usuário autenticado é obrigatório.",
+    "instance-admin-required": "Acesso de administrador da instância é obrigatório."
+  },
+  "company": {
+    "not-found": "Empresa não encontrada.",
+    "archive-failed": "Falha ao arquivar empresa.",
+    "last-owner": "Não é possível remover o último proprietário.",
+    "branding": {
+      "ceo-only": "Apenas agentes CEO podem atualizar o branding da empresa."
+    },
+    "capability": {
+      "ceo-only": "Apenas agentes CEO podem gerenciar a capacidade {{capability}} da empresa."
+    },
+    "settings": {
+      "ceo-or-board-only": "Apenas agentes CEO ou usuários do board podem atualizar as configurações da empresa."
+    }
+  },
+  "member": {
+    "role-invalid": "Função inválida.",
+    "update-failed": "Falha ao atualizar membro.",
+    "not-found": "Membro não encontrado.",
+    "last-owner": "Não é possível remover o último proprietário ativo."
+  },
+  "invite": {
+    "expired": "Convite expirado.",
+    "revoked": "Convite revogado.",
+    "already-used": "Convite já utilizado.",
+    "not-found": "Convite não encontrado.",
+    "logo-not-found": "Logo do convite não encontrado.",
+    "already-member": "Você já pertence a esta empresa.",
+    "missing-scope": "O convite está sem o escopo da empresa.",
+    "token-generation-failed": "Falha ao gerar um token único de convite. Tente novamente.",
+    "bootstrap-human-only": "Convite de bootstrap requer requisição do tipo humano.",
+    "join-type-not-allowed": "Este convite não permite entradas do tipo {{requestType}}.",
+    "agent-name-required": "agentName é obrigatório para requisições de entrada de agente."
+  },
+  "issue": {
+    "title": { "required": "Título é obrigatório." },
+    "assignee": { "not-member": "Responsável precisa ser membro da empresa." },
+    "not-found": "Tarefa não encontrada."
+  },
+  "agent": {
+    "not-found": "Agente não encontrado.",
+    "create-failed": "Falha ao criar agente.",
+    "shortname-ambiguous": "O shortname do agente é ambíguo nesta empresa. Use o ID do agente.",
+    "shortname-needs-company": "A busca por shortname do agente requer o parâmetro companyId.",
+    "adapter-type-required": "O tipo de adapter é obrigatório.",
+    "adapter-type-unknown": "Tipo de adapter desconhecido: {{adapterType}}.",
+    "environment-cross-company": "O ambiente selecionado deve pertencer à mesma empresa.",
+    "environment-driver-not-allowed": "O driver de ambiente \"{{driver}}\" não é permitido aqui."
+  },
+  "project": {
+    "not-found": "Projeto não encontrado.",
+    "create-failed": "Falha ao criar projeto.",
+    "shortname-ambiguous": "O shortname do projeto é ambíguo nesta empresa. Use o ID do projeto."
+  },
+  "routine": {
+    "not-found": "Rotina não encontrada.",
+    "agent-self-only": "Agentes só podem gerenciar rotinas atribuídas a si mesmos.",
+    "assign-self-only": "Agentes só podem atribuir rotinas a si mesmos."
+  },
+  "plugin": {
+    "not-found": "Plugin não encontrado.",
+    "install-failed": "Falha ao instalar plugin.",
+    "webhook-not-enabled": "Rotas de API de plugin com escopo de webhook requerem um verificador de assinatura habilitado.",
+    "checkout": {
+      "issueid-required": "Rotas de API de plugin protegidas por checkout requerem um parâmetro issueId."
+    }
+  },
+  "board-claim": {
+    "not-found": "Desafio de claim do board não encontrado.",
+    "code-required": "Código de claim é obrigatório.",
+    "signin-required": "Faça login antes de reivindicar a posse do board.",
+    "expired": "Desafio de claim do board expirado. Inicie um novo claim.",
+    "unavailable": "Desafio de claim do board não está mais disponível."
+  },
+  "cli-auth": {
+    "signin-required": "Faça login antes de aprovar o acesso CLI."
+  },
+  "join-request": {
+    "not-found": "Solicitação de entrada não encontrada.",
+    "not-pending": "Solicitação de entrada não está pendente.",
+    "agent-claim-only": "Apenas solicitações de agente podem reivindicar chaves de API.",
+    "must-be-approved": "A solicitação de entrada deve ser aprovada antes do claim da chave."
+  },
+  "claim-secret": {
+    "invalid": "Segredo de claim inválido.",
+    "expired": "Segredo de claim expirado.",
+    "already-used": "Segredo de claim já utilizado.",
+    "api-key-claimed": "Chave de API já reivindicada."
+  }
+}

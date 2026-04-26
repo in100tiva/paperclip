@@ -1,1 +1,121 @@
-{}
+{
+  "generic": {
+    "unknown": "Something went wrong.",
+    "network-error": "Network error. Check your connection.",
+    "internal-server-error": "Internal server error."
+  },
+  "validation": {
+    "error": "Validation error",
+    "required": "This field is required.",
+    "required-fields": "Please fill in all required fields.",
+    "invalid_string": "Invalid value.",
+    "invalid_email": "Invalid email.",
+    "too_small": "Value too short.",
+    "too_big": "Value too long.",
+    "company-id-required": "\"companyId\" must be a non-empty string when provided.",
+    "query": {
+      "invalid": "Invalid {{field}} query value."
+    },
+    "email": { "invalid": "Invalid email address." },
+    "password": { "too-short": "Password too short. Minimum 8 characters." }
+  },
+  "auth": {
+    "user-already-exists": "An account already exists for {{email}}. Sign in below to continue.",
+    "invalid-email-or-password": "Email or password do not match a Paperclip account.",
+    "request-failed-401": "Invalid email or password.",
+    "request-failed-422": "An account may already exist for {{email}}. Try signing in.",
+    "session-expired": "Session expired.",
+    "invalid-credentials": "Invalid credentials.",
+    "forbidden": "You do not have permission for this action.",
+    "user-required": "Authenticated user is required.",
+    "instance-admin-required": "Instance admin access is required."
+  },
+  "company": {
+    "not-found": "Company not found.",
+    "archive-failed": "Failed to archive company.",
+    "last-owner": "Cannot remove the last owner.",
+    "branding": {
+      "ceo-only": "Only CEO agents can update company branding."
+    },
+    "capability": {
+      "ceo-only": "Only CEO agents can manage company {{capability}}."
+    },
+    "settings": {
+      "ceo-or-board-only": "Only CEO agents or board users may update company settings."
+    }
+  },
+  "member": {
+    "role-invalid": "Invalid role.",
+    "update-failed": "Failed to update member.",
+    "not-found": "Member not found.",
+    "last-owner": "Cannot remove the last active owner."
+  },
+  "invite": {
+    "expired": "Invite expired.",
+    "revoked": "Invite revoked.",
+    "already-used": "Invite already used.",
+    "not-found": "Invite not found.",
+    "logo-not-found": "Invite logo not found.",
+    "already-member": "You already belong to this company.",
+    "missing-scope": "Invite is missing company scope.",
+    "token-generation-failed": "Failed to generate a unique invite token. Please try again.",
+    "bootstrap-human-only": "Bootstrap invite requires human request type.",
+    "join-type-not-allowed": "Invite does not allow {{requestType}} joins.",
+    "agent-name-required": "agentName is required for agent join requests."
+  },
+  "issue": {
+    "title": { "required": "Title is required." },
+    "assignee": { "not-member": "Assignee must be a member of the company." },
+    "not-found": "Issue not found."
+  },
+  "agent": {
+    "not-found": "Agent not found.",
+    "create-failed": "Failed to create agent.",
+    "shortname-ambiguous": "Agent shortname is ambiguous in this company. Use the agent ID.",
+    "shortname-needs-company": "Agent shortname lookup requires companyId query parameter.",
+    "adapter-type-required": "Adapter type is required.",
+    "adapter-type-unknown": "Unknown adapter type: {{adapterType}}.",
+    "environment-cross-company": "Selected environment must belong to the same company.",
+    "environment-driver-not-allowed": "Environment driver \"{{driver}}\" is not allowed here."
+  },
+  "project": {
+    "not-found": "Project not found.",
+    "create-failed": "Failed to create project.",
+    "shortname-ambiguous": "Project shortname is ambiguous in this company. Use the project ID."
+  },
+  "routine": {
+    "not-found": "Routine not found.",
+    "agent-self-only": "Agents can only manage routines assigned to themselves.",
+    "assign-self-only": "Agents can only assign routines to themselves."
+  },
+  "plugin": {
+    "not-found": "Plugin not found.",
+    "install-failed": "Failed to install plugin.",
+    "webhook-not-enabled": "Webhook-scoped plugin API routes require a signature verifier enabled.",
+    "checkout": {
+      "issueid-required": "Checkout-protected plugin API routes require an issueId route parameter."
+    }
+  },
+  "board-claim": {
+    "not-found": "Board claim challenge not found.",
+    "code-required": "Claim code is required.",
+    "signin-required": "Sign in before claiming board ownership.",
+    "expired": "Board claim challenge expired. Start a new claim.",
+    "unavailable": "Board claim challenge is no longer available."
+  },
+  "cli-auth": {
+    "signin-required": "Sign in before approving CLI access."
+  },
+  "join-request": {
+    "not-found": "Join request not found.",
+    "not-pending": "Join request is not pending.",
+    "agent-claim-only": "Only agent join requests can claim API keys.",
+    "must-be-approved": "Join request must be approved before key claim."
+  },
+  "claim-secret": {
+    "invalid": "Invalid claim secret.",
+    "expired": "Claim secret expired.",
+    "already-used": "Claim secret already used.",
+    "api-key-claimed": "API key already claimed."
+  }
+}
