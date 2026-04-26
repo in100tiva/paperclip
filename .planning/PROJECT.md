@@ -3,12 +3,23 @@
 ## Estado Atual
 
 **Versão entregue:** v1.0 — Fork + Multi-Account (2026-04-26)
+**Milestone ativo:** v1.1 — Internacionalização pt-BR (iniciado 2026-04-26)
 
 Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code (swap automático em exhaustão), multi-company isolation e cost attribution. 45/45 requisitos v1 entregues; 7 UATs pendentes não-bloqueantes (cross-machine, 5+ devs reais, 2 contas Claude reais, cross-browser smoke) — convergência via uso real.
 
 **Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.0-*.md` para arquivos detalhados.
 
-**Próximo milestone:** Backlog v2 disponível em `.planning/milestones/v1.0-REQUIREMENTS.md` §"Requisitos v2" (POOL, OBS, AUTH2, RLS, STOR). Inicie próximo ciclo via `/novo-marco`.
+## Milestone Atual: v1.1 Internacionalização pt-BR
+
+**Objetivo:** Traduzir toda a experiência do paperclip para português do Brasil, com toggle de idioma em instance/settings (pt-BR / en-US) — UI, mensagens dos agentes e skills/system prompts inclusos.
+
+**Funcionalidades alvo:**
+- Toggle de idioma em instance/settings (preferência por usuário, persistida no Supabase)
+- Infraestrutura i18n (biblioteca, extração de strings, dicionários, fallback en-US)
+- Tradução completa da UI — inbox, projects, settings, admin, formulários, mensagens de erro, tooltips, navegação, activity log
+- Tradução das mensagens dos agentes para o usuário — como agentes se comunicam (status, summaries, prompts UI)
+- Tradução de skills/system prompts — agentes respondem em pt-BR quando o idioma estiver ativo
+- Default pt-BR para usuários sem preferência explícita; fallback en-US para chaves ausentes
 
 ---
 
@@ -58,12 +69,21 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-- [ ] Estruturar schema, migrations e RLS no Supabase para o domínio do paperclip *(schema aplicado; RLS opcional v1 ainda pendente)*
-- [ ] Permitir que cada dev rode o app localmente apontando para o mesmo Supabase *(infra + procedimentos prontos; cross-machine multi-dev e 5+ devs reais pendentes em `03-HUMAN-UAT.md` — UAT-03-01, UAT-03-02)*
-- [x] Investigar e documentar o suporte atual do paperclip a múltiplos provedores/contas de agentes *(Fase 4 spike — `FINDINGS-FOR-PHASE-5.md`)*
-- [x] Suportar múltiplos projetos rodando em paralelo no fluxo da equipe *(Fase 6)*
+**v1.1 — Internacionalização pt-BR (em definição):**
 
-**Todos os requisitos ativos do v1.0 estão concluídos.** Próximos requisitos pertencem ao backlog v2 — ver `REQUIREMENTS.md §"Requisitos v2"`.
+- [ ] Toggle de idioma em instance/settings (pt-BR / en-US) persistido por usuário
+- [ ] Infraestrutura i18n com extração de strings, fallback en-US e detecção de chaves ausentes
+- [ ] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros)
+- [ ] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI)
+- [ ] Skills/system prompts dos agentes em pt-BR quando idioma ativo (afeta resposta do modelo)
+- [ ] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas
+
+**v1.0 (carry-over não-bloqueantes):**
+
+- [ ] Cross-machine multi-dev e 5+ devs reais — UAT-03-01, UAT-03-02 (convergência via uso real)
+- [ ] RLS opcional v1 ainda pendente
+
+**v1.0 concluídos:** 45/45 requisitos. Backlog v2 (POOL, OBS, AUTH2, RLS, STOR) em `.planning/milestones/v1.0-REQUIREMENTS.md`.
 
 ### Fora do Escopo
 
@@ -119,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-26 after Phase 6 completion — v1.0 milestone DECLARED READY (45/45 requirements complete, 7 UATs pendentes não-bloqueantes)*
+*Última atualização: 2026-04-26 após início do milestone v1.1 (Internacionalização pt-BR)*

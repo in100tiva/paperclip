@@ -1,28 +1,33 @@
 ---
 state_version: 1.0
-milestone: v1.0
-milestone_name: Fork + Multi-Account
-status: completed
-last_updated: "2026-04-26T11:01:05.431Z"
+milestone: v1.1
+milestone_name: Internacionalização pt-BR
+status: defining-requirements
+last_updated: "2026-04-26T12:00:00.000Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 32
-  completed_plans: 32
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Estado do Projeto
 
 ## Referência do Projeto
 
-Ver: .planning/PROJECT.md (atualizado em 2026-04-25)
+Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Milestone v1.0 (Fork + Multi-Account) **DECLARED READY** em 2026-04-26 via plano 06-06 (V1-READINESS.md publicado, REQUIREMENTS.md fechado 45/45 zero Pending). Phase 6 fechada como `complete-with-pending-UAT`. Próxima ação: `/auditar-marco` ou execução pontual de 7 UATs pendentes pelo operador humano.
+**Foco atual:** Milestone v1.1 (Internacionalização pt-BR) iniciado em 2026-04-26. Definindo requisitos. Continuação de numeração de fases a partir da fase 7.
 
 ## Posição Atual
 
-Fase: 6 de 6 (Multi-Projeto + Polish — milestone v1.0 final) — **COMPLETE**
+Fase: Não iniciada (definindo requisitos)
+Plano: —
+Status: Definindo requisitos do milestone v1.1 — Internacionalização pt-BR
+Última atividade: 2026-04-26 — Milestone v1.1 iniciado via /novo-marco. Escopo: toggle pt-BR/en-US em settings, infra i18n, UI completa, mensagens de agentes e skills/system prompts traduzidos.
+
+Fase anterior: 6 de 6 (Multi-Projeto + Polish — milestone v1.0 final) — **COMPLETE**
 Plano: 6/6 — todas waves Phase 6 concluídas. Plano 06-06 (V1-READINESS.md + REQUIREMENTS.md closure) entregue.
 Status: Milestone v1.0 declared ready com 45/45 requisitos Complete + 7 UATs registradas em `*-HUMAN-UAT.md` arquivos como itens de validação humana contínua não-bloqueantes (precedente Phase 3/4/5). Convergência via uso real conduzirá próximas iterações; v2 backlog priorizado por sinal real (5 categorias × 13 itens em REQUIREMENTS.md §"Requisitos v2").
 Última atividade: 2026-04-26 — Plano 06-06 concluído em ~8min (commits `0db9c87` V1-READINESS.md + `179b45c` REQUIREMENTS.md closure). 2 artefatos entregues: (1) `.planning/phases/06-multi-projeto-polish/V1-READINESS.md` (275 linhas pt-br, 8 sections H2 numeradas seguindo D-16): §1 Declaração formal v1.0 PRONTO citando valor central PROJECT.md; §2 Inventário de Requisitos v1 (45 total — não 47 conforme CONTEXT/PLAN, recontagem real verificada D-COUNT) em 8 sub-tabelas (FORK 5 + INFRA 6 + DB 5 + AUTH 5 + TEAM 5 + SPIKE 5 + MULTI 11 + PROJ 3) com colunas ID/Phase/Status/Validation/Notes; §3 UATs Pendentes (7 ao total: UAT-03-01/02 + UAT-04-01/02/03 + UAT-05-01 + UAT-06-01) com tabela inventário + justificativa não-bloqueante (recursos físicos fora controle executor, validação SQL/CI cobre invariantes, convergência empírica via uso real, precedente Phase 3/4/5/6) + mecânica de fechamento; §4 Fluxos Críticos Validados (4 procedimentos: multi-dev shared state via 02-06+03-04, schema migrations via 02-04+CI, multi-account swap via 05-08 SMOKE-E2E.md Modo A SQL force, multi-company isolation via 06-05 MULTI-COMPANY-SMOKE.md Modo A); §5 Documentação Operacional (8 docs canônicos verificados); §6 Próximos Passos v2 Backlog (5 categorias AUTH2/OBS/POOL/STOR/RLS, 13 itens, decisão D-V2-NO-ROADMAP); §7 Métricas Finais v1.0 + 5 lições aprendidas (audit antes de implementar destrava waves, spike isolado evita retrabalho, HUMAN-UAT routing > falsificar validação, schema multi-tenant desde dia 1 simplifica fases, defaults legacy permitem opt-in seguro); §8 Assinatura. (2) `.planning/REQUIREMENTS.md` 5 mudanças fechando rastreabilidade: linha 69 checklist MULTI-09 [x], linha 169 tabela MULTI-09 Phase 5 Complete (entregue Phase 5 plan 05-07; STATE.md confirma), linha 177 cobertura "Requisitos v1: 44 total" → "45 total" (recontagem real, era 44 pré-Phase 6, +1 do PROJ; valor 47 do CONTEXT estava errado), linha 178 "Mapeados para fases: 44" → "45", linha 183 footer "2026-04-25 após criação do roadmap" → "2026-04-26 após v1.0 readiness (Phase 6 closure)". PROJ-01..03 já estavam [x] e Complete em planos anteriores (06-01..06-05) via tool `requirements mark-complete` — Tarefa 2 verificou estado e atualizou apenas residuos. Decisões: D-COUNT (recontagem 47 → 45), D-D17 (multi-company refs em README/ONBOARDING/TROUBLESHOOTING NÃO bloqueia readiness — config avançada, não entry-level), D-V2-NO-ROADMAP (backlog v2 priorizado por sinal real, criar Phase 7 quando 2-3 itens acumularem demanda). Self-check PASSED: V1-READINESS.md existe (275 linhas), commits ambos no log, REQUIREMENTS.md grep "Pending" = 0, "Requisitos v1: 45 total" = 1. Sem desvios estruturais — plano executou exatamente como escrito (D-COUNT é correção de discrepância CONTEXT/realidade flagada pelo orquestrador antes da execução, não desvio em runtime). Phase 6 fecha como `complete-with-pending-UAT`; milestone v1.0 declared ready.
