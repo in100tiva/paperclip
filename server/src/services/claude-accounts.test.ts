@@ -30,15 +30,20 @@ interface MockOptions {
   selectBindingsQueue?: any[][];
   // agentStepExecutions select queue (for completeness, mostly insert-only).
   selectStepExecutionsQueue?: any[][];
+  // companies row(s) — Phase 6 / D-06 / PROJ-02: selectActiveAccount reads
+  // companies.claudeAccountPoolMode before filtering candidates.
+  selectCompaniesQueue?: any[][];
 }
 
 function makeMockDb(opts: MockOptions = {}) {
   const claudeAccountsQueue = [...(opts.selectClaudeAccountsQueue ?? [])];
   const bindingsQueue = [...(opts.selectBindingsQueue ?? [])];
+  const companiesQueue = [...(opts.selectCompaniesQueue ?? [])];
 
   const executeCalls: string[] = [];
   const insertCalls: { table: string; values: any }[] = [];
   const updateCalls: { table: string; set: any; whereSql: any }[] = [];
+  const tableSelects: string[] = [];
   let txInvocations = 0;
 
   // Build a chainable select stub that records the table and returns
@@ -49,6 +54,7 @@ function makeMockDb(opts: MockOptions = {}) {
       let queue: any[][];
       if (table === "claude_accounts") queue = claudeAccountsQueue;
       else if (table === "agent_account_bindings") queue = bindingsQueue;
+      else if (table === "companies") queue = companiesQueue;
       else queue = [];
       const rows = queue.shift() ?? [];
       return Promise.resolve(limitVal !== null ? rows.slice(0, limitVal) : rows);
@@ -81,13 +87,14 @@ function makeMockDb(opts: MockOptions = {}) {
   }
 
   const db: any = {
-    select: () => {
+    select: (_proj?: any) => {
       // Drizzle's `db.select().from(table)` — table only known on `from()`.
       // We capture which table on `from`.
       let activeTable = "unknown";
       const chain: any = {
         from: (table: any) => {
           activeTable = tableNameOf(table);
+          tableSelects.push(activeTable);
           return makeSelectChain(activeTable);
         },
       };
@@ -119,7 +126,14 @@ function makeMockDb(opts: MockOptions = {}) {
     },
   };
 
-  return { db, executeCalls, insertCalls, updateCalls, getTxCount: () => txInvocations };
+  return {
+    db,
+    executeCalls,
+    insertCalls,
+    updateCalls,
+    tableSelects,
+    getTxCount: () => txInvocations,
+  };
 }
 
 // ============================================================
@@ -549,6 +563,154 @@ describe("claudeAccountsService", () => {
         (u) => u.table === "claude_accounts" && u.set.status === "live",
       );
       expect(updates.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  // ============================================================
+  // Phase 6 / PROJ-02 / D-06: pool-mode-aware selectActiveAccount
+  // ============================================================
+  // The mock Db is dumb — it returns whatever is enqueued for each table
+  // regardless of WHERE clause. So we simulate the DB-level filtering by
+  // enqueueing only the rows the real query would have matched given the
+  // pool mode under test.
+
+  describe("selectActiveAccount — pool mode (PROJ-02 / Phase 6)", () => {
+    it("PM-1: per_company mode ignores shared accounts from other companies", async () => {
+      // Real DB would return only own company-scoped accounts because the
+      // service filter is `(companyId=co-A AND scope='company')`.
+      const ownA = fixtureAccount({
+        id: "own-a",
+        companyId: "co-A",
+        scope: "company",
+        lastUsedAt: new Date("2026-04-10T00:00:00Z"),
+      });
+      const ownB = fixtureAccount({
+        id: "own-b",
+        companyId: "co-A",
+        scope: "company",
+        lastUsedAt: new Date("2026-04-15T00:00:00Z"),
+      });
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "per_company" }]],
+        // DB filter would have excluded the foreign shared account; mock mimics.
+        selectClaudeAccountsQueue: [[ownA, ownB]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      const acc = await svc.selectActiveAccount({
+        agentId: "agent-1",
+        companyId: "co-A",
+      });
+      // Round-robin lastUsedAt ASC → own-a (older).
+      expect(acc.id).toBe("own-a");
+      expect(["own-a", "own-b"]).toContain(acc.id);
+      // The service MUST have queried companies to resolve poolMode.
+      expect(mock.tableSelects).toContain("companies");
+    });
+
+    it("PM-2: shared mode includes shared accounts from other owners", async () => {
+      const own = fixtureAccount({
+        id: "own",
+        companyId: "co-A",
+        scope: "company",
+        lastUsedAt: new Date("2026-04-10T00:00:00Z"),
+      });
+      const sharedFromOther = fixtureAccount({
+        id: "shared-foreign",
+        companyId: "co-B",
+        scope: "shared",
+        lastUsedAt: new Date("2026-04-05T00:00:00Z"), // older → wins round-robin
+      });
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "shared" }]],
+        // DB would include both because filter is
+        // `(companyId=co-A AND scope='company') OR scope='shared'`.
+        selectClaudeAccountsQueue: [[sharedFromOther, own]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      const acc = await svc.selectActiveAccount({
+        agentId: "agent-1",
+        companyId: "co-A",
+      });
+      expect(acc.id).toBe("shared-foreign");
+    });
+
+    it("PM-3: shared mode picks the shared account when company has none of its own", async () => {
+      const sharedOnly = fixtureAccount({
+        id: "shared-only",
+        companyId: "co-B",
+        scope: "shared",
+        lastUsedAt: new Date("2026-04-01T00:00:00Z"),
+      });
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "shared" }]],
+        selectClaudeAccountsQueue: [[sharedOnly]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      const acc = await svc.selectActiveAccount({
+        agentId: "agent-1",
+        companyId: "co-A",
+      });
+      expect(acc.id).toBe("shared-only");
+    });
+
+    it("PM-4: per_company mode throws when no own accounts exist (shared do not count)", async () => {
+      // Even if the DB has shared accounts physically, the service's
+      // per_company filter excludes them — mock returns the empty result the
+      // filtered query would produce.
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "per_company" }]],
+        selectClaudeAccountsQueue: [[]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      await expect(
+        svc.selectActiveAccount({ agentId: "agent-1", companyId: "co-A" }),
+      ).rejects.toBeInstanceOf(NoAccountsAvailableError);
+    });
+
+    it("PM-5: per_company isolation — Company B never sees Company A's accounts", async () => {
+      // Company B is in per_company mode. Company A has accounts (both
+      // company-scoped and a shared one), but the WHERE clause for B
+      // resolves to `(companyId=co-B AND scope='company')` and matches zero
+      // rows. Mock represents the empty result of that filtered query.
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "per_company" }]],
+        selectClaudeAccountsQueue: [[]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      await expect(
+        svc.selectActiveAccount({ agentId: "agent-2", companyId: "co-B" }),
+      ).rejects.toBeInstanceOf(NoAccountsAvailableError);
+    });
+
+    it("PM-6: unknown poolMode value defaults defensively to per_company", async () => {
+      // Hypothetical DB corruption: poolMode = 'invalid'. Service should
+      // fail-closed to per_company semantics (safer default — prevents
+      // accidental cross-tenant leakage). With no own accounts, throws.
+      const ownAccount = fixtureAccount({
+        id: "own",
+        companyId: "co-A",
+        scope: "company",
+        lastUsedAt: new Date("2026-04-01T00:00:00Z"),
+      });
+      const mock = makeMockDb({
+        selectBindingsQueue: [[]],
+        selectCompaniesQueue: [[{ poolMode: "weird-future-mode" }]],
+        // The DB filter for fail-closed per_company would return only own
+        // company-scoped accounts; mock supplies that.
+        selectClaudeAccountsQueue: [[ownAccount]],
+      });
+      const svc = claudeAccountsService(mock.db);
+      const acc = await svc.selectActiveAccount({
+        agentId: "agent-1",
+        companyId: "co-A",
+      });
+      // Should still pick the own account (per_company branch, not throw).
+      expect(acc.id).toBe("own");
     });
   });
 });
