@@ -17,7 +17,7 @@ Forkar hard o paperclip, trocar Postgres embedded por Supabase compartilhado man
 Fases decimais aparecem entre seus inteiros vizinhos em ordem numérica.
 
 - [x] **Phase 1: Fork Hard + Cerimônia de Corte** — Clonar paperclip, cortar upstream, smoke test baseline em Windows
-- [ ] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth
+- [x] **Phase 2: Migração de Storage para Supabase** — Trocar Postgres embedded por Supabase remoto preservando Better Auth (completed 2026-04-26)
 - [ ] **Phase 3: Workflow de Equipe + Onboarding** — Convenções operacionais e onboarding sem fricção para 5+ devs
 - [ ] **Phase 4: Spike — Multi-Account Claude Code Detection** — Investigação empírica de exhaustão e mecânica de swap (sem código de produção)
 - [ ] **Phase 5: Multi-Account Claude Code Swap (Implementação)** — Pool de contas, rotação atômica e continuidade preservada em exhaustão
@@ -69,7 +69,7 @@ Planos:
 - [x] 02-03-PLAN.md — Driver patches (prepare:false, pool), runtime-config, .env.example, disable auto-migrations (INFRA-02..06, DB-02)
 - [x] 02-04-PLAN.md — Aplicar 71 migrations Drizzle + GitHub Actions migration pipeline + PR template DB gate (DB-01, DB-03..05)
 - [x] 02-05-PLAN.md — Validar Better Auth wiring contra Supabase + cookie prefix paperclip-team-shared (AUTH-01..04)
-- [ ] 02-06-PLAN.md — Smoke test E2E (signup, cookie, multi-dev verification) + checkpoint humano (autonomous: false)
+- [x] 02-06-PLAN.md — Smoke test E2E (signup, cookie, multi-dev verification) + checkpoint humano (autonomous: false)
 
 ### Phase 3: Workflow de Equipe + Onboarding
 
@@ -162,7 +162,7 @@ As fases executam em ordem numérica: 1 → 2 → 3 → 4 → 5 → 6
 | Fase | Planos Completos | Status | Concluída |
 |------|------------------|--------|-----------|
 | 1. Fork Hard + Cerimônia de Corte | 2/2 | Complete | 2026-04-25 |
-| 2. Migração de Storage para Supabase | 0/? | Not started | - |
+| 2. Migração de Storage para Supabase | 6/6 | Complete   | 2026-04-26 |
 | 3. Workflow de Equipe + Onboarding | 0/? | Not started | - |
 | 4. Spike — Multi-Account Detection | 0/? | Not started | - |
 | 5. Multi-Account Swap (Implementação) | 0/? | Not started | - |
