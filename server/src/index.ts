@@ -113,9 +113,15 @@ export async function startServer(): Promise<StartedServer> {
   }
   
   async function promptApplyMigrations(migrations: string[]): Promise<boolean> {
+    // Phase 2 (DB-02): explicit-only. Auto-apply happens ONLY when:
+    //   - PAPERCLIP_MIGRATION_AUTO_APPLY=true is set (CI/GitHub Actions path), OR
+    //   - User is interactively running `pnpm dev` in a TTY and types "y".
+    // Non-TTY contexts (watcher, dev-runner, daemonized server) ALWAYS refuse —
+    // ambient auto-apply against a shared Supabase is dangerous (5+ devs disputing
+    // migration locks; un-reviewed schema changes shipping silently).
     if (process.env.PAPERCLIP_MIGRATION_AUTO_APPLY === "true") return true;
     if (process.env.PAPERCLIP_MIGRATION_PROMPT === "never") return false;
-    if (!stdin.isTTY || !stdout.isTTY) return true;
+    if (!stdin.isTTY || !stdout.isTTY) return false;
   
     const prompt = createInterface({ input: stdin, output: stdout });
     try {
@@ -173,7 +179,9 @@ export async function startServer(): Promise<StartedServer> {
     if (!apply) {
       throw new Error(
         `${label} has pending migrations (${formatPendingMigrationSummary(state.pendingMigrations)}). ` +
-          "Refusing to start against a stale schema. Run pnpm db:migrate or set PAPERCLIP_MIGRATION_AUTO_APPLY=true.",
+          "Refusing to start against a stale schema (Phase 2 DB-02). " +
+          "Apply migrations explicitly: `pnpm db:migrate` (requires SUPABASE_DB_URL set). " +
+          "For CI: set PAPERCLIP_MIGRATION_AUTO_APPLY=true.",
       );
     }
   
