@@ -4,5 +4,234 @@
     "description": "Escolha o idioma da interface. A mudança aplica imediatamente.",
     "pt-br": "Português (Brasil)",
     "en-us": "Inglês (Estados Unidos)"
+  },
+  "instance-settings": {
+    "title": "Configurações da instância"
+  },
+  "common": {
+    "company-fallback": "Empresa",
+    "settings-crumb": "Configurações"
+  },
+  "general": {
+    "title": "Geral",
+    "description": "Configure preferências da instância: exibição de logs, atalhos de teclado, retenção de backup e compartilhamento de dados.",
+    "loading": "Carregando configurações gerais…",
+    "load-failed": "Falha ao carregar configurações gerais.",
+    "update-failed": "Falha ao atualizar configurações gerais.",
+    "deployment": {
+      "title": "Implantação e autenticação",
+      "auth-readiness": "Status de autenticação",
+      "ready": "Pronto",
+      "not-ready": "Não pronto",
+      "setup-required": "Configuração necessária",
+      "active": "Ativo",
+      "none": "Nenhum",
+      "bootstrap-status": "Status do bootstrap",
+      "bootstrap-invite": "Convite de bootstrap",
+      "mode-local-trusted": "O modo local confiável é otimizado para um operador local. Requisições do navegador rodam como contexto local de board e não exigem login.",
+      "mode-public": "O modo público autenticado exige login para acesso ao board e é destinado a URLs públicas.",
+      "mode-private": "O modo privado autenticado exige login e é destinado a deploys em LAN, VPN ou outras redes privadas."
+    },
+    "censor-username": {
+      "title": "Censurar usuário em logs",
+      "description": "Esconde o segmento de usuário em paths de home-directory e saídas de log similares visíveis ao operador. Menções avulsas de usuário fora de paths ainda não são mascaradas na transcrição ao vivo. Desativado por padrão.",
+      "toggle-aria": "Alternar censura de usuário em logs"
+    },
+    "keyboard-shortcuts": {
+      "title": "Atalhos de teclado",
+      "description": "Habilita os atalhos de teclado do app, incluindo navegação no inbox e atalhos globais como criar tarefas ou alternar painéis. Desativado por padrão.",
+      "toggle-aria": "Alternar atalhos de teclado"
+    },
+    "backup-retention": {
+      "title": "Retenção de backups",
+      "description": "Configure por quanto tempo os backups automáticos do banco são retidos. Backups rodam aproximadamente a cada hora e são compactados com gzip. Dentro da janela diária todos os backups são mantidos; além disso, um backup por semana e um por mês são preservados.",
+      "daily": "Diário",
+      "weekly": "Semanal",
+      "monthly": "Mensal",
+      "days_one": "{{count}} dia",
+      "days_other": "{{count}} dias",
+      "weeks_one": "{{count}} semana",
+      "weeks_other": "{{count}} semanas",
+      "months_one": "{{count}} mês",
+      "months_other": "{{count}} meses"
+    },
+    "ai-feedback": {
+      "title": "Compartilhamento de feedback de IA",
+      "description": "Controla se votos de polegar para cima e para baixo podem enviar a saída votada da IA para o Paperclip Labs. Os votos são sempre salvos localmente.",
+      "read-tos": "Leia nossos termos de serviço",
+      "prompt-pending": "Nenhum padrão salvo ainda. A próxima escolha de polegar para cima ou para baixo perguntará uma vez e então salvará a resposta aqui.",
+      "always-allow": "Sempre permitir",
+      "always-allow-description": "Compartilhar saídas votadas da IA automaticamente.",
+      "dont-allow": "Não permitir",
+      "dont-allow-description": "Manter saídas votadas da IA apenas localmente.",
+      "retest-hint-prefix": "Para retestar o prompt de primeiro uso em desenvolvimento local, remova a chave",
+      "retest-hint-from": "da linha JSON",
+      "retest-hint-or-set": "para esta instância, ou volte a defini-la para",
+      "retest-hint-suffix": "Não definido e",
+      "retest-hint-end": "ambos significam que nenhum padrão foi escolhido ainda."
+    },
+    "sign-out": {
+      "title": "Sair",
+      "description": "Sair desta instância do Paperclip. Você será redirecionado para a página de login.",
+      "action": "Sair",
+      "loading": "Saindo…",
+      "failed": "Falha ao sair."
+    }
+  },
+  "heartbeats": {
+    "title": "Heartbeats do agendador",
+    "description": "Agentes com timer de heartbeat habilitado em todas as suas empresas.",
+    "loading": "Carregando heartbeats do agendador…",
+    "load-failed": "Falha ao carregar heartbeats do agendador.",
+    "update-failed": "Falha ao atualizar heartbeat.",
+    "disable-all-failed": "Falha ao desativar todos os heartbeats.",
+    "empty": "Nenhum heartbeat do agendador corresponde aos critérios atuais.",
+    "active": "ativo",
+    "disabled": "desativado",
+    "on": "Ligado",
+    "off": "Desligado",
+    "never": "nunca",
+    "company_one": "{{count}} empresa",
+    "company_other": "{{count}} empresas",
+    "agent-config-title": "Configuração completa do agente",
+    "actions": {
+      "disable-all": "Desativar todos",
+      "disabling": "Desativando…",
+      "enable-timer": "Ativar timer heartbeat",
+      "disable-timer": "Desativar timer heartbeat",
+      "saving": "…",
+      "confirm-disable-all_one": "Desativar timer heartbeats para o {{count}} agente habilitado?",
+      "confirm-disable-all_other": "Desativar timer heartbeats para os {{count}} agentes habilitados?",
+      "disable-failed_one": "Falha ao desativar 1 timer heartbeat: {{detail}}",
+      "disable-failed_other": "Falha ao desativar {{failures}} de {{total}} timer heartbeats. Primeiro erro: {{detail}}"
+    }
+  },
+  "experimental": {
+    "title": "Experimental",
+    "description": "Optar por funcionalidades que ainda estão sendo avaliadas antes de virarem comportamento padrão.",
+    "loading": "Carregando configurações experimentais…",
+    "load-failed": "Falha ao carregar configurações experimentais.",
+    "update-failed": "Falha ao atualizar configurações experimentais.",
+    "environments": {
+      "title": "Habilitar Ambientes",
+      "description": "Mostrar gerenciamento de ambientes em configurações da empresa e permitir controles de atribuição de ambiente em projetos e agentes.",
+      "toggle-aria": "Alternar funcionalidade experimental de ambientes"
+    },
+    "isolated-workspaces": {
+      "title": "Habilitar Workspaces Isolados",
+      "description": "Mostrar controles de execution workspace na configuração do projeto e permitir comportamento de workspace isolado para execuções de tarefas novas e existentes.",
+      "toggle-aria": "Alternar funcionalidade experimental de workspaces isolados"
+    },
+    "auto-restart-dev-server": {
+      "title": "Auto-Reiniciar Servidor de Dev quando Ocioso",
+      "description": "Em `pnpm dev:once`, aguarda todas as execuções locais de agente em fila e em andamento terminarem, então reinicia o servidor automaticamente quando mudanças de backend ou migrations tornam o boot atual obsoleto.",
+      "toggle-aria": "Alternar auto-reinício guardado do servidor de dev"
+    },
+    "issue-graph-recovery": {
+      "title": "Auto-Criar Tarefas de Recuperação de Issue",
+      "description": "Permite que o agendador de heartbeat crie tarefas de recuperação para cadeias de dependência de tarefas que estão paradas há pelo menos 24 horas.",
+      "toggle-aria": "Alternar auto-recuperação de liveness do grafo de issues"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "crumb": "Perfil",
+    "description": "Controle como sua conta aparece na barra lateral e em outras superfícies do board.",
+    "loading": "Carregando perfil…",
+    "load-failed": "Falha ao carregar perfil.",
+    "name-label": "Nome de exibição",
+    "name-placeholder": "Board",
+    "name-help": "Mostrado no rodapé de conta da barra lateral e em superfícies de autor de comentário.",
+    "email-label": "E-mail",
+    "email-help": "O e-mail é gerenciado pela sua sessão de autenticação e é somente leitura aqui.",
+    "no-email": "Sem e-mail",
+    "fallback-name": "Board",
+    "upload-photo": "Enviar foto",
+    "change-photo": "Trocar foto",
+    "remove": "Remover",
+    "upload-hint-with-company": "Armazenado no storage de arquivos do Paperclip para {{company}}.",
+    "upload-hint-without-company": "Selecione uma empresa para enviar um avatar para o storage do Paperclip.",
+    "avatar-help": "Clique no avatar para enviar uma nova imagem. {{hint}}",
+    "save": "Salvar perfil",
+    "saving": "Salvando…",
+    "save-failed": "Falha ao atualizar perfil.",
+    "upload-failed": "Falha ao enviar avatar.",
+    "remove-avatar-failed": "Falha ao remover avatar.",
+    "language-update-failed": "Falha ao atualizar idioma.",
+    "select-company-first": "Selecione uma empresa antes de enviar um avatar de perfil."
+  },
+  "claude-accounts": {
+    "title": "Contas Claude",
+    "crumb": "Contas Claude",
+    "description": "Gerencie o pool de contas do Claude Code disponíveis para esta empresa. Agentes alternam entre contas ativas quando uma atinge uma janela de quota 429.",
+    "select-company": "Selecione uma empresa para gerenciar contas Claude.",
+    "loading": "Carregando contas Claude…",
+    "load-failed": "Falha ao carregar contas Claude.",
+    "load-forbidden": "Você não tem permissão para ver contas Claude desta empresa.",
+    "register": {
+      "title": "Registrar conta",
+      "description-prefix": "Reserve uma vaga no pool. Após salvar, execute",
+      "description-middle": "dentro de",
+      "description-suffix": "na máquina host para semear credenciais.",
+      "label": "Rótulo",
+      "label-placeholder": "Conta A",
+      "slug": "Slug do diretório de config",
+      "slug-placeholder": "a",
+      "slug-title": "Letras minúsculas, dígitos, traços; 1-63 caracteres; deve começar com letra ou dígito",
+      "scope": "Escopo",
+      "scope-company": "Apenas esta empresa",
+      "scope-shared": "Compartilhada com todas as empresas (em modo compartilhado)",
+      "submit": "Registrar",
+      "submitting": "Registrando…",
+      "success-title": "Conta Claude registrada",
+      "success-body": "Execute `claude login` dentro do diretório do slug para ativar a nova conta.",
+      "error-title": "Falha ao registrar conta Claude",
+      "unknown-error": "Erro desconhecido"
+    },
+    "list": {
+      "title": "Contas",
+      "description": "Pool round-robin ordenado por último uso. Contas desativadas ficam fora da rotação.",
+      "empty": "Nenhuma conta Claude registrada ainda.",
+      "header-label": "Rótulo",
+      "header-slug": "Slug",
+      "header-scope": "Escopo",
+      "header-status": "Status",
+      "header-last-used": "Último uso",
+      "header-exhausted-until": "Esgotada até",
+      "header-action": "Ação",
+      "scope-shared": "compartilhada",
+      "scope-company": "empresa",
+      "enable": "Ativar",
+      "disable": "Desativar",
+      "update-failed": "Falha ao atualizar conta Claude"
+    },
+    "status": {
+      "live": "Ativa",
+      "exhausted": "Esgotada",
+      "cooldown": "Em cooldown",
+      "disabled": "Desativada"
+    },
+    "costs": {
+      "title": "Resumo de custos",
+      "description": "Gasto agregado por conta Claude para esta empresa. Faixa padrão: desde o início do mês atual.",
+      "loading": "Carregando resumo de custos…",
+      "empty": "Nenhum uso registrado ainda.",
+      "header-account": "Conta",
+      "header-cost-usd": "Custo (USD)",
+      "header-input-tokens": "Tokens de entrada",
+      "header-output-tokens": "Tokens de saída",
+      "header-steps": "Passos"
+    },
+    "history": {
+      "title": "Histórico de rotação",
+      "description": "Últimos 50 eventos de troca emitidos pelo heartbeat. A coluna de estratégia reflete se o resume funcionou ou caiu para um re-prompt de contexto completo.",
+      "loading": "Carregando histórico de rotação…",
+      "empty": "Nenhuma rotação registrada ainda.",
+      "agent-prefix": "Agente",
+      "swapped": "trocou",
+      "strategy": "estratégia: {{strategy}}",
+      "missing-time": "—",
+      "missing-id": "—"
+    }
   }
 }
