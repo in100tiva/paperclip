@@ -574,13 +574,35 @@ async function waitForChildExit() {
   return await childExitPromise;
 }
 
+// Kill the child *and its descendants*. Plain child.kill() only signals the
+// direct child (pnpm), which is a Node wrapper that does not propagate SIGTERM
+// down to tsx/node. We spawn detached so the child gets its own process group
+// (negative PID); signaling the group reaches every descendant.
+function killChildTree(signal: NodeJS.Signals) {
+  if (!child || child.pid === undefined) return;
+  if (process.platform === "win32") {
+    child.kill(signal);
+    return;
+  }
+  try {
+    process.kill(-child.pid, signal);
+  } catch (error) {
+    // Group may have already exited (ESRCH) — fall back to direct kill.
+    try {
+      child.kill(signal);
+    } catch {
+      // ignore — process is gone
+    }
+  }
+}
+
 async function stopChildForRestart() {
   if (!child) return { code: 0, signal: null };
   childExitWasExpected = true;
-  child.kill("SIGTERM");
+  killChildTree("SIGTERM");
   const killTimer = setTimeout(() => {
     if (child) {
-      child.kill("SIGKILL");
+      killChildTree("SIGKILL");
     }
   }, gracefulShutdownTimeoutMs);
   try {
@@ -597,7 +619,16 @@ async function startServerChild() {
   child = spawn(
     pnpmBin,
     ["--filter", "@paperclipai/server", serverScript, ...forwardedArgs],
-    { stdio: "inherit", env, shell: process.platform === "win32" },
+    {
+      stdio: "inherit",
+      env,
+      shell: process.platform === "win32",
+      // Linux/macOS: own process group so SIGTERM/SIGKILL via -pid reaches the
+      // whole tree (pnpm → tsx → node server). Without this, killing the
+      // direct child leaves descendants orphaned, holding port 3100 and DB
+      // connections.
+      detached: process.platform !== "win32",
+    },
   );
 
   childExitPromise = new Promise((resolve, reject) => {
@@ -706,7 +737,7 @@ async function shutdown(signal: NodeJS.Signals) {
   }
 
   childExitWasExpected = true;
-  child.kill(signal);
+  killChildTree(signal);
   const exit = await waitForChildExit();
   if (exit.signal) {
     exitForSignal(exit.signal);

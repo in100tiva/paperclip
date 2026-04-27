@@ -247,6 +247,25 @@ async function isLikelyMatchingCommand(record: LocalServiceRegistryRecord) {
   }
 }
 
+// PID being alive is necessary but not sufficient: a hung server still has a
+// live PID but does not respond on its port (event loop blocked, DB pool
+// stalled, etc). Probe /api/health with a short timeout so we don't adopt a
+// zombie and wedge `pnpm dev` into a "already running" no-op.
+async function isPortHealthy(record: LocalServiceRegistryRecord): Promise<boolean> {
+  if (!record.port || !record.url) return true;
+  const healthUrl = `${record.url.replace(/\/$/, "")}/api/health`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 2000);
+  try {
+    const response = await fetch(healthUrl, { signal: controller.signal });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function findAdoptableLocalService(input: {
   serviceKey: string;
   command?: string | null;
@@ -262,6 +281,10 @@ export async function findAdoptableLocalService(input: {
     return null;
   }
   if (!(await isLikelyMatchingCommand(record))) {
+    await removeLocalServiceRegistryRecord(input.serviceKey);
+    return null;
+  }
+  if (!(await isPortHealthy(record))) {
     await removeLocalServiceRegistryRecord(input.serviceKey);
     return null;
   }

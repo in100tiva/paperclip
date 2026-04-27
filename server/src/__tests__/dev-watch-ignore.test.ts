@@ -39,4 +39,18 @@ describe("resolveServerDevWatchIgnorePaths", () => {
     expect(ignorePaths).toContain("**/{node_modules,bower_components,vendor}/**");
     expect(ignorePaths).toContain("**/.vite-temp/**");
   });
+
+  it("excludes packages/plugins/sdk/dist so buildPluginSdk does not retrigger tsx watch", () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "paperclip-dev-watch-pluginsdk-"));
+    const repoRoot = path.join(tempRoot, "repo");
+    const serverRoot = path.join(repoRoot, "server");
+    const pluginSdkDist = path.join(repoRoot, "packages", "plugins", "sdk", "dist");
+    fs.mkdirSync(serverRoot, { recursive: true });
+    fs.mkdirSync(pluginSdkDist, { recursive: true });
+
+    const ignorePaths = resolveServerDevWatchIgnorePaths(serverRoot);
+
+    expect(ignorePaths).toContain(pluginSdkDist);
+    expect(ignorePaths).toContain(`${pluginSdkDist.replaceAll(path.sep, "/")}/**`);
+  });
 });

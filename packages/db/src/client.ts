@@ -11,7 +11,14 @@ const DRIZZLE_MIGRATIONS_TABLE = "__drizzle_migrations";
 const MIGRATIONS_JOURNAL_JSON = fileURLToPath(new URL("./migrations/meta/_journal.json", import.meta.url));
 
 function createUtilitySql(url: string) {
-  return postgres(url, { max: 1, onnotice: () => {} });
+  // Inherit pooler-aware options from buildPostgresOptions (defined below) so
+  // utility queries get `prepare: false` on the Supavisor transaction pooler
+  // (port 6543). Without this, prepared statements get orphaned across pooled
+  // connections and queries fail intermittently with "prepared statement does
+  // not exist" or hit `statement_timeout` on the server side, crashing the dev
+  // runner during the migration-status preflight.
+  const options = buildPostgresOptions(url);
+  return postgres(url, { ...(options ?? {}), max: 1, onnotice: () => {} });
 }
 
 function isSafeIdentifier(value: string): boolean {

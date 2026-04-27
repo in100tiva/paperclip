@@ -28,6 +28,11 @@ export function resolveServerDevWatchIgnorePaths(serverRoot: string): string[] {
     "../ui/node_modules/.vite-temp",
     "../ui/.vite",
     "../ui/dist",
+    // dev-runner runs buildPluginSdk() before each server spawn, which writes
+    // packages/plugins/sdk/dist/index.js. Without this exclude, tsx watch sees
+    // the dist mutation and restarts the server in a tight loop after every
+    // spawn (and the restart races EADDRINUSE because sockets aren't released).
+    "../packages/plugins/sdk/dist",
     // npm install during reinstall would trigger a restart mid-request
     // if tsx watch sees the new files. Exclude the managed plugins dir.
     process.env.HOME + "/.paperclip/adapter-plugins",

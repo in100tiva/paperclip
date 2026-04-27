@@ -54,8 +54,29 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
-  const err = toError(error, "Migration status check failed");
-  process.stderr.write(`${err.stack ?? err.message}\n`);
-  process.exit(1);
+// postgres-js can emit a late ErrorResponse on a socket *after* main() has
+// already settled (e.g., a query was awaited successfully but the server then
+// reports a deferred statement_timeout cancellation, or pool teardown races
+// the socket). Without this guard the late rejection escapes and crashes the
+// process with `node:internal/process/promises:394 triggerUncaughtException`,
+// which the dev-runner surfaces as a fatal startup failure.
+let mainSettled = false;
+process.on("unhandledRejection", (reason) => {
+  if (!mainSettled) {
+    const err = toError(reason, "Migration status check failed");
+    process.stderr.write(`${err.stack ?? err.message}\n`);
+    process.exit(1);
+  }
+  // After main settled, swallow late socket errors — they are not actionable.
 });
+
+main()
+  .catch((error) => {
+    mainSettled = true;
+    const err = toError(error, "Migration status check failed");
+    process.stderr.write(`${err.stack ?? err.message}\n`);
+    process.exit(1);
+  })
+  .finally(() => {
+    mainSettled = true;
+  });
