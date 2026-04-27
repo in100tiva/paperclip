@@ -96,17 +96,21 @@ export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1
     //   that would hang on the next query.
     // - `connection.statement_timeout`: server-side cancel after 30s so a stuck
     //   query fails fast instead of wedging the request handler indefinitely.
-    // - `keep_alive: 10`: TCP keepalive probes every 10s. Without this the
-    //   Linux default is 2 hours, so a half-dead socket (NAT drop, pooler
-    //   restart) keeps occupying a pool slot until the next query times out.
-    //   With aggressive keepalive the kernel detects the dead peer in ~30s
-    //   and postgres-js evicts the slot, so the next request gets a fresh
-    //   connection instead of hanging. Critical for Supavisor where transient
-    //   socket death is normal.
+    // - `keep_alive: 10`: TCP keepalive after 10s idle. Note: postgres-js maps
+    //   this to `socket.setKeepAlive(true, 10000)` which only sets KEEPIDLE.
+    //   The probe interval (TCP_KEEPINTVL) and probe count (TCP_KEEPCNT) stay
+    //   at Linux defaults (75s × 9 probes), so dead-socket detection by
+    //   keepalive alone takes ~11min. We therefore can't rely on keepalive
+    //   for fast eviction — `idle_timeout: 1` carries that load instead.
+    // - `idle_timeout: 1`: aggressively close sockets that have been idle for
+    //   >1 second, forcing a fresh connection on the next query. Trade ~100ms
+    //   of reconnect overhead per query for the guarantee that we never reuse
+    //   a half-dead socket. The transaction pooler is already designed to
+    //   handle short-lived connections, so this is the right primitive here.
     return {
       prepare: false,
       max: 5,
-      idle_timeout: 5,
+      idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
       keep_alive: 10,
@@ -116,12 +120,13 @@ export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1
   if (port === "5432") {
     // Direct or session pooler — could be Supabase or self-hosted Postgres.
     // Apply pool sizing but keep prepared statements (session mode supports them).
-    // Same idle/lifetime + statement_timeout discipline as the pooler, plus
-    // `keep_alive: 10` so dead sockets are evicted within ~30s instead of the
-    // Linux default of 2 hours.
+    // Same recycle discipline as 6543 — `idle_timeout: 1` forces reconnect on
+    // every idle gap so half-dead sockets get evicted within a second instead
+    // of waiting for the kernel to notice (which can take 11+ minutes; see
+    // 6543 comment).
     return {
       max: 5,
-      idle_timeout: 5,
+      idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
       keep_alive: 10,
