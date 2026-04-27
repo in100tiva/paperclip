@@ -140,7 +140,12 @@ Plans:
 4. Validação empírica HUMAN-UAT: usuário troca para pt-BR, dispara um agente em uma tarefa nova, agente responde em português brasileiro nas mensagens de output (registrado em UAT artifact).
 5. Reverse-check: usuário em en-US dispara o mesmo agente e recebe resposta em inglês — comportamento condicional comprovado, não tradução acidental por um modelo "que sempre responde em pt-BR".
 
-**Plans**: TBD
+**Plans**: 3 plans across 2 waves
+
+Plans:
+- [ ] 11-01-PLAN.md — Wave 1: resolveRunOwnerLocale helper + heartbeat integration (AGENT-SKILL-03)
+- [ ] 11-02-PLAN.md — Wave 2: language directive content + agent-instructions injection + bundleKey/locale + resume fallback (AGENT-SKILL-01)
+- [ ] 11-03-PLAN.md — Wave 2: 4 SKILL.pt-BR.md variants + claude-local materializeSkillForLocale + 11-HUMAN-UAT.md (AGENT-SKILL-02 + AGENT-SKILL-04)
 
 ## Tabela de Progresso
 
@@ -150,7 +155,7 @@ Plans:
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete    | 2026-04-27 |
-| 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |
+| 11. Skills + System Prompts dos Agentes | 0/3 | Não iniciada | - |
 
 ## Cobertura
 
