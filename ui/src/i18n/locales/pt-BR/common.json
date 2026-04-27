@@ -138,7 +138,35 @@
     "draft-probe-passed": "Probe de rascunho passou",
     "draft-probe-failed": "Probe de rascunho falhou",
     "environment-ready": "{{name}} está pronto.",
-    "unknown-error": "Erro desconhecido"
+    "unknown-error": "Erro desconhecido",
+    "agent": {
+      "started": "{{name}} iniciado",
+      "errored": "{{name}} com erro",
+      "view": "Ver agente"
+    },
+    "run": {
+      "succeeded": "Execução de {{name}} concluída",
+      "failed": "Execução de {{name}} falhou",
+      "timed-out": "Execução de {{name}} expirou",
+      "cancelled": "Execução de {{name}} cancelada",
+      "trigger-prefix": "Gatilho: {{detail}}",
+      "view": "Ver execução"
+    },
+    "join-request": {
+      "agent-wants": "Um agente quer entrar",
+      "someone-wants": "Alguém quer entrar",
+      "body": "Uma nova solicitação de entrada aguarda aprovação.",
+      "view-inbox": "Ver inbox"
+    },
+    "activity": {
+      "issue-created": "{{actor}} criou {{ref}}",
+      "issue-updated": "{{actor}} atualizou {{ref}}",
+      "issue-commented": "{{actor}} comentou em {{ref}}",
+      "issue-reopened-commented": "{{actor}} reabriu e comentou em {{ref}}",
+      "issue-commented-updated": "{{actor}} comentou e atualizou {{ref}}",
+      "view-ref": "Ver {{ref}}"
+    },
+    "watchdog-decision-not-recorded": "Decisão do watchdog não registrada"
   },
   "confirm": {
     "archive-company": {

@@ -138,7 +138,35 @@
     "draft-probe-passed": "Draft probe passed",
     "draft-probe-failed": "Draft probe failed",
     "environment-ready": "{{name}} is ready.",
-    "unknown-error": "Unknown error"
+    "unknown-error": "Unknown error",
+    "agent": {
+      "started": "{{name}} started",
+      "errored": "{{name}} errored",
+      "view": "View agent"
+    },
+    "run": {
+      "succeeded": "{{name}} run succeeded",
+      "failed": "{{name}} run failed",
+      "timed-out": "{{name}} run timed out",
+      "cancelled": "{{name}} run cancelled",
+      "trigger-prefix": "Trigger: {{detail}}",
+      "view": "View run"
+    },
+    "join-request": {
+      "agent-wants": "Agent wants to join",
+      "someone-wants": "Someone wants to join",
+      "body": "A new join request is waiting for approval.",
+      "view-inbox": "View inbox"
+    },
+    "activity": {
+      "issue-created": "{{actor}} created {{ref}}",
+      "issue-updated": "{{actor}} updated {{ref}}",
+      "issue-commented": "{{actor}} commented on {{ref}}",
+      "issue-reopened-commented": "{{actor}} reopened and commented on {{ref}}",
+      "issue-commented-updated": "{{actor}} commented and updated {{ref}}",
+      "view-ref": "View {{ref}}"
+    },
+    "watchdog-decision-not-recorded": "Watchdog decision not recorded"
   },
   "confirm": {
     "archive-company": {
