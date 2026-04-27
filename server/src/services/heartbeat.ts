@@ -34,6 +34,7 @@ import {
   projectWorkspaces,
   workspaceOperations,
 } from "@paperclipai/db";
+import { resolveRunOwnerLocale, type RuntimeLocale } from "./heartbeat-locale.js";
 import { conflict, HttpError, notFound } from "../errors.js";
 import { logger } from "../middleware/logger.js";
 import { publishLiveEvent } from "./live-events.js";
@@ -5350,6 +5351,17 @@ export function heartbeatService(db: Db, options: HeartbeatServiceOptions = {}) 
           );
         }
       }
+
+      // AGENT-SKILL-03 (Phase 11-01): resolve the locale chosen by the human
+      // operator that triggered this wake (or fall back to 'pt-BR' for
+      // timer/system-driven wakes) and propagate it through `context.runtimeLocale`.
+      // Plans 11-02 (language directive composition) and 11-03 (skill variant
+      // materialization + bundleKey extension) consume this field.
+      const runtimeLocale: RuntimeLocale = await resolveRunOwnerLocale(
+        db,
+        run.wakeupRequestId ?? null,
+      );
+      context.runtimeLocale = runtimeLocale;
 
       let adapterResult = await adapter.execute({
         runId: run.id,
