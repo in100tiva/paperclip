@@ -116,7 +116,12 @@ Plans:
 4. Notificações e toasts disparados por eventos de agente (sucesso, falha, swap, aprovação requerida) chegam em pt-BR ao usuário com locale=pt-BR.
 5. Toggle para en-US devolve toda a camada de mensagens de agente para inglês imediatamente — paridade verificável.
 
-**Plans**: TBD
+**Plans**: 3 plans across 2 waves
+
+Plans:
+- [x] 10-01-PLAN.md — Wave 1: Painéis + status + prompts UI (AGENT-MSG-01 + AGENT-MSG-03) — agents.json populated, StatusBadge refactor, AgentDetail/Agents/AgentConfigForm/NewAgentDialog/ActiveAgentsPanel migrated
+- [ ] 10-02-PLAN.md — Wave 1: Summaries / relatórios (AGENT-MSG-02) — RunTranscriptView/RunChatSurface/LiveRunWidget/IssueRunLedger migrated, agents.json transcript/run-ledger/live-runs sub-trees
+- [ ] 10-03-PLAN.md — Wave 2: Notificações e toasts (AGENT-MSG-04) — LiveUpdatesProvider tRef refactor, 4 builders receive TFunction, common.json toast.agent/run/join-request/activity sub-trees
 
 **UI hint**: yes
 
@@ -144,7 +149,7 @@ Plans:
 | 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
-| 10. Mensagens dos Agentes ao Usuário | 0/0 | Não iniciada | - |
+| 10. Mensagens dos Agentes ao Usuário | 1/3 | In Progress|  |
 | 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |
 
 ## Cobertura
