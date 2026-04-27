@@ -144,7 +144,7 @@ Plans:
 
 Plans:
 - [x] 11-01-PLAN.md — Wave 1: resolveRunOwnerLocale helper + heartbeat integration (AGENT-SKILL-03)
-- [ ] 11-02-PLAN.md — Wave 2: language directive content + agent-instructions injection + bundleKey/locale + resume fallback (AGENT-SKILL-01)
+- [x] 11-02-PLAN.md — Wave 2: language directive content + agent-instructions injection + bundleKey/locale + resume fallback (AGENT-SKILL-01)
 - [ ] 11-03-PLAN.md — Wave 2: 4 SKILL.pt-BR.md variants + claude-local materializeSkillForLocale + 11-HUMAN-UAT.md (AGENT-SKILL-02 + AGENT-SKILL-04)
 
 ## Tabela de Progresso
@@ -155,7 +155,7 @@ Plans:
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete    | 2026-04-27 |
-| 11. Skills + System Prompts dos Agentes | 1/3 | In Progress|  |
+| 11. Skills + System Prompts dos Agentes | 2/3 | In Progress|  |
 
 ## Cobertura
 

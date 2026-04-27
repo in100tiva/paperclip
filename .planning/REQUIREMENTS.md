@@ -44,7 +44,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 
 ### Agent Skills — System Prompts e Comportamento do Modelo
 
-- [ ] **AGENT-SKILL-01**: System prompts dos agentes incluem instrução condicional de idioma ("responda em pt-BR quando user locale = pt-BR")
+- [x] **AGENT-SKILL-01**: System prompts dos agentes incluem instrução condicional de idioma ("responda em pt-BR quando user locale = pt-BR")
 - [ ] **AGENT-SKILL-02**: Skills/templates de prompt do paperclip que falam com o usuário traduzidos para pt-BR
 - [x] **AGENT-SKILL-03**: Configuração de idioma propaga do user → agent context → spawn (env var ou prompt section, não acoplado a UI cliente)
 - [ ] **AGENT-SKILL-04**: Comportamento empiricamente validado — agente realmente responde em pt-BR após troca de idioma (HUMAN-UAT)
@@ -106,7 +106,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | AGENT-MSG-02 | Fase 10 | Complete |
 | AGENT-MSG-03 | Fase 10 | Complete |
 | AGENT-MSG-04 | Fase 10 | Complete |
-| AGENT-SKILL-01 | Fase 11 | Pending |
+| AGENT-SKILL-01 | Fase 11 | Complete |
 | AGENT-SKILL-02 | Fase 11 | Pending |
 | AGENT-SKILL-03 | Fase 11 | Complete |
 | AGENT-SKILL-04 | Fase 11 | Pending |
