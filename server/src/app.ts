@@ -6,6 +6,8 @@ import type { Db } from "@paperclipai/db";
 import type { DeploymentExposure, DeploymentMode } from "@paperclipai/shared";
 import type { StorageService } from "./storage/types.js";
 import { httpLogger, errorHandler } from "./middleware/index.js";
+import { inflightRequestTracker } from "./middleware/inflight-request-tracker.js";
+import { debugRoutes } from "./routes/debug.js";
 import { actorMiddleware } from "./middleware/auth.js";
 import { boardMutationGuard } from "./middleware/board-mutation-guard.js";
 import { privateHostnameGuard, resolvePrivateHostnameAllowSet } from "./middleware/private-hostname-guard.js";
@@ -161,6 +163,12 @@ export async function createApp(
     next();
   });
 
+  // Tracks every in-flight HTTP request so /api/_debug/inflight can list which
+  // routes are currently holding pool slots / event-loop work. Critical for
+  // diagnosing the "all requests 504 in 45s" symptom — the inflight list
+  // points directly at the leaking endpoint.
+  app.use(inflightRequestTracker());
+
   app.use(express.json({
     // Company import/export payloads can inline full portable packages.
     limit: "10mb",
@@ -211,6 +219,12 @@ export async function createApp(
       companyDeletionEnabled: opts.companyDeletionEnabled,
     }),
   );
+  if (process.env.NODE_ENV !== "production") {
+    // Diagnostic surface — only mounted outside production. Lets `curl
+    // /api/_debug/inflight` surface stuck requests, and `/api/_debug/pool-probe`
+    // give a bounded timing read on the DB pool.
+    api.use("/_debug", debugRoutes(db));
+  }
   api.use("/companies", companyRoutes(db, opts.storageService));
   api.use(companySkillRoutes(db));
   api.use(agentRoutes(db, { pluginWorkerManager: workerManager }));
