@@ -1,4 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { useQuery, useQueryClient, type InfiniteData, type QueryClient } from "@tanstack/react-query";
 import type { Agent, Issue, IssueComment, LiveEvent } from "@paperclipai/shared";
 import type { RunForIssue } from "../api/activity";
@@ -432,6 +434,7 @@ function buildActivityToast(
   companyId: string,
   payload: Record<string, unknown>,
   currentActor: { userId: string | null; agentId: string | null },
+  t: TFunction,
 ): ToastInput | null {
   const entityType = readString(payload.entityType);
   const entityId = readString(payload.entityId);
@@ -451,12 +454,14 @@ function buildActivityToast(
     (actorType === "agent" && !!currentActor.agentId && actorId === currentActor.agentId);
   if (isSelfActivity) return null;
 
+  const viewLabel = t("common:toast.activity.view-ref" as never, { ref: issue.ref }) as unknown as string;
+
   if (action === "issue.created") {
     return {
-      title: `${actor} created ${issue.ref}`,
+      title: t("common:toast.activity.issue-created" as never, { actor, ref: issue.ref }) as unknown as string,
       body: issue.title ? truncate(issue.title, 96) : undefined,
       tone: "success",
-      action: { label: `View ${issue.ref}`, href: issue.href },
+      action: { label: viewLabel, href: issue.href },
       dedupeKey: `activity:${action}:${entityId}`,
     };
   }
@@ -475,10 +480,10 @@ function buildActivityToast(
         ? truncate(issue.title, 96)
         : issue.label;
     return {
-      title: `${actor} updated ${issue.ref}`,
+      title: t("common:toast.activity.issue-updated" as never, { actor, ref: issue.ref }) as unknown as string,
       body: truncate(body, 100),
       tone: "info",
-      action: { label: `View ${issue.ref}`, href: issue.href },
+      action: { label: viewLabel, href: issue.href },
       dedupeKey: `activity:${action}:${entityId}`,
     };
   }
@@ -493,11 +498,12 @@ function buildActivityToast(
       ? `reopened from ${reopenedFrom.replace(/_/g, " ")}`
       : "reopened"
     : null;
-  const title = reopened
-    ? `${actor} reopened and commented on ${issue.ref}`
+  const titleKey = reopened
+    ? "common:toast.activity.issue-reopened-commented"
     : updated
-      ? `${actor} commented and updated ${issue.ref}`
-      : `${actor} commented on ${issue.ref}`;
+      ? "common:toast.activity.issue-commented-updated"
+      : "common:toast.activity.issue-commented";
+  const title = t(titleKey as never, { actor, ref: issue.ref }) as unknown as string;
   const body = bodySnippet
     ? reopenedLabel
       ? `${reopenedLabel} - ${bodySnippet.replace(/^#+\s*/m, "").replace(/\n/g, " ")}`
@@ -511,13 +517,14 @@ function buildActivityToast(
     title,
     body: body ? truncate(body, 96) : undefined,
     tone: "info",
-    action: { label: `View ${issue.ref}`, href: issue.href },
+    action: { label: viewLabel, href: issue.href },
     dedupeKey: `activity:${action}:${entityId}:${commentId ?? "na"}`,
   };
 }
 
 function buildJoinRequestToast(
   payload: Record<string, unknown>,
+  t: TFunction,
 ): ToastInput | null {
   const entityType = readString(payload.entityType);
   const action = readString(payload.action);
@@ -528,13 +535,19 @@ function buildJoinRequestToast(
   if (action !== "join.requested" && action !== "join.request_replayed") return null;
 
   const requestType = readString(details?.requestType);
-  const label = requestType === "agent" ? "Agent" : "Someone";
+  const titleKey =
+    requestType === "agent"
+      ? "common:toast.join-request.agent-wants"
+      : "common:toast.join-request.someone-wants";
 
   return {
-    title: `${label} wants to join`,
-    body: "A new join request is waiting for approval.",
+    title: t(titleKey as never) as unknown as string,
+    body: t("common:toast.join-request.body" as never) as unknown as string,
     tone: "info",
-    action: { label: "View inbox", href: "/inbox/mine" },
+    action: {
+      label: t("common:toast.join-request.view-inbox" as never) as unknown as string,
+      href: "/inbox/mine",
+    },
     dedupeKey: `join-request:${entityId}`,
   };
 }
@@ -544,6 +557,7 @@ function buildAgentStatusToast(
   nameOf: (id: string) => string | null,
   queryClient: QueryClient,
   companyId: string,
+  t: TFunction,
 ): ToastInput | null {
   const agentId = readString(payload.agentId);
   const status = readString(payload.status);
@@ -551,10 +565,11 @@ function buildAgentStatusToast(
 
   const tone = status === "error" ? "error" : "info";
   const name = nameOf(agentId) ?? `Agent ${shortId(agentId)}`;
-  const title =
+  const titleKey =
     status === "running"
-      ? `${name} started`
-      : `${name} errored`;
+      ? "common:toast.agent.started"
+      : "common:toast.agent.errored";
+  const title = t(titleKey as never, { name }) as unknown as string;
 
   const agents = queryClient.getQueryData<Agent[]>(queryKeys.agents.list(companyId));
   const agent = agents?.find((a) => a.id === agentId);
@@ -564,7 +579,10 @@ function buildAgentStatusToast(
     title,
     body,
     tone,
-    action: { label: "View agent", href: `/agents/${agentId}` },
+    action: {
+      label: t("common:toast.agent.view" as never) as unknown as string,
+      href: `/agents/${agentId}`,
+    },
     dedupeKey: `agent-status:${agentId}:${status}`,
   };
 }
@@ -572,6 +590,7 @@ function buildAgentStatusToast(
 function buildRunStatusToast(
   payload: Record<string, unknown>,
   nameOf: (id: string) => string | null,
+  t: TFunction,
 ): ToastInput | null {
   const runId = readString(payload.runId);
   const agentId = readString(payload.agentId);
@@ -582,18 +601,19 @@ function buildRunStatusToast(
   const triggerDetail = readString(payload.triggerDetail);
   const name = nameOf(agentId) ?? `Agent ${shortId(agentId)}`;
   const tone = status === "succeeded" ? "success" : status === "cancelled" ? "warn" : "error";
-  const statusLabel =
-    status === "succeeded" ? "succeeded"
-      : status === "failed" ? "failed"
-        : status === "timed_out" ? "timed out"
+  const statusKebab =
+    status === "timed_out" ? "timed-out"
+      : status === "succeeded" ? "succeeded"
+        : status === "failed" ? "failed"
           : "cancelled";
-  const title = `${name} run ${statusLabel}`;
+  const titleKey = `common:toast.run.${statusKebab}`;
+  const title = t(titleKey as never, { name }) as unknown as string;
 
   let body: string | undefined;
   if (error) {
     body = truncate(error, 100);
   } else if (triggerDetail) {
-    body = `Trigger: ${triggerDetail}`;
+    body = t("common:toast.run.trigger-prefix" as never, { detail: triggerDetail }) as unknown as string;
   }
 
   return {
@@ -601,7 +621,10 @@ function buildRunStatusToast(
     body,
     tone,
     ttlMs: status === "succeeded" ? 5000 : 7000,
-    action: { label: "View run", href: `/agents/${agentId}/runs/${runId}` },
+    action: {
+      label: t("common:toast.run.view" as never) as unknown as string,
+      href: `/agents/${agentId}/runs/${runId}`,
+    },
     dedupeKey: `run-status:${runId}:${status}`,
   };
 }
@@ -783,6 +806,7 @@ function handleLiveEvent(
   pushToast: (toast: ToastInput) => string | null,
   gate: ToastGate,
   currentActor: { userId: string | null; agentId: string | null },
+  t: TFunction,
 ) {
   if (event.companyId !== expectedCompanyId) return;
 
@@ -796,7 +820,7 @@ function handleLiveEvent(
     invalidateHeartbeatQueries(queryClient, expectedCompanyId, payload);
     invalidateVisibleIssueRunQueries(queryClient, pathname, payload);
     if (event.type === "heartbeat.run.status") {
-      const toast = buildRunStatusToast(payload, nameOf);
+      const toast = buildRunStatusToast(payload, nameOf, t);
       if (
         toast &&
         !shouldSuppressRunStatusToastForVisibleIssue(queryClient, pathname, payload)
@@ -817,7 +841,7 @@ function handleLiveEvent(
     queryClient.invalidateQueries({ queryKey: queryKeys.org(expectedCompanyId) });
     const agentId = readString(payload.agentId);
     if (agentId) queryClient.invalidateQueries({ queryKey: queryKeys.agents.detail(agentId) });
-    const toast = buildAgentStatusToast(payload, nameOf, queryClient, expectedCompanyId);
+    const toast = buildAgentStatusToast(payload, nameOf, queryClient, expectedCompanyId, t);
     if (
       toast &&
       !shouldSuppressAgentStatusToastForVisibleIssue(queryClient, pathname, payload)
@@ -834,8 +858,8 @@ function handleLiveEvent(
     }
     const action = readString(payload.action);
     const toast =
-      buildActivityToast(queryClient, expectedCompanyId, payload, currentActor) ??
-      buildJoinRequestToast(payload);
+      buildActivityToast(queryClient, expectedCompanyId, payload, currentActor, t) ??
+      buildJoinRequestToast(payload, t);
     if (
       toast &&
       !shouldSuppressActivityToastForVisibleIssue(queryClient, pathname, payload)
@@ -885,8 +909,11 @@ function closeSocketQuietly(target: LiveUpdatesSocketLike | null, reason: string
 }
 
 export const __liveUpdatesTestUtils = {
+  buildActivityToast,
+  buildJoinRequestToast,
   buildAgentStatusToast,
   buildRunStatusToast,
+  handleLiveEvent,
   closeSocketQuietly,
   hydrateVisibleIssueComment,
   invalidateActivityQueries,
@@ -903,6 +930,15 @@ export function LiveUpdatesProvider({ children }: { children: ReactNode }) {
   const { selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
+  const { t } = useTranslation(["common", "activity"]);
+  // Pitfall 2: capture `t` via ref so language change does NOT re-run the
+  // socket-mounting useEffect (which would close + reopen the WebSocket and
+  // drop live events). The socket-onmessage handler reads tRef.current at
+  // invocation time, so toast strings always use the current language.
+  const tRef = useRef<TFunction>(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
   const location = useLocation();
   const gateRef = useRef<ToastGate>({ cooldownHits: new Map(), suppressUntil: 0 });
   const pathnameRef = useRef(location.pathname);
@@ -980,10 +1016,19 @@ export function LiveUpdatesProvider({ children }: { children: ReactNode }) {
 
         try {
           const parsed = JSON.parse(raw) as LiveEvent;
-          handleLiveEvent(queryClient, liveCompanyId, pathnameRef.current, parsed, pushToast, gateRef.current, {
-            userId: currentActorRef.current.userId,
-            agentId: currentActorRef.current.agentId,
-          });
+          handleLiveEvent(
+            queryClient,
+            liveCompanyId,
+            pathnameRef.current,
+            parsed,
+            pushToast,
+            gateRef.current,
+            {
+              userId: currentActorRef.current.userId,
+              agentId: currentActorRef.current.agentId,
+            },
+            tRef.current,
+          );
         } catch {
           // Ignore non-JSON payloads.
         }

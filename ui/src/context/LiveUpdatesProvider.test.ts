@@ -11,8 +11,39 @@ vi.mock("../api/issues", () => ({
 }));
 
 import { describe, expect, it, vi } from "vitest";
+import type { TFunction } from "i18next";
 import { __liveUpdatesTestUtils } from "./LiveUpdatesProvider";
 import { queryKeys } from "../lib/queryKeys";
+
+// English-equivalent fake TFunction for unit tests that assert toast strings
+// without an I18nextProvider. Mirrors the en-US dictionary output for the
+// keys exercised by these tests.
+const tFake = ((key: string, params?: Record<string, unknown>): string => {
+  const name = (params?.name as string) ?? "";
+  const detail = (params?.detail as string) ?? "";
+  switch (key) {
+    case "common:toast.agent.started":
+      return `${name} started`;
+    case "common:toast.agent.errored":
+      return `${name} errored`;
+    case "common:toast.agent.view":
+      return "View agent";
+    case "common:toast.run.succeeded":
+      return `${name} run succeeded`;
+    case "common:toast.run.failed":
+      return `${name} run failed`;
+    case "common:toast.run.timed-out":
+      return `${name} run timed out`;
+    case "common:toast.run.cancelled":
+      return `${name} run cancelled`;
+    case "common:toast.run.trigger-prefix":
+      return `Trigger: ${detail}`;
+    case "common:toast.run.view":
+      return "View run";
+    default:
+      return key;
+  }
+}) as unknown as TFunction;
 
 describe("LiveUpdatesProvider issue invalidation", () => {
   it("refreshes touched inbox queries and only the changed issue data for issue updates", () => {
@@ -622,6 +653,7 @@ describe("LiveUpdatesProvider run lifecycle toasts", () => {
         () => "CodexCoder",
         queryClient as never,
         "company-1",
+        tFake,
       ),
     ).toBeNull();
 
@@ -633,6 +665,7 @@ describe("LiveUpdatesProvider run lifecycle toasts", () => {
           status: "succeeded",
         },
         () => "CodexCoder",
+        tFake,
       ),
     ).toBeNull();
   });
@@ -656,6 +689,7 @@ describe("LiveUpdatesProvider run lifecycle toasts", () => {
         () => "CodexCoder",
         queryClient as never,
         "company-1",
+        tFake,
       ),
     ).toMatchObject({
       title: "CodexCoder errored",
@@ -672,6 +706,7 @@ describe("LiveUpdatesProvider run lifecycle toasts", () => {
           error: "boom",
         },
         () => "CodexCoder",
+        tFake,
       ),
     ).toMatchObject({
       title: "CodexCoder run failed",
