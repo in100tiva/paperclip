@@ -74,7 +74,7 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - [x] Toggle de idioma em instance/settings (pt-BR / en-US) persistido por usuário *(Fase 7 — UAT-07-01 pendente)*
 - [x] Infraestrutura i18n com fallback en-US e detector de chaves ausentes *(Fase 7 — i18next 26 + react-i18next 17, 8 namespaces, missing-keys CI)*
 - [x] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros) *(Fases 8+9 ✓ — UAT-08-01..05 + UAT-09-01..04 pendentes; ~1300 chaves traduzidas, server error codes contract)*
-- [ ] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI) *(Fase 10)*
+- [x] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI) *(Fase 10 ✓ — UAT-10-01..03 pendentes; 201 chaves agents.json + tRef pattern)*
 - [ ] Skills/system prompts dos agentes em pt-BR quando idioma ativo *(Fase 11)*
 - [x] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas *(Fase 7 — UAT-07-02 pendente)*
 
@@ -139,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-27 após Fase 9 (Tradução UI Admin + Auth + Sistêmicas) — complete-with-pending-UAT (UAT-09-01..04); UI inteira em pt-BR; server error code contract estabelecido*
+*Última atualização: 2026-04-27 após Fase 10 (Mensagens dos Agentes) — complete-with-pending-UAT (UAT-10-01..03); painéis/summaries/toasts de agente em pt-BR; tRef pattern evita reconexão WebSocket em troca de idioma*

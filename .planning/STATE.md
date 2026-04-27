@@ -3,7 +3,7 @@ state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
 status: completed
-last_updated: "2026-04-27T01:51:01.738Z"
+last_updated: "2026-04-27T01:56:59.481Z"
 progress:
   total_phases: 5
   completed_phases: 4

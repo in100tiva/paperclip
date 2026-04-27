@@ -149,7 +149,7 @@ Plans:
 | 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
-| 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete   | 2026-04-27 |
+| 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete    | 2026-04-27 |
 | 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |
 
 ## Cobertura
