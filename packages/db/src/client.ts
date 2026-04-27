@@ -89,12 +89,33 @@ export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1
 
   if (port === "6543") {
     // Supavisor transaction pooler.
-    return { prepare: false, max: 5, idle_timeout: 20, connect_timeout: 10 };
+    // - `prepare: false` (see buildPostgresOptions doc above).
+    // - `idle_timeout: 5` and `max_lifetime: 60`: Supavisor and the PG side may
+    //   silently kill connections that look idle to them (network NAT, server
+    //   GC). Recycle aggressively so the client never reuses a half-dead socket
+    //   that would hang on the next query.
+    // - `connection.statement_timeout`: server-side cancel after 30s so a stuck
+    //   query fails fast instead of wedging the request handler indefinitely.
+    return {
+      prepare: false,
+      max: 5,
+      idle_timeout: 5,
+      max_lifetime: 60,
+      connect_timeout: 10,
+      connection: { statement_timeout: 30000 },
+    };
   }
   if (port === "5432") {
     // Direct or session pooler — could be Supabase or self-hosted Postgres.
     // Apply pool sizing but keep prepared statements (session mode supports them).
-    return { max: 5, idle_timeout: 20, connect_timeout: 10 };
+    // Same idle/lifetime + statement_timeout discipline as the pooler.
+    return {
+      max: 5,
+      idle_timeout: 5,
+      max_lifetime: 60,
+      connect_timeout: 10,
+      connection: { statement_timeout: 30000 },
+    };
   }
   // Embedded (54329) or anything else — preserve default behavior.
   return undefined;
