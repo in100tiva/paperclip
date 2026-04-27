@@ -1,26 +1,33 @@
 ---
 state_version: 1.0
-milestone: v1.1
-milestone_name: Internacionalização pt-BR
-status: verifying
-last_updated: "2026-04-27T03:23:03.332Z"
+milestone: v1.2
+milestone_name: in100tiva como Software House
+status: defining-requirements
+last_updated: "2026-04-27T05:00:00.000Z"
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 21
-  completed_plans: 21
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Estado do Projeto
 
 ## Referência do Projeto
 
-Ver: .planning/PROJECT.md (atualizado em 2026-04-26)
+Ver: .planning/PROJECT.md (atualizado em 2026-04-27)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Milestone v1.1 (Internacionalização pt-BR) iniciado em 2026-04-26. Definindo requisitos. Continuação de numeração de fases a partir da fase 7.
+**Foco atual:** Milestone v1.2 (in100tiva como Software House) iniciado em 2026-04-27. Definindo requisitos. Numeração de fases continua do milestone anterior (v1.1 terminou em fase 11 → v1.2 começa em 12).
 
 ## Posição Atual
+
+Fase: Não iniciada (definindo requisitos)
+Plano: —
+Status: Definindo requisitos
+Última atividade: 2026-04-27 — Milestone v1.2 iniciado (importar 18 agentes + 3 skills do framework como funcionários da in100tiva)
+
+## Posição Anterior
 
 Fase: 11 de 11 (Skills + System Prompts dos Agentes) — **IN PROGRESS** (2/3 plans complete)
 Plano: 11-02 — concluído. Próxima ação: /executar-fase 11 → 11-03 (Skill pt-BR variants + loader + HUMAN-UAT — AGENT-SKILL-02 + AGENT-SKILL-04). 11-03 consome buildClaudePromptBundleKey({locale}) já requerido + context.runtimeLocale já lido em execute.ts; só precisa adicionar materializeSkillForLocale para swap symlink → copy+rename quando SKILL.{locale}.md existe (Pattern 3 do RESEARCH).

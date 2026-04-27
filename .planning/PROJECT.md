@@ -2,24 +2,25 @@
 
 ## Estado Atual
 
-**Versão entregue:** v1.0 — Fork + Multi-Account (2026-04-26)
-**Milestone ativo:** v1.1 — Internacionalização pt-BR (iniciado 2026-04-26)
+**Versão entregue:** v1.1 — Internacionalização pt-BR (2026-04-27)
+**Milestone ativo:** v1.2 — in100tiva como Software House (iniciado 2026-04-27)
 
-Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code (swap automático em exhaustão), multi-company isolation e cost attribution. 45/45 requisitos v1 entregues; 7 UATs pendentes não-bloqueantes (cross-machine, 5+ devs reais, 2 contas Claude reais, cross-browser smoke) — convergência via uso real.
+Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code, multi-company isolation, cost attribution e UI/agentes/skills 100% traduzidos pt-BR. v1.1 entregou 26 requisitos (16 UATs empíricos pendentes, não-bloqueantes).
 
-**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.0-*.md` para arquivos detalhados.
+**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.{0,1}-*.md` para arquivos detalhados.
 
-## Milestone Atual: v1.1 Internacionalização pt-BR
+## Milestone Atual: v1.2 in100tiva como Software House
 
-**Objetivo:** Traduzir toda a experiência do paperclip para português do Brasil, com toggle de idioma em instance/settings (pt-BR / en-US) — UI, mensagens dos agentes e skills/system prompts inclusos.
+**Objetivo:** Importar (one-shot) os 18 agentes do framework `.claude/agents/` e as 3 skills `.claude/skills/` para a empresa `in100tiva` no paperclip, organizados como uma software house real — Architecture (gate sequencial) → Engineering (parallel) → Quality (gate pós-eng) — para visualização no organograma e atribuição de issues, mantendo o framework Claude Code rodando local como hoje (paperclip é vitrine/registro).
 
 **Funcionalidades alvo:**
-- Toggle de idioma em instance/settings (preferência por usuário, persistida no Supabase)
-- Infraestrutura i18n (biblioteca, extração de strings, dicionários, fallback en-US)
-- Tradução completa da UI — inbox, projects, settings, admin, formulários, mensagens de erro, tooltips, navegação, activity log
-- Tradução das mensagens dos agentes para o usuário — como agentes se comunicam (status, summaries, prompts UI)
-- Tradução de skills/system prompts — agentes respondem em pt-BR quando o idioma estiver ativo
-- Default pt-BR para usuários sem preferência explícita; fallback en-US para chaves ausentes
+- Script idempotente de importação (`pnpm sync-agents` ou equivalente) que cria os 17 novos agentes + 3 skills na in100tiva com hierarquia, role, descrição, adapterType `claude_local`, prompts derivados dos `.md`
+- Hierarquia software-house: CEO → 4 Heads (Architecture, Engineering, Quality, Analytics) → especialistas
+- Metadado `parallelism_policy` em cada agente (`serial` para Architecture/DB; `parallel` para Engineering; `serial-gate` para Quality) — UI mostra badge
+- 3 skills importadas como CompanySkill (`sourceType: local_path` apontando pra `.claude/skills/*`)
+- Mapeamento skill→agente por cargo: `paperclip` (governança em todos os Heads), `company-creator` (CEO), `design-guide` (UI-researcher + UI-checker + UI-auditor)
+- Idempotente: re-rodar não duplica nem quebra estado existente
+- Documentação `AGENTS-IMPORT.md` explicando reimportação após editar arquivos do framework
 
 ---
 
@@ -69,21 +70,26 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.1 — Internacionalização pt-BR (em andamento):**
+**v1.2 — in100tiva como Software House (em andamento):**
 
-- [x] Toggle de idioma em instance/settings (pt-BR / en-US) persistido por usuário *(Fase 7 — UAT-07-01 pendente)*
-- [x] Infraestrutura i18n com fallback en-US e detector de chaves ausentes *(Fase 7 — i18next 26 + react-i18next 17, 8 namespaces, missing-keys CI)*
-- [x] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros) *(Fases 8+9 ✓ — UAT-08-01..05 + UAT-09-01..04 pendentes; ~1300 chaves traduzidas, server error codes contract)*
-- [x] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI) *(Fase 10 ✓ — UAT-10-01..03 pendentes; 201 chaves agents.json + tRef pattern)*
-- [x] Skills/system prompts dos agentes em pt-BR quando idioma ativo *(Fase 11 ✓ — UAT-11-01..03 pendentes; resolveRunOwnerLocale + buildLanguageDirectiveBlock + 4 SKILL.pt-BR.md variants + bundle cache locale-aware)*
-- [x] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas *(Fase 7 — UAT-07-02 pendente)*
+- [ ] Importar 17 agentes (planner, executor, debugger, etc.) na in100tiva via script idempotente
+- [ ] Hierarquia software-house: CEO → Heads (Architecture, Engineering, Quality, Analytics) → especialistas
+- [ ] Metadado `parallelism_policy` (`serial` / `parallel` / `serial-gate`) refletido na UI do paperclip
+- [ ] Importar 3 skills (`paperclip`, `company-creator`, `design-guide`) como CompanySkill local_path
+- [ ] Mapeamento skill→agente por cargo (paperclip nos Heads; company-creator no CEO; design-guide no time UI)
+- [ ] Re-execução do script é idempotente (não duplica, não quebra estado existente)
+- [ ] Documentação `AGENTS-IMPORT.md` cobrindo reimportação
+
+**v1.1 (carry-over não-bloqueantes):**
+
+- [ ] HUMAN-UAT pendentes: UAT-07-01..02, UAT-08-01..05, UAT-09-01..04, UAT-10-01..03, UAT-11-01..03 (convergência via uso real)
 
 **v1.0 (carry-over não-bloqueantes):**
 
-- [ ] Cross-machine multi-dev e 5+ devs reais — UAT-03-01, UAT-03-02 (convergência via uso real)
+- [ ] Cross-machine multi-dev e 5+ devs reais — UAT-03-01, UAT-03-02
 - [ ] RLS opcional v1 ainda pendente
 
-**v1.0 concluídos:** 45/45 requisitos. Backlog v2 (POOL, OBS, AUTH2, RLS, STOR) em `.planning/milestones/v1.0-REQUIREMENTS.md`.
+**Concluídos:** v1.0 (45/45) + v1.1 (26/26 reqs no código; UATs empíricos pendentes). Backlog v2 (POOL, OBS, AUTH2, RLS, STOR) em `.planning/milestones/v1.0-REQUIREMENTS.md`.
 
 ### Fora do Escopo
 
@@ -139,4 +145,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-27 após Fase 11 (Skills + System Prompts) — complete-with-pending-UAT (UAT-11-01..03); milestone v1.1 entregue 26/26 reqs (16 pendentes UAT empíricos); pronto para audit → complete-milestone → cleanup*
+*Última atualização: 2026-04-27 ao iniciar milestone v1.2 (in100tiva como Software House) — escopo: importar 18 agentes + 3 skills do framework como funcionários da in100tiva com hierarquia software-house e parallelism_policy*
