@@ -83,12 +83,26 @@ async function hashPathContents(
   hash.update(`other:${relativePath}:${stat.mode}\n`);
 }
 
+/**
+ * Locale string accepted by the bundle hasher. Mirrors RuntimeLocale from
+ * server/src/services/heartbeat-locale.ts (single source of truth) — duplicated
+ * here as a literal because the claude-local adapter package does not depend on
+ * @paperclipai/server (one-way dependency: server -> adapters). Keep in sync
+ * if RuntimeLocale ever grows beyond two values.
+ */
+type ClaudePromptBundleLocale = "pt-BR" | "en-US";
+
 async function buildClaudePromptBundleKey(input: {
   skills: SkillEntry[];
   instructionsContents: string | null;
+  locale: ClaudePromptBundleLocale;
 }): Promise<string> {
   const hash = createHash("sha256");
-  hash.update("paperclip-claude-prompt-bundle:v1\n");
+  // Version bump v1 -> v2 because the hash input shape changed (locale is now
+  // included). One-shot natural cache invalidation on first spawn after deploy
+  // — Pitfall 1 mitigation per 11-RESEARCH.md.
+  hash.update("paperclip-claude-prompt-bundle:v2\n");
+  hash.update(`locale:${input.locale}\n`);
   if (input.instructionsContents) {
     hash.update("instructions\n");
     hash.update(input.instructionsContents);
@@ -133,12 +147,14 @@ export async function prepareClaudePromptBundle(input: {
   companyId: string;
   skills: SkillEntry[];
   instructionsContents: string | null;
+  locale: ClaudePromptBundleLocale;
   onLog: AdapterExecutionContext["onLog"];
 }): Promise<ClaudePromptBundle> {
-  const { companyId, skills, instructionsContents, onLog } = input;
+  const { companyId, skills, instructionsContents, locale, onLog } = input;
   const bundleKey = await buildClaudePromptBundleKey({
     skills,
     instructionsContents,
+    locale,
   });
   const rootDir = path.join(resolveManagedClaudePromptCacheRoot(process.env, companyId), bundleKey);
   const skillsHome = path.join(rootDir, ".claude", "skills");
@@ -170,3 +186,11 @@ export async function prepareClaudePromptBundle(input: {
     instructionsFilePath,
   };
 }
+
+/**
+ * Test-only handle on internal helpers. Not part of the public surface;
+ * consumed by `server/src/__tests__/claude-local-prompt-cache-locale.test.ts`.
+ */
+export const __testing__ = {
+  buildClaudePromptBundleKey,
+};

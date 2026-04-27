@@ -1,4 +1,5 @@
 export { execute, runClaudeLogin } from "./execute.js";
+export { __testing__ } from "./prompt-cache.js";
 export { listClaudeSkills, syncClaudeSkills } from "./skills.js";
 export { listClaudeModels } from "./models.js";
 export { testEnvironment } from "./test.js";

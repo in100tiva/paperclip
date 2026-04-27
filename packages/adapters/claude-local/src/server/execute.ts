@@ -105,6 +105,28 @@ function resolveClaudeBillingType(env: Record<string, string>): "api" | "subscri
   return hasNonEmptyEnvValue(env, "ANTHROPIC_API_KEY") ? "api" : "subscription";
 }
 
+/**
+ * Mirrors `buildLanguageDirectiveBlock` from
+ * `server/src/services/agent-instructions-locale-directive.ts`. Duplicated
+ * because the claude-local adapter package does not depend on
+ * `@paperclipai/server` (one-way: server -> adapters). Keep the body and the
+ * canonical text byte-identical with the server copy. Used as the
+ * resume-session fallback (Pitfall 2 — RESEARCH §"Pitfall 2"): on resume the
+ * `--append-system-prompt-file` flag is intentionally skipped, so the directive
+ * is appended to the prompt body instead.
+ */
+function buildLanguageDirectiveBlockForResume(locale: "pt-BR" | "en-US"): string {
+  if (locale !== "pt-BR") return "";
+  return [
+    "",
+    "",
+    "## Idioma de Resposta",
+    "",
+    "Responda ao usuário em português brasileiro (pt-BR). Use linguagem natural, técnica quando apropriado. Mantenha termos técnicos em inglês quando idiomáticos (ex: \"commit\", \"merge\", \"pull request\").",
+    "",
+  ].join("\n");
+}
+
 async function buildClaudeRuntimeConfig(input: ClaudeExecutionInput): Promise<ClaudeRuntimeConfig> {
   const { runId, agent, config, context, executionTarget, authToken } = input;
 
@@ -399,10 +421,16 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       );
     }
   }
+  // Read runtime locale from the adapter execution context (mutated by
+  // heartbeat.ts before adapter.execute — Plan 11-01). Default to "pt-BR" if
+  // the channel is missing (legacy callers, direct test invocations).
+  const contextLocaleRaw = context.runtimeLocale;
+  const runtimeLocale: "pt-BR" | "en-US" = contextLocaleRaw === "en-US" ? "en-US" : "pt-BR";
   const promptBundle = await prepareClaudePromptBundle({
     companyId: agent.companyId,
     skills: claudeSkillEntries.filter((entry) => desiredSkillNames.has(entry.key)),
     instructionsContents: combinedInstructionsContents,
+    locale: runtimeLocale,
     onLog,
   });
   const preparedExecutionTargetRuntime = executionTargetIsRemote
@@ -500,12 +528,20 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const renderedPrompt = shouldUseResumeDeltaPrompt ? "" : renderTemplate(promptTemplate, templateData);
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
   const taskContextNote = asString(context.paperclipTaskMarkdown, "").trim();
+  // Resume sessions deliberately skip --append-system-prompt-file (token cost,
+  // CLI rejection of mixed flags). The language directive that lives in the
+  // system prompt file therefore never reaches the model on resume — Pitfall 2
+  // per 11-RESEARCH.md. Append the directive to the prompt body so the model
+  // still sees a pt-BR instruction on every resumed heartbeat. Empty string
+  // for en-US, so this is a no-op when the operator's locale is en-US.
+  const resumeLanguageDirective = sessionId ? buildLanguageDirectiveBlockForResume(runtimeLocale) : "";
   const prompt = joinPromptSections([
     renderedBootstrapPrompt,
     wakePrompt,
     sessionHandoffNote,
     taskContextNote,
     renderedPrompt,
+    resumeLanguageDirective,
   ]);
   const promptMetrics = {
     promptChars: prompt.length,
