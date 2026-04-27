@@ -18,8 +18,8 @@ Traduzir toda a experiência do paperclip para português do Brasil, com toggle 
 Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência histórica do milestone v1.0.
 
 - [x] **Phase 7: Foundation i18n + Toggle de Settings** — Schema de preferência de idioma, API de update, toggle UI em settings, biblioteca i18n integrada, dicionários pt-BR/en-US, fallback e detector de chaves ausentes (`complete-with-pending-UAT` — UAT-07-01/02 deferred)
-- [ ] **Phase 8: Tradução UI Core** — Inbox, projects, settings, navegação/sidebar/header e activity log renderizados em pt-BR
-- [ ] **Phase 9: Tradução UI Admin + Auth + Mensagens Sistêmicas** — Telas admin/company, auth (login/signup/reset/invite), formulários, erros, validações, tooltips, modais e toasts traduzidos
+- [x] **Phase 8: Tradução UI Core** — Inbox, projects, settings, navegação/sidebar/header e activity log renderizados em pt-BR (`complete-with-pending-UAT` — UAT-08-01..05 deferred)
+- [x] **Phase 9: Tradução UI Admin + Auth + Mensagens Sistêmicas** — Telas admin/company, auth (login/signup/reset/invite), formulários, erros, validações, tooltips, modais e toasts traduzidos (`complete-with-pending-UAT` — UAT-09-01..04 deferred)
 - [ ] **Phase 10: Mensagens dos Agentes ao Usuário** — Status messages, summaries/relatórios, prompts UI de painéis de agente, notificações e toasts de eventos de agente em pt-BR
 - [ ] **Phase 11: Skills + System Prompts dos Agentes** — System prompts condicionais por locale, skills/templates traduzidos, propagação user → agent context → spawn e validação empírica de resposta em pt-BR
 
@@ -97,7 +97,7 @@ Plans:
 - [x] 09-03b-PLAN.md — Wave 1: Client translateApiError + ApiError.code + errors.json populate (UI-07)
 - [x] 09-01-PLAN.md — Wave 2: Admin/Company UI (CompanySettings + CompanyAccess + 9 siblings) — UI-04
 - [x] 09-02-PLAN.md — Wave 2: Auth forms (Auth + BoardClaim + CliAuth + InviteLanding) — UI-06
-- [ ] 09-04-PLAN.md — Wave 3: Cross-cutting toasts/modais/tooltips + anti-regression — UI-08
+- [x] 09-04-PLAN.md — Wave 3: Cross-cutting toasts/modais/tooltips + anti-regression — UI-08
 
 **UI hint**: yes
 
