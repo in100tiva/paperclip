@@ -724,6 +724,7 @@ export function RoutineDetail() {
               setRunVariablesOpen(true);
             }}
             disabled={runRoutine.isPending}
+            label="Run now"
           />
           <ToggleSwitch
             size="lg"

@@ -67,6 +67,7 @@
   "panel": {
     "active-agents": "Agentes",
     "no-recent-runs": "Nenhuma execução recente de agente.",
+    "more-runs": "{{count}} execuções ativas/recentes a mais",
     "more-runs_one": "{{count}} execução ativa/recente a mais",
     "more-runs_other": "{{count}} execuções ativas/recentes a mais",
     "live-now": "Ao vivo agora",

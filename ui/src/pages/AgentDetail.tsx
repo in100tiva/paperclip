@@ -25,7 +25,9 @@ import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { queryKeys } from "../lib/queryKeys";
 import { AgentConfigForm } from "../components/AgentConfigForm";
 import { PageTabBar } from "../components/PageTabBar";
-import { adapterLabels, roleLabels, help } from "../components/agent-config-primitives";
+import { adapterLabels, help } from "../components/agent-config-primitives";
+import { AGENT_STATUS_KEY, AGENT_ROLE_KEY } from "../lib/agent-keys";
+import type { AgentStatus, AgentRole } from "@paperclipai/shared";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import { useAdapterCapabilities } from "@/adapters/use-adapter-capabilities";
 import { MarkdownEditor } from "../components/MarkdownEditor";
@@ -619,7 +621,7 @@ function WorkspaceOperationsSection({
 }
 
 export function AgentDetail() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["agents", "common"]);
   const { companyPrefix, agentId, tab: urlTab, runId: urlRunId } = useParams<{
     companyPrefix?: string;
     agentId: string;
@@ -859,32 +861,32 @@ export function AgentDetail() {
 
   useEffect(() => {
     const crumbs: { label: string; href?: string }[] = [
-      { label: "Agents", href: "/agents" },
+      { label: t("agents:title"), href: "/agents" },
     ];
-    const agentName = agent?.name ?? routeAgentRef ?? "Agent";
+    const agentName = agent?.name ?? routeAgentRef ?? t("agents:detail.header.fallback-name");
     if (activeView === "dashboard" && !urlRunId) {
       crumbs.push({ label: agentName });
     } else {
       crumbs.push({ label: agentName, href: `/agents/${canonicalAgentRef}/dashboard` });
       if (urlRunId) {
-        crumbs.push({ label: "Runs", href: `/agents/${canonicalAgentRef}/runs` });
-        crumbs.push({ label: `Run ${urlRunId.slice(0, 8)}` });
+        crumbs.push({ label: t("agents:detail.tabs.runs"), href: `/agents/${canonicalAgentRef}/runs` });
+        crumbs.push({ label: `${t("agents:detail.header.run-prefix")} ${urlRunId.slice(0, 8)}` });
       } else if (activeView === "instructions") {
-        crumbs.push({ label: "Instructions" });
+        crumbs.push({ label: t("agents:detail.tabs.instructions") });
       } else if (activeView === "configuration") {
-        crumbs.push({ label: "Configuration" });
+        crumbs.push({ label: t("agents:detail.tabs.configuration") });
       // } else if (activeView === "skills") { // TODO: bring back later
       //   crumbs.push({ label: "Skills" });
       } else if (activeView === "runs") {
-        crumbs.push({ label: "Runs" });
+        crumbs.push({ label: t("agents:detail.tabs.runs") });
       } else if (activeView === "budget") {
-        crumbs.push({ label: "Budget" });
+        crumbs.push({ label: t("agents:detail.tabs.budget") });
       } else {
-        crumbs.push({ label: "Dashboard" });
+        crumbs.push({ label: t("agents:detail.tabs.dashboard") });
       }
     }
     setBreadcrumbs(crumbs);
-  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId]);
+  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId, t]);
 
   useEffect(() => {
     closePanel();
@@ -924,7 +926,7 @@ export function AgentDetail() {
           <div className="min-w-0">
             <h2 className="text-2xl font-bold truncate">{agent.name}</h2>
             <p className="text-sm text-muted-foreground truncate">
-              {roleLabels[agent.role] ?? agent.role}
+              {t((AGENT_ROLE_KEY[agent.role as AgentRole] ?? "agents:role.general") as never)}
               {agent.title ? ` - ${agent.title}` : ""}
             </p>
           </div>
@@ -936,20 +938,22 @@ export function AgentDetail() {
             onClick={() => openNewIssue({ assigneeAgentId: agent.id })}
           >
             <Plus className="h-3.5 w-3.5 sm:mr-1" />
-            <span className="hidden sm:inline">Assign Task</span>
+            <span className="hidden sm:inline">{t("agents:actions.assign-task")}</span>
           </Button>
           <RunButton
             onClick={() => agentAction.mutate("invoke")}
             disabled={agentAction.isPending || isPendingApproval}
-            label="Run Heartbeat"
+            label={t("agents:actions.run-heartbeat")}
           />
           <PauseResumeButton
             isPaused={agent.status === "paused"}
             onPause={() => agentAction.mutate("pause")}
             onResume={() => agentAction.mutate("resume")}
             disabled={agentAction.isPending || isPendingApproval}
+            pauseLabel={t("agents:actions.pause")}
+            resumeLabel={t("agents:actions.resume")}
           />
-          <span className="hidden sm:inline"><StatusBadge status={agent.status} /></span>
+          <span className="hidden sm:inline"><StatusBadge status={agent.status} label={t((AGENT_STATUS_KEY[agent.status as AgentStatus] ?? "agents:status.idle") as never)} /></span>
           {mobileLiveRun && (
             <Link
               to={`/agents/${canonicalAgentRef}/runs/${mobileLiveRun.id}`}
@@ -959,7 +963,7 @@ export function AgentDetail() {
                 <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
               </span>
-              <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">Live</span>
+              <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">{t("agents:detail.header.live-badge")}</span>
             </Link>
           )}
 
@@ -979,7 +983,7 @@ export function AgentDetail() {
                 }}
               >
                 <Copy className="h-3 w-3" />
-                Copy Agent ID
+                {t("agents:actions.copy-agent-id")}
               </button>
               <button
                 className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
@@ -989,7 +993,7 @@ export function AgentDetail() {
                 }}
               >
                 <RotateCcw className="h-3 w-3" />
-                Reset Sessions
+                {t("agents:actions.reset-sessions")}
               </button>
               <button
                 className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-destructive"
@@ -999,7 +1003,7 @@ export function AgentDetail() {
                 }}
               >
                 <Trash2 className="h-3 w-3" />
-                Terminate
+                {t("agents:actions.delete-agent")}
               </button>
             </PopoverContent>
           </Popover>
@@ -1013,12 +1017,12 @@ export function AgentDetail() {
         >
           <PageTabBar
             items={[
-              { value: "dashboard", label: "Dashboard" },
-              { value: "instructions", label: "Instructions" },
-              { value: "skills", label: "Skills" },
-              { value: "configuration", label: "Configuration" },
-              { value: "runs", label: "Runs" },
-              { value: "budget", label: "Budget" },
+              { value: "dashboard", label: t("agents:detail.tabs.dashboard") },
+              { value: "instructions", label: t("agents:detail.tabs.instructions") },
+              { value: "skills", label: t("agents:detail.tabs.skills") },
+              { value: "configuration", label: t("agents:detail.tabs.configuration") },
+              { value: "runs", label: t("agents:detail.tabs.runs") },
+              { value: "budget", label: t("agents:detail.tabs.budget") },
             ]}
             value={activeView}
             onValueChange={(value) => navigate(`/agents/${canonicalAgentRef}/${value}`)}

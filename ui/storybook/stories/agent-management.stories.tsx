@@ -558,6 +558,8 @@ function AgentActionsMatrix() {
                 onPause={() => undefined}
                 onResume={() => undefined}
                 disabled={agent.status === "running"}
+                pauseLabel="Pause"
+                resumeLabel="Resume"
               />
               <RunButton
                 label={agent.status === "running" ? "Running" : "Run now"}

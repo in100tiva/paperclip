@@ -67,6 +67,7 @@
   "panel": {
     "active-agents": "Agents",
     "no-recent-runs": "No recent agent runs.",
+    "more-runs": "{{count}} more active/recent runs",
     "more-runs_one": "{{count}} more active/recent run",
     "more-runs_other": "{{count}} more active/recent runs",
     "live-now": "Live now",

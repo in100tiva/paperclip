@@ -1,7 +1,18 @@
 import { cn } from "../lib/utils";
 import { statusBadge, statusBadgeDefault } from "../lib/status-colors";
 
-export function StatusBadge({ status }: { status: string }) {
+interface StatusBadgeProps {
+  status: string;
+  /**
+   * Optional translated label. When provided, replaces the legacy
+   * `status.replace(/_/g, " ")` rendering. Consumers that have not
+   * migrated to t() (issues, runs, workspaces, DesignGuide) continue
+   * to work via the fallback.
+   */
+  label?: string;
+}
+
+export function StatusBadge({ status, label }: StatusBadgeProps) {
   return (
     <span
       className={cn(
@@ -9,7 +20,7 @@ export function StatusBadge({ status }: { status: string }) {
         statusBadge[status] ?? statusBadgeDefault
       )}
     >
-      {status.replace(/_/g, " ")}
+      {label ?? status.replace(/_/g, " ")}
     </span>
   );
 }
