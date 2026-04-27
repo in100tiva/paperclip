@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.2 in100tiva como Software House (Shipped: 2026-04-27)
+
+**Phases completed:** 5 phases (12-16), 13 commits, ~1500 LOC novas
+
+**Key accomplishments:**
+
+- 18 agentes do framework `.claude/agents/*.md` importados como funcionários da in100tiva via `pnpm sync-agents` idempotente — 4 Heads (planner/executor/verifier/user-profiler) + 14 specialists distribuídos em 4 departamentos (Architecture, Engineering, Quality, Analytics).
+- Hierarquia software-house: CEO (pré-existente, intocável) → 4 Heads → 14 specialists via `agents.reports_to`. `parallelism_policy` (serial/parallel/serial_gate) e `department` persistidos em `agents.metadata` JSON sem migration.
+- 3 skills (`paperclip`, `company-creator`, `design-guide`) importadas como CompanySkill `local_path` via `pnpm sync-skills` idempotente, anexadas por cargo via `agents.adapter_config.desiredSkillKeys` — paperclip→13 agentes, company-creator→CEO, design-guide→3 UI roles.
+- Mapping canônico TS-typed em `scripts/sync-agents/mapping.ts` com `validateMapping()` runtime-checked invariantes.
+- `ParallelismBadge` componente novo em `ui/src/components/ParallelismBadge.tsx` (50 LOC, 3 cores) wired no AgentDetail header lendo de `agent.metadata.parallelismPolicy`.
+- `AGENTS-IMPORT.md` operacional na raiz cobre: pré-requisitos, comandos, edição+sync, troubleshooting (4 cenários: DATABASE_URL, company missing, mapping mismatch, zombie sessions).
+- 7 HUMAN-UATs documentados (UAT-15-01..02 + UAT-16-01..05) cobrindo idempotência, drift detection, CEO/INTA-1 invariants, visual UI — pendentes de validação humana seguindo precedente v1.1.
+- DB live verificado: 18 agentes criados na in100tiva, hierarquia correta, CEO + INTA-1 byte-identical pré e pós-sync, idempotência provada por re-run (0 created, 18 unchanged).
+
+---
+
 ## v1.1 Internacionalização pt-BR (Shipped: 2026-04-27)
 
 **Phases completed:** 5 phases, 21 plans, 48 tasks
