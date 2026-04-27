@@ -21,7 +21,7 @@ Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência 
 - [x] **Phase 8: Tradução UI Core** — Inbox, projects, settings, navegação/sidebar/header e activity log renderizados em pt-BR (`complete-with-pending-UAT` — UAT-08-01..05 deferred)
 - [x] **Phase 9: Tradução UI Admin + Auth + Mensagens Sistêmicas** — Telas admin/company, auth (login/signup/reset/invite), formulários, erros, validações, tooltips, modais e toasts traduzidos (`complete-with-pending-UAT` — UAT-09-01..04 deferred)
 - [x] **Phase 10: Mensagens dos Agentes ao Usuário** — Status messages, summaries/relatórios, prompts UI de painéis de agente, notificações e toasts de eventos de agente em pt-BR (completed 2026-04-27)
-- [ ] **Phase 11: Skills + System Prompts dos Agentes** — System prompts condicionais por locale, skills/templates traduzidos, propagação user → agent context → spawn e validação empírica de resposta em pt-BR
+- [x] **Phase 11: Skills + System Prompts dos Agentes** — System prompts condicionais por locale, skills/templates traduzidos, propagação user → agent context → spawn e validação empírica de resposta em pt-BR (completed 2026-04-27)
 
 ## Detalhes das Fases
 
@@ -145,7 +145,7 @@ Plans:
 Plans:
 - [x] 11-01-PLAN.md — Wave 1: resolveRunOwnerLocale helper + heartbeat integration (AGENT-SKILL-03)
 - [x] 11-02-PLAN.md — Wave 2: language directive content + agent-instructions injection + bundleKey/locale + resume fallback (AGENT-SKILL-01)
-- [ ] 11-03-PLAN.md — Wave 2: 4 SKILL.pt-BR.md variants + claude-local materializeSkillForLocale + 11-HUMAN-UAT.md (AGENT-SKILL-02 + AGENT-SKILL-04)
+- [x] 11-03-PLAN.md — Wave 2: 4 SKILL.pt-BR.md variants + claude-local materializeSkillForLocale + 11-HUMAN-UAT.md (AGENT-SKILL-02 + AGENT-SKILL-04)
 
 ## Tabela de Progresso
 
@@ -155,7 +155,7 @@ Plans:
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete    | 2026-04-27 |
-| 11. Skills + System Prompts dos Agentes | 2/3 | In Progress|  |
+| 11. Skills + System Prompts dos Agentes | 3/3 | Complete   | 2026-04-27 |
 
 ## Cobertura
 

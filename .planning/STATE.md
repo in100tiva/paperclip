@@ -2,12 +2,12 @@
 state_version: 1.0
 milestone: v1.1
 milestone_name: Internacionalização pt-BR
-status: "Plano 11-02 concluído em ~10min (3 commits atomic — `1955666` feat buildLanguageDirectiveBlock pure function (server/src/services/agent-instructions-locale-directive.ts, 28 linhas) retornando bloco markdown canônico para pt-BR + string vazia para en-US (model default + token economy) + 4 unit cases GREEN; `6bf9896` feat exportFiles wiring com options?: { locale?: RuntimeLocale } opcional (backward-compat company-portability.ts:3244) anexando directive APENAS ao entry file content em ambos branches managed/external e legacy fallback + 3 novos cases agent-instructions-service.test.ts (filter agent-instructions 20/20 GREEN); `e939fa0` feat bundleKey + resume fallback — buildClaudePromptBundleKey/prepareClaudePromptBundle agora REQUEREM locale, hash version v1→v2 (one-shot natural cache invalidation Pitfall 1); execute.ts lê context.runtimeLocale e propaga; resume-session fallback (Pitfall 2) — buildLanguageDirectiveBlockForResume duplicado inline com sync-comment porque adapter-claude-local não depende de @paperclipai/server (one-way deps preservation) + appended ao último joinPromptSections entry quando sessionId existe (recency bias maximiza adesão pt-BR em sessões resumidas) + __testing__ export para testes alcançarem helper interno + 3 novos cases claude-local-prompt-cache-locale.test.ts GREEN. Padrões novos: canonical-text-duplication-with-sync-comment (cross-package one-way deps); resume-session prompt-body fallback for system-prompt directives (claude-local --append-system-prompt-file é one-shot, skipped on resume); bundle hash version-bump pattern (cache invalidation natural one-shot). Decisões: (1) inline-duplicate buildLanguageDirectiveBlock; (2) empty-string en-US directive (revisitar via UAT); (3) directive ao fim do prompt body em resume; (4) hash bump v1→v2; (5) exportFiles options opcional. Sem desvios — plano executou exatamente como escrito. AGENT-SKILL-01 satisfeito at code-level. Self-check PASSED. agent-instructions-locale-directive 4/4 GREEN; agent-instructions filter 20/20 GREEN; claude-local-prompt-cache-locale 3/3 GREEN; claude-local-execute 3/14 GREEN com 11/14 fail pre-existing Windows shebang (verificado em master via stash); typecheck claude-local exit 0; typecheck server preserva apenas pre-existing recovery/service.ts:459 baseline. Plano 11-03 destravado — file sets disjuntos confirmados (11-02 modificou prompt-cache.ts top-half hashing/key-shape; 11-03 vai modificar bottom-half symlink loop em ensurePaperclipSkillSymlink → materializeSkillForLocale)."
-last_updated: "2026-04-27T02:50:00.000Z"
+status: verifying
+last_updated: "2026-04-27T03:08:41.359Z"
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 22
+  completed_phases: 5
+  total_plans: 21
   completed_plans: 21
 ---
 
