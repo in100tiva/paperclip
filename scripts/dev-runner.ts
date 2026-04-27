@@ -419,30 +419,67 @@ async function runPnpm(args: string[], options: {
   });
 }
 
-async function getMigrationStatusPayload() {
+type MigrationStatusPayload = { status?: string; pendingMigrations?: string[] };
+
+async function tryGetMigrationStatusPayload(): Promise<
+  | { ok: true; payload: MigrationStatusPayload }
+  | { ok: false; reason: "exit_code" | "parse_error"; code: number; stderr: string; stdout: string }
+> {
   const status = await runPnpm(
     ["--filter", "@paperclipai/db", "exec", "tsx", "src/migration-status.ts", "--json"],
     { env },
   );
   if (status.code !== 0) {
-    process.stderr.write(
-      status.stderr ||
-        status.stdout ||
-        `[paperclip] Command failed with code ${status.code}: pnpm --filter @paperclipai/db exec tsx src/migration-status.ts --json\n`,
-    );
-    process.exit(status.code);
+    return { ok: false, reason: "exit_code", code: status.code, stderr: status.stderr, stdout: status.stdout };
+  }
+  try {
+    return { ok: true, payload: JSON.parse(status.stdout.trim()) as MigrationStatusPayload };
+  } catch {
+    return { ok: false, reason: "parse_error", code: status.code, stderr: status.stderr, stdout: status.stdout };
+  }
+}
+
+/**
+ * Run the migration-status preflight with a few retries so a single transient
+ * failure (e.g., Supabase pooler returning `statement_timeout` once on a cold
+ * start) does not kill `pnpm dev`. After all retries fail in watch mode, log
+ * a clear warning and continue: the server itself will surface any real
+ * schema problem when it hits the DB. In one-shot/dev mode, still exit so
+ * scripts that depend on a known migration state fail loudly.
+ */
+async function getMigrationStatusPayload(): Promise<MigrationStatusPayload> {
+  const maxAttempts = 3;
+  let last: Awaited<ReturnType<typeof tryGetMigrationStatusPayload>> | null = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const result = await tryGetMigrationStatusPayload();
+    if (result.ok) return result.payload;
+    last = result;
+    if (attempt < maxAttempts) {
+      const backoffMs = 1000 * attempt;
+      process.stderr.write(
+        `[paperclip] migration-status preflight attempt ${attempt}/${maxAttempts} failed (${result.reason}); retrying in ${backoffMs}ms...\n`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, backoffMs));
+    }
   }
 
-  try {
-    return JSON.parse(status.stdout.trim()) as { status?: string; pendingMigrations?: string[] };
-  } catch (error) {
+  const failure = last!;
+  const stderrText = (failure.stderr || failure.stdout || "").trim();
+  if (mode === "watch") {
     process.stderr.write(
-      status.stderr ||
-        status.stdout ||
-        "[paperclip] migration-status returned invalid JSON payload\n",
+      `[paperclip] migration-status preflight failed after ${maxAttempts} attempts (${failure.reason}, exit ${failure.code}). Continuing dev startup with assumed up-to-date schema.\n`,
     );
-    throw toError(error, "Unable to parse migration-status JSON output");
+    if (stderrText) {
+      process.stderr.write(`[paperclip] (last error)\n${stderrText}\n`);
+    }
+    return { status: "upToDate", pendingMigrations: [] };
   }
+
+  process.stderr.write(
+    stderrText
+      || `[paperclip] migration-status failed (${failure.reason}, exit ${failure.code}) and produced no output\n`,
+  );
+  process.exit(failure.code || 1);
 }
 
 async function refreshPendingMigrations() {
