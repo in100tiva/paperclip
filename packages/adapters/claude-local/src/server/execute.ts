@@ -528,13 +528,13 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   const renderedPrompt = shouldUseResumeDeltaPrompt ? "" : renderTemplate(promptTemplate, templateData);
   const sessionHandoffNote = asString(context.paperclipSessionHandoffMarkdown, "").trim();
   const taskContextNote = asString(context.paperclipTaskMarkdown, "").trim();
-  // Resume sessions deliberately skip --append-system-prompt-file (token cost,
-  // CLI rejection of mixed flags). The language directive that lives in the
-  // system prompt file therefore never reaches the model on resume — Pitfall 2
-  // per 11-RESEARCH.md. Append the directive to the prompt body so the model
-  // still sees a pt-BR instruction on every resumed heartbeat. Empty string
-  // for en-US, so this is a no-op when the operator's locale is en-US.
-  const resumeLanguageDirective = sessionId ? buildLanguageDirectiveBlockForResume(runtimeLocale) : "";
+  // Append the language directive to the prompt body unconditionally:
+  // (1) on resume (--append-system-prompt-file is skipped per CLI flag conflict)
+  // (2) on first spawn — covers the case where the entry file on disk was authored
+  //     before the operator toggled to pt-BR, since no production code calls
+  //     agent-instructions.exportFiles({ locale }) when refreshing the bundle.
+  // Empty string for en-US so this is a no-op when the operator's locale is en-US.
+  const resumeLanguageDirective = buildLanguageDirectiveBlockForResume(runtimeLocale);
   const prompt = joinPromptSections([
     renderedBootstrapPrompt,
     wakePrompt,
