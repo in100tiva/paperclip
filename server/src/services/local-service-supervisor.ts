@@ -266,6 +266,64 @@ async function isPortHealthy(record: LocalServiceRegistryRecord): Promise<boolea
   }
 }
 
+// Orphan detection: when the original `pnpm dev` parent dies but a `tsx watch`
+// child survives (because it wasn't started detached, or the user did
+// `kill -9` on the wrong PID), the orphan gets reparented to PID 1 (init) or
+// to the user's `systemd --user`. The orphan keeps holding port 3100 with
+// stale code (no fixes applied since it was spawned), and the registry
+// adopts it on the next `pnpm dev`, exiting silently with "already running".
+// Detecting the orphan and refusing adoption forces a fresh spawn with the
+// current code.
+async function isOrphanedProcess(pid: number): Promise<boolean> {
+  if (process.platform === "win32") return false;
+  try {
+    const { stdout: ppidOut } = await execFileAsync("ps", ["-o", "ppid=", "-p", String(pid)]);
+    const ppid = Number.parseInt(ppidOut.trim(), 10);
+    if (!Number.isFinite(ppid) || ppid <= 0) return false;
+    if (ppid === 1) return true;
+    try {
+      const { stdout: parentCmd } = await execFileAsync("ps", ["-o", "command=", "-p", String(ppid)]);
+      const cmd = parentCmd.trim().toLowerCase();
+      if (
+        cmd.startsWith("/lib/systemd/systemd --user") ||
+        cmd.startsWith("/usr/lib/systemd/systemd --user") ||
+        cmd.startsWith("systemd --user") ||
+        cmd === "/sbin/init" ||
+        cmd === "init"
+      ) {
+        return true;
+      }
+    } catch {
+      // PPID gone too — keep PID itself as evidence and treat as orphan.
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+async function killRecordProcess(record: LocalServiceRegistryRecord) {
+  const targetPgid =
+    process.platform !== "win32" && record.processGroupId && record.processGroupId > 0
+      ? record.processGroupId
+      : null;
+  for (const signal of ["SIGTERM", "SIGKILL"] as const) {
+    try {
+      if (targetPgid) {
+        process.kill(-targetPgid, signal);
+      } else {
+        process.kill(record.pid, signal);
+      }
+    } catch {
+      // Already gone.
+      return;
+    }
+    await delay(signal === "SIGTERM" ? 500 : 0);
+    if (!isPidAlive(record.pid)) return;
+  }
+}
+
 export async function findAdoptableLocalService(input: {
   serviceKey: string;
   command?: string | null;
@@ -281,6 +339,14 @@ export async function findAdoptableLocalService(input: {
     return null;
   }
   if (!(await isLikelyMatchingCommand(record))) {
+    await removeLocalServiceRegistryRecord(input.serviceKey);
+    return null;
+  }
+  if (await isOrphanedProcess(record.pid)) {
+    // The previous server detached from its supervisor — almost certainly a
+    // tsx-watch zombie running stale code. Kill it and force a fresh spawn so
+    // the new dev session picks up current source / pool config.
+    await killRecordProcess(record);
     await removeLocalServiceRegistryRecord(input.serviceKey);
     return null;
   }

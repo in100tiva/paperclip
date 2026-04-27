@@ -1,5 +1,6 @@
 #!/usr/bin/env -S node --import tsx
-import { spawn } from "node:child_process";
+import { spawn, execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -200,6 +201,14 @@ if (existingRunner) {
   process.exit(0);
 }
 
+// Even when the registry has no usable record, the port can still be held by a
+// stale tsx-watch zombie that was orphaned to systemd-userland (parent died,
+// child kept running). Without this, `pnpm dev` would proceed and immediately
+// fail with EADDRINUSE — or worse, the user keeps reaching the zombie's stale
+// code thinking the dev server is fresh. Detect orphans bound to serverPort
+// and SIGKILL them so the spawn below can take over the port.
+await killOrphanProcessesOnPort(serverPort);
+
 const pnpmBin = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 let previousSnapshot = collectWatchedSnapshot();
 let dirtyPaths = new Set<string>();
@@ -214,6 +223,72 @@ let child: ReturnType<typeof spawn> | null = null;
 let childExitPromise: Promise<{ code: number; signal: NodeJS.Signals | null }> | null = null;
 let scanTimer: ReturnType<typeof setInterval> | null = null;
 let autoRestartTimer: ReturnType<typeof setInterval> | null = null;
+
+const execFileAsync = promisify(execFile);
+
+// Returns true if `pid` was reparented to PID 1 / systemd-userland (i.e. its
+// original parent dev-runner died but the child kept running). Such orphans
+// hold onto port 3100 and serve stale code that predates today's source.
+async function isPidOrphan(pid: number): Promise<boolean> {
+  if (process.platform === "win32") return false;
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    const { stdout: ppidOut } = await execFileAsync("ps", ["-o", "ppid=", "-p", String(pid)]);
+    const ppid = Number.parseInt(ppidOut.trim(), 10);
+    if (!Number.isFinite(ppid) || ppid <= 0) return false;
+    if (ppid === 1) return true;
+    try {
+      const { stdout: parentCmd } = await execFileAsync("ps", ["-o", "command=", "-p", String(ppid)]);
+      const cmd = parentCmd.trim().toLowerCase();
+      return (
+        cmd.startsWith("/lib/systemd/systemd --user") ||
+        cmd.startsWith("/usr/lib/systemd/systemd --user") ||
+        cmd.startsWith("systemd --user") ||
+        cmd === "/sbin/init" ||
+        cmd === "init"
+      );
+    } catch {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+}
+
+async function killOrphanProcessesOnPort(port: number): Promise<void> {
+  if (process.platform === "win32") return;
+  let pids: number[] = [];
+  try {
+    // `ss -tlnp` lists listeners with their owning pid; parse pid=<n>.
+    const { stdout } = await execFileAsync("ss", ["-tlnp", `sport = :${port}`]);
+    const matches = stdout.matchAll(/pid=(\d+)/g);
+    for (const match of matches) {
+      const pid = Number.parseInt(match[1], 10);
+      if (Number.isFinite(pid) && pid !== process.pid) pids.push(pid);
+    }
+    pids = [...new Set(pids)];
+  } catch {
+    return;
+  }
+  for (const pid of pids) {
+    if (!(await isPidOrphan(pid))) continue;
+    console.log(`[paperclip] killing orphan process ${pid} holding port ${port} (likely a stale tsx-watch zombie)`);
+    for (const signal of ["SIGTERM", "SIGKILL"] as const) {
+      try {
+        process.kill(pid, signal);
+      } catch {
+        break;
+      }
+      // Give SIGTERM 500ms before escalating.
+      if (signal === "SIGTERM") await new Promise((resolve) => setTimeout(resolve, 500));
+      try {
+        process.kill(pid, 0);
+      } catch {
+        break;
+      }
+    }
+  }
+}
 
 function toError(error: unknown, context = "Dev runner command failed") {
   if (error instanceof Error) return error;
