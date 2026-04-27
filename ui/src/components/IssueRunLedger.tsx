@@ -347,6 +347,7 @@ export function IssueRunLedger({
   agentMap,
   hasLiveRuns,
 }: IssueRunLedgerProps) {
+  const { t } = useTranslation(["common"]);
   const queryClient = useQueryClient();
   const { pushToast } = useToastActions();
   const [watchdogDecisionError, setWatchdogDecisionError] = useState<string | null>(null);
@@ -390,7 +391,7 @@ export function IssueRunLedger({
       const dedupeSuffix = error instanceof ApiError ? String(error.status) : "error";
       setWatchdogDecisionError(message);
       pushToast({
-        title: "Watchdog decision not recorded",
+        title: t("common:toast.watchdog-decision-not-recorded"),
         body: message,
         tone: "error",
         dedupeKey: `watchdog-decision:${issueId}:${dedupeSuffix}`,
