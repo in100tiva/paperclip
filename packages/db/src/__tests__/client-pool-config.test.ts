@@ -25,7 +25,7 @@ describe("createDb pool config", () => {
     vi.clearAllMocks();
   });
 
-  it("Test 1: pooler 6543 → prepare:false + aggressive recycle + statement_timeout", () => {
+  it("Test 1: pooler 6543 → prepare:false + aggressive recycle + statement_timeout + keep_alive", () => {
     const url = "postgres://user:pwd@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
     expect(buildPostgresOptions(url)).toEqual({
       prepare: false,
@@ -33,6 +33,7 @@ describe("createDb pool config", () => {
       idle_timeout: 5,
       max_lifetime: 60,
       connect_timeout: 10,
+      keep_alive: 10,
       connection: { statement_timeout: 30000 },
     });
     createDb(url);
@@ -42,17 +43,19 @@ describe("createDb pool config", () => {
       idle_timeout: 5,
       max_lifetime: 60,
       connect_timeout: 10,
+      keep_alive: 10,
       connection: { statement_timeout: 30000 },
     });
   });
 
-  it("Test 2: session 5432 → recycle + statement_timeout (no prepare:false)", () => {
+  it("Test 2: session 5432 → recycle + statement_timeout + keep_alive (no prepare:false)", () => {
     const url = "postgres://user:pwd@aws-1-sa-east-1.pooler.supabase.com:5432/postgres";
     expect(buildPostgresOptions(url)).toEqual({
       max: 5,
       idle_timeout: 5,
       max_lifetime: 60,
       connect_timeout: 10,
+      keep_alive: 10,
       connection: { statement_timeout: 30000 },
     });
   });
