@@ -16,6 +16,7 @@ void i18n.use(initReactI18next).init({
     "agents",
     "errors",
     "activity",
+    "onboarding",
   ],
   fallbackLng: "en-US",
   lng: "pt-BR", // overridden by session.user.locale on hydration (Plan 05)

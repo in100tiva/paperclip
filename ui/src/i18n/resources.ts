@@ -8,6 +8,7 @@ import authPt from "./locales/pt-BR/auth.json";
 import agentsPt from "./locales/pt-BR/agents.json";
 import errorsPt from "./locales/pt-BR/errors.json";
 import activityPt from "./locales/pt-BR/activity.json";
+import onboardingPt from "./locales/pt-BR/onboarding.json";
 
 import commonEn from "./locales/en-US/common.json";
 import inboxEn from "./locales/en-US/inbox.json";
@@ -17,6 +18,7 @@ import authEn from "./locales/en-US/auth.json";
 import agentsEn from "./locales/en-US/agents.json";
 import errorsEn from "./locales/en-US/errors.json";
 import activityEn from "./locales/en-US/activity.json";
+import onboardingEn from "./locales/en-US/onboarding.json";
 
 export const defaultNS = "common" as const;
 
@@ -30,6 +32,7 @@ export const resources = {
     agents: agentsPt,
     errors: errorsPt,
     activity: activityPt,
+    onboarding: onboardingPt,
   },
   "en-US": {
     common: commonEn,
@@ -40,6 +43,7 @@ export const resources = {
     agents: agentsEn,
     errors: errorsEn,
     activity: activityEn,
+    onboarding: onboardingEn,
   },
 } as const;
 

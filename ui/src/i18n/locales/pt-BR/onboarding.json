@@ -1,0 +1,113 @@
+{
+  "close": "Fechar",
+  "tab": {
+    "company": "Empresa",
+    "agent": "Agente",
+    "task": "Tarefa",
+    "launch": "Lançar"
+  },
+  "step": {
+    "company": {
+      "title": "Dê um nome à sua empresa",
+      "description": "Esta é a organização para a qual seus agentes vão trabalhar."
+    },
+    "agent": {
+      "title": "Crie seu primeiro agente",
+      "description": "Escolha como este agente vai executar tarefas."
+    },
+    "task": {
+      "title": "Dê algo para ele fazer",
+      "description": "Dê ao seu agente uma tarefa pequena para começar — uma correção de bug, uma pergunta de pesquisa, escrever um script."
+    },
+    "launch": {
+      "title": "Pronto para lançar",
+      "description": "Tudo está configurado. Lançar agora vai criar a tarefa inicial, acordar o agente e abrir a issue."
+    }
+  },
+  "field": {
+    "company-name": {
+      "label": "Nome da empresa",
+      "placeholder": "Acme Corp"
+    },
+    "company-goal": {
+      "label": "Missão / objetivo (opcional)",
+      "placeholder": "O que esta empresa está tentando alcançar?"
+    },
+    "agent-name": {
+      "label": "Nome do agente",
+      "placeholder": "CEO"
+    },
+    "adapter-type": {
+      "label": "Tipo de adaptador"
+    },
+    "model": {
+      "label": "Modelo",
+      "search-placeholder": "Buscar modelos...",
+      "default": "Padrão",
+      "select-required": "Selecione um modelo (obrigatório)",
+      "no-discovered": "Nenhum modelo descoberto."
+    },
+    "task-title": {
+      "label": "Título da tarefa",
+      "placeholder": "ex: Pesquisar preços dos concorrentes"
+    },
+    "task-description": {
+      "label": "Descrição (opcional)",
+      "placeholder": "Adicione mais detalhes sobre o que o agente deve fazer..."
+    },
+    "webhook-url": {
+      "label": "URL do webhook",
+      "placeholder": "https://..."
+    },
+    "gateway-url": {
+      "label": "URL do gateway",
+      "placeholder": "ws://127.0.0.1:18789"
+    }
+  },
+  "adapter": {
+    "recommended-badge": "Recomendado",
+    "more-types": "Mais tipos de adaptador de agente",
+    "coming-soon": "Em breve",
+    "env-check": {
+      "title": "Verificação do ambiente do adaptador",
+      "description": "Executa uma sondagem ao vivo que pede ao CLI do adaptador para responder com olá.",
+      "test-now": "Testar agora",
+      "testing": "Testando...",
+      "passed": "Aprovado",
+      "warnings": "Avisos",
+      "failed": "Falhou",
+      "manual-debug": "Depuração manual",
+      "prompt-label": "Prompt:",
+      "prompt-value": "Respond with hello.",
+      "auth-fail-hint": "Se a autenticação falhar, defina <1>{{envVar}}</1> no env ou execute <3>{{loginCmd}}</3>.",
+      "claude-login-hint": "Se for necessário fazer login, execute <1>claude login</1> e tente novamente.",
+      "anthropic-key-warning": "Claude falhou enquanto <1>ANTHROPIC_API_KEY</1> está definida. Você pode limpá-la na configuração do adaptador deste CEO e tentar a sondagem novamente.",
+      "unset-anthropic": "Limpar ANTHROPIC_API_KEY",
+      "retrying": "Tentando novamente..."
+    }
+  },
+  "summary": {
+    "company": "Empresa",
+    "task": "Tarefa"
+  },
+  "button": {
+    "back": "Voltar",
+    "next": "Próximo",
+    "creating": "Criando...",
+    "create-and-open": "Criar e abrir issue"
+  },
+  "error": {
+    "create-company-failed": "Falha ao criar empresa",
+    "create-agent-failed": "Falha ao criar agente",
+    "create-task-failed": "Falha ao criar tarefa",
+    "no-company-selected": "Crie ou selecione uma empresa antes de testar o ambiente do adaptador.",
+    "adapter-env-failed": "Teste de ambiente do adaptador falhou",
+    "opencode-model-required": "OpenCode requer um modelo explícito no formato provedor/modelo.",
+    "opencode-models-load-failed": "Falha ao carregar modelos do OpenCode.",
+    "opencode-models-loading": "Os modelos do OpenCode ainda estão carregando. Aguarde e tente novamente.",
+    "opencode-no-models": "Nenhum modelo do OpenCode descoberto. Execute `opencode models` e autentique os provedores.",
+    "opencode-model-unavailable": "Modelo do OpenCode configurado está indisponível: {{model}}",
+    "anthropic-key-still-failing": "Tentou novamente com ANTHROPIC_API_KEY desativada na configuração do adaptador, mas o teste de ambiente continua falhando.",
+    "unset-anthropic-failed": "Falha ao desativar ANTHROPIC_API_KEY e tentar novamente."
+  }
+}
