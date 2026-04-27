@@ -114,6 +114,65 @@ export function EnvVarEditor({
     emit(withPatch);
   }
 
+  // Parse a clipboard string in `.env` shape — one or more `KEY=VALUE` lines —
+  // into discrete rows. Strips surrounding quotes from values, ignores blank
+  // lines and `#` comments, and falls back to null if nothing usable parses
+  // (so the paste behaves as a plain string).
+  function parseEnvLines(raw: string): Array<{ key: string; value: string }> | null {
+    const lines = raw.split(/\r?\n/);
+    const parsed: Array<{ key: string; value: string }> = [];
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      // Allow optional `export ` prefix (common in shell-style .env files).
+      const stripped = trimmed.replace(/^export\s+/, "");
+      const eq = stripped.indexOf("=");
+      if (eq <= 0) continue;
+      const key = stripped.slice(0, eq).trim();
+      let value = stripped.slice(eq + 1);
+      // Strip wrapping quotes if balanced.
+      if (
+        (value.startsWith('"') && value.endsWith('"') && value.length >= 2) ||
+        (value.startsWith("'") && value.endsWith("'") && value.length >= 2)
+      ) {
+        value = value.slice(1, -1);
+      }
+      if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) continue;
+      parsed.push({ key, value });
+    }
+    return parsed.length > 0 ? parsed : null;
+  }
+
+  function handleKeyPaste(index: number, event: React.ClipboardEvent<HTMLInputElement>) {
+    const raw = event.clipboardData.getData("text");
+    if (!raw || !raw.includes("=")) return;
+    const parsed = parseEnvLines(raw);
+    if (!parsed) return;
+    event.preventDefault();
+    // Replace the current row with the first parsed pair, then append the rest.
+    const withReplacement = rows.map((row, rowIndex) =>
+      rowIndex === index
+        ? { ...row, key: parsed[0].key, plainValue: parsed[0].value, source: "plain" as const, secretId: "" }
+        : row,
+    );
+    const trailing: Row[] = parsed.slice(1).map((entry) => ({
+      key: entry.key,
+      plainValue: entry.value,
+      source: "plain" as const,
+      secretId: "",
+    }));
+    const merged = [...withReplacement, ...trailing];
+    if (
+      merged[merged.length - 1].key ||
+      merged[merged.length - 1].plainValue ||
+      merged[merged.length - 1].secretId
+    ) {
+      merged.push({ key: "", source: "plain", plainValue: "", secretId: "" });
+    }
+    setRows(merged);
+    emit(merged);
+  }
+
   function removeRow(index: number) {
     const next = rows.filter((_, rowIndex) => rowIndex !== index);
     if (
@@ -172,6 +231,7 @@ export function EnvVarEditor({
               placeholder="KEY"
               value={row.key}
               onChange={(event) => updateRow(index, { key: event.target.value })}
+              onPaste={(event) => handleKeyPaste(index, event)}
             />
             <select
               className={cn(inputClass, "flex-[1] bg-background")}
