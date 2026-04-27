@@ -286,7 +286,10 @@ export function OrgChart() {
     setDragging(false);
   }, []);
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
+  // Wheel handler attached via native DOM listener with { passive: false }
+  // so preventDefault() works without browser warnings (React onWheel is passive
+  // since React 17+).
+  const handleWheelNative = useCallback((e: WheelEvent) => {
     e.preventDefault();
     const container = containerRef.current;
     if (!container) return;
@@ -306,6 +309,13 @@ export function OrgChart() {
     });
     setZoom(newZoom);
   }, [zoom, pan]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.addEventListener("wheel", handleWheelNative, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheelNative);
+  }, [handleWheelNative]);
 
   const zoomTowardPoint = useCallback((newZoom: number, point: Point) => {
     const clampedZoom = clampZoom(newZoom);
@@ -471,7 +481,6 @@ export function OrgChart() {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
