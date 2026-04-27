@@ -1,8 +1,8 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   DraftInput,
-  help,
 } from "../../components/agent-config-primitives";
 
 const inputClass =
@@ -16,8 +16,9 @@ export function HttpConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   return (
-    <Field label="Webhook URL" hint={help.webhookUrl}>
+    <Field label="Webhook URL" hint={t("agents:config.help.webhook-url")}>
       <DraftInput
         value={
           isCreate

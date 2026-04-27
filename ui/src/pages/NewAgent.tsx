@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "@/lib/router";
 import { useCompany } from "../context/CompanyContext";
@@ -6,7 +7,8 @@ import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { agentsApi } from "../api/agents";
 import { companySkillsApi } from "../api/companySkills";
 import { queryKeys } from "../lib/queryKeys";
-import { AGENT_ROLES } from "@paperclipai/shared";
+import { AGENT_ROLES, type AgentRole } from "@paperclipai/shared";
+import { AGENT_ROLE_KEY } from "../lib/agent-keys";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -16,7 +18,6 @@ import {
 } from "@/components/ui/popover";
 import { Shield } from "lucide-react";
 import { cn, agentUrl } from "../lib/utils";
-import { roleLabels } from "../components/agent-config-primitives";
 import { AgentConfigForm, type CreateConfigValues } from "../components/AgentConfigForm";
 import { defaultCreateValues } from "../components/agent-config-defaults";
 import { getUIAdapter, listUIAdapters } from "../adapters";
@@ -51,6 +52,7 @@ function createValuesForAdapterType(
 }
 
 export function NewAgent() {
+  const { t } = useTranslation(["agents", "common"]);
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
@@ -97,10 +99,10 @@ export function NewAgent() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Agents", href: "/agents" },
-      { label: "New Agent" },
+      { label: t("agents:title"), href: "/agents" },
+      { label: t("agents:actions.new-agent") },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   useEffect(() => {
     if (isFirstAgent) {
@@ -195,9 +197,9 @@ export function NewAgent() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-lg font-semibold">New Agent</h1>
+        <h1 className="text-lg font-semibold">{t("agents:actions.new-agent")}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Advanced agent configuration
+          {t("agents:new-agent-page.subtitle")}
         </p>
       </div>
 
@@ -235,7 +237,7 @@ export function NewAgent() {
                 disabled={isFirstAgent}
               >
                 <Shield className="h-3 w-3 text-muted-foreground" />
-                {roleLabels[effectiveRole] ?? effectiveRole}
+                {t((AGENT_ROLE_KEY[effectiveRole as AgentRole] ?? "agents:role.general") as never)}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-36 p-1" align="start">
@@ -248,7 +250,7 @@ export function NewAgent() {
                   )}
                   onClick={() => { setRole(r); setRoleOpen(false); }}
                 >
-                  {roleLabels[r] ?? r}
+                  {t((AGENT_ROLE_KEY[r as AgentRole] ?? "agents:role.general") as never)}
                 </button>
               ))}
             </PopoverContent>
@@ -273,14 +275,14 @@ export function NewAgent() {
         <div className="border-t border-border px-4 py-4">
           <div className="space-y-3">
             <div>
-              <h2 className="text-sm font-medium">Company skills</h2>
+              <h2 className="text-sm font-medium">{t("agents:new-agent-page.skills-section")}</h2>
               <p className="mt-1 text-xs text-muted-foreground">
-                Optional skills from the company library. Built-in Paperclip runtime skills are added automatically.
+                {t("agents:new-agent-page.skills-description")}
               </p>
             </div>
             {availableSkills.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                No optional company skills installed yet.
+                {t("agents:new-agent-page.no-skills")}
               </p>
             ) : (
               <div className="space-y-3">
@@ -311,21 +313,21 @@ export function NewAgent() {
         {/* Footer */}
         <div className="border-t border-border px-4 py-3">
           {isFirstAgent && (
-            <p className="text-xs text-muted-foreground mb-2">This will be the CEO</p>
+            <p className="text-xs text-muted-foreground mb-2">{t("agents:new-agent-page.first-is-ceo")}</p>
           )}
           {formError && (
             <p className="text-xs text-destructive mb-2">{formError}</p>
           )}
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate("/agents")}>
-              Cancel
+              {t("common:cancel")}
             </Button>
             <Button
               size="sm"
               disabled={!name.trim() || createAgent.isPending}
               onClick={handleSubmit}
             >
-              {createAgent.isPending ? "Creating…" : "Create agent"}
+              {createAgent.isPending ? t("agents:new-agent-page.creating") : t("agents:new-agent-page.create-cta")}
             </Button>
           </div>
         </div>

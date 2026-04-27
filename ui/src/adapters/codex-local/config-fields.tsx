@@ -1,9 +1,9 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   ToggleField,
   DraftInput,
-  help,
 } from "../../components/agent-config-primitives";
 import { ChoosePathButton } from "../../components/PathInstructionsModal";
 import { LocalWorkspaceRuntimeFields } from "../local-workspace-runtime-fields";
@@ -30,6 +30,7 @@ export function CodexLocalConfigFields({
   models,
   hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   const bypassEnabled =
     config.dangerouslyBypassApprovalsAndSandbox === true || config.dangerouslyBypassSandbox === true;
   const fastModeEnabled = isCreate
@@ -77,7 +78,7 @@ export function CodexLocalConfigFields({
       )}
       <ToggleField
         label="Bypass sandbox"
-        hint={help.dangerouslyBypassSandbox}
+        hint={t("agents:config.help.dangerously-bypass-sandbox")}
         checked={
           isCreate
             ? values!.dangerouslyBypassSandbox
@@ -95,7 +96,7 @@ export function CodexLocalConfigFields({
       />
       <ToggleField
         label="Enable search"
-        hint={help.search}
+        hint={t("agents:config.help.search")}
         checked={
           isCreate
             ? values!.search
@@ -109,7 +110,7 @@ export function CodexLocalConfigFields({
       />
       <ToggleField
         label="Fast mode"
-        hint={help.fastMode}
+        hint={t("agents:config.help.fast-mode")}
         checked={fastModeEnabled}
         onChange={(v) =>
           isCreate

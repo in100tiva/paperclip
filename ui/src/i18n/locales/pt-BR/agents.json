@@ -1,5 +1,16 @@
 {
   "title": "Agentes",
+  "filter-all": "Todos",
+  "filters": "Filtros",
+  "show-terminated": "Mostrar terminados",
+  "no-match": "Nenhum agente corresponde ao filtro selecionado.",
+  "no-org-tree": "Nenhuma hierarquia organizacional definida.",
+  "select-company": "Selecione uma empresa para ver agentes.",
+  "create-first": "Crie seu primeiro agente para começar.",
+  "count_one": "{{count}} agente",
+  "count_other": "{{count}} agentes",
+  "count": "{{count}} agentes",
+  "live-suffix": "Ao vivo",
   "actions": {
     "new-agent": "Novo agente",
     "assign-task": "Atribuir tarefa",
@@ -73,6 +84,15 @@
     "live-now": "Ao vivo agora",
     "finished-relative": "Finalizado {{time}}",
     "started-relative": "Iniciado {{time}}"
+  },
+  "new-agent-page": {
+    "subtitle": "Configuração avançada de agente",
+    "skills-section": "Habilidades da empresa",
+    "skills-description": "Habilidades opcionais da biblioteca da empresa. Habilidades nativas de runtime do Paperclip são adicionadas automaticamente.",
+    "no-skills": "Nenhuma habilidade opcional da empresa instalada ainda.",
+    "first-is-ceo": "Este será o CEO",
+    "creating": "Criando…",
+    "create-cta": "Criar agente"
   },
   "new-agent-dialog": {
     "header": "Adicionar novo agente",

@@ -1,10 +1,10 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   ToggleField,
   DraftInput,
   DraftNumberInput,
-  help,
 } from "../../components/agent-config-primitives";
 import { ChoosePathButton } from "../../components/PathInstructionsModal";
 import { LocalWorkspaceRuntimeFields } from "../local-workspace-runtime-fields";
@@ -27,6 +27,7 @@ export function ClaudeLocalConfigFields({
   models,
   hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   return (
     <>
       {!hideInstructionsFile && (
@@ -78,11 +79,12 @@ export function ClaudeLocalAdvancedFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   return (
     <>
       <ToggleField
         label="Enable Chrome"
-        hint={help.chrome}
+        hint={t("agents:config.help.chrome")}
         checked={
           isCreate
             ? values!.chrome
@@ -96,7 +98,7 @@ export function ClaudeLocalAdvancedFields({
       />
       <ToggleField
         label="Skip permissions"
-        hint={help.dangerouslySkipPermissions}
+        hint={t("agents:config.help.dangerously-skip-permissions")}
         checked={
           isCreate
             ? values!.dangerouslySkipPermissions
@@ -112,7 +114,7 @@ export function ClaudeLocalAdvancedFields({
             : mark("adapterConfig", "dangerouslySkipPermissions", v)
         }
       />
-      <Field label="Max turns per run" hint={help.maxTurnsPerRun}>
+      <Field label="Max turns per run" hint={t("agents:config.help.max-turns-per-run")}>
         {isCreate ? (
           <input
             type="number"

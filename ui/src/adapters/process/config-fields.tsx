@@ -1,8 +1,8 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   DraftInput,
-  help,
 } from "../../components/agent-config-primitives";
 
 const inputClass =
@@ -32,9 +32,10 @@ export function ProcessConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   return (
     <>
-      <Field label="Command" hint={help.command}>
+      <Field label="Command" hint={t("agents:config.help.command")}>
         <DraftInput
           value={
             isCreate
@@ -51,7 +52,7 @@ export function ProcessConfigFields({
           placeholder="e.g. node, python"
         />
       </Field>
-      <Field label="Args (comma-separated)" hint={help.args}>
+      <Field label="Args (comma-separated)" hint={t("agents:config.help.args")}>
         <DraftInput
           value={
             isCreate

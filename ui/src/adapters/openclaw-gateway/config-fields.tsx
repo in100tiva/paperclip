@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import type { AdapterConfigFieldsProps } from "../types";
 import {
   Field,
   DraftInput,
-  help,
 } from "../../components/agent-config-primitives";
 import {
   PayloadTemplateJsonField,
@@ -64,6 +64,7 @@ export function OpenClawGatewayConfigFields({
   eff,
   mark,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   const configuredHeaders =
     config.headers && typeof config.headers === "object" && !Array.isArray(config.headers)
       ? (config.headers as Record<string, unknown>)
@@ -98,7 +99,7 @@ export function OpenClawGatewayConfigFields({
 
   return (
     <>
-      <Field label="Gateway URL" hint={help.webhookUrl}>
+      <Field label="Gateway URL" hint={t("agents:config.help.webhook-url")}>
         <DraftInput
           value={
             isCreate

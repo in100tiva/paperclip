@@ -17,8 +17,15 @@ import {
   DraftTextarea,
   Field,
   ToggleField,
-  help,
 } from "@/components/agent-config-primitives";
+
+// Inline storybook hints (stories are dev-only and bypass the i18n contract).
+const STORY_HINTS = {
+  model: "Override the default model used by the adapter.",
+  workspaceStrategy: "How Paperclip should realize an execution workspace for this agent.",
+  wakeOnDemand: "Allow this agent to be woken by assignments, API calls, UI actions, or automated systems.",
+  runtimeServicesJson: "Optional workspace runtime service definitions.",
+};
 import { AgentIcon, AgentIconPicker } from "@/components/AgentIconPicker";
 import { AgentProperties } from "@/components/AgentProperties";
 import { RunButton, PauseResumeButton } from "@/components/AgentActionButtons";
@@ -596,7 +603,7 @@ function ConfigPrimitivesStory() {
   return (
     <div className="grid gap-5 lg:grid-cols-2">
       <div className="space-y-4 rounded-xl border border-border bg-background/70 p-4">
-        <Field label="Text field" hint={help.model}>
+        <Field label="Text field" hint={STORY_HINTS.model}>
           <DraftInput
             value={textValue}
             onCommit={setTextValue}
@@ -604,7 +611,7 @@ function ConfigPrimitivesStory() {
             className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 font-mono text-sm outline-none"
           />
         </Field>
-        <Field label="Select field" hint={help.workspaceStrategy}>
+        <Field label="Select field" hint={STORY_HINTS.workspaceStrategy}>
           <Select value={selectValue} onValueChange={setSelectValue}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Workspace strategy" />
@@ -618,13 +625,13 @@ function ConfigPrimitivesStory() {
         </Field>
         <ToggleField
           label="Toggle field"
-          hint={help.wakeOnDemand}
+          hint={STORY_HINTS.wakeOnDemand}
           checked={toggleValue}
           onChange={setToggleValue}
         />
       </div>
       <div className="rounded-xl border border-border bg-background/70 p-4">
-        <Field label="JSON editor" hint={help.runtimeServicesJson}>
+        <Field label="JSON editor" hint={STORY_HINTS.runtimeServicesJson}>
           <DraftTextarea
             value={jsonValue}
             onCommit={setJsonValue}

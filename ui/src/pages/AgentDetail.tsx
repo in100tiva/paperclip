@@ -25,7 +25,7 @@ import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { queryKeys } from "../lib/queryKeys";
 import { AgentConfigForm } from "../components/AgentConfigForm";
 import { PageTabBar } from "../components/PageTabBar";
-import { adapterLabels, help } from "../components/agent-config-primitives";
+import { adapterLabels } from "../components/agent-config-primitives";
 import { AGENT_STATUS_KEY, AGENT_ROLE_KEY } from "../lib/agent-keys";
 import type { AgentStatus, AgentRole } from "@paperclipai/shared";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";

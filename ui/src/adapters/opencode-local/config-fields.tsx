@@ -1,9 +1,9 @@
 import type { AdapterConfigFieldsProps } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   Field,
   ToggleField,
   DraftInput,
-  help,
 } from "../../components/agent-config-primitives";
 import { ChoosePathButton } from "../../components/PathInstructionsModal";
 
@@ -21,6 +21,7 @@ export function OpenCodeLocalConfigFields({
   mark,
   hideInstructionsFile,
 }: AdapterConfigFieldsProps) {
+  const { t } = useTranslation(["agents"]);
   return (
     <>
       {!hideInstructionsFile && (
@@ -51,7 +52,7 @@ export function OpenCodeLocalConfigFields({
       )}
       <ToggleField
         label="Skip permissions"
-        hint={help.dangerouslySkipPermissions}
+        hint={t("agents:config.help.dangerously-skip-permissions")}
         checked={
           isCreate
             ? values!.dangerouslySkipPermissions
