@@ -296,8 +296,10 @@ describe("IssueRunLedger", () => {
       ],
     });
 
-    expect(container.textContent).toContain("Child work");
-    expect(container.textContent).toContain("1 active, 1 done, 1 cancelled");
+    // Test runs without I18nextProvider; t() returns the raw key.
+    // After Phase 10-02 migration, "Child work" → t("agents:run-ledger.child-work").
+    expect(container.textContent).toContain("agents:run-ledger.child-work");
+    expect(container.textContent).toContain("agents:run-ledger.child-summary-active");
     expect(container.textContent).toContain("PAP-2");
     expect(container.textContent).toContain("Implement worker handoff");
 
@@ -308,7 +310,7 @@ describe("IssueRunLedger", () => {
       ],
     });
 
-    expect(container.textContent).toContain("all 2 terminal (1 done, 1 cancelled)");
+    expect(container.textContent).toContain("agents:run-ledger.child-summary-terminal");
   });
 
   it("uses wrapping-friendly markup for long next action text", () => {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Issue, Agent } from "@paperclipai/shared";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@/lib/router";
@@ -425,6 +426,7 @@ export function IssueRunLedgerContent({
   watchdogDecisionError,
   onWatchdogDecision,
 }: IssueRunLedgerContentProps) {
+  const { t } = useTranslation(["agents", "common"]);
   const ledgerRuns = useMemo(() => mergeRuns(runs, liveRuns, activeRun), [activeRun, liveRuns, runs]);
   const latestRun = ledgerRuns[0] ?? null;
   const latestSilentRun = useMemo(
@@ -441,13 +443,13 @@ export function IssueRunLedgerContent({
     <section className="space-y-3" aria-label="Issue run ledger">
       <div className="flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="text-sm font-medium text-muted-foreground">Run ledger</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{t("agents:run-ledger.title")}</h3>
           <p className="text-xs text-muted-foreground">
             {latestRun
               ? runSummary(latestRun, agentMap)
               : issueStatus === "in_progress"
-                ? "Waiting for the first run record."
-                : "No runs linked yet."}
+                ? t("agents:run-ledger.waiting-first-run")
+                : t("agents:run-ledger.no-runs-linked")}
           </p>
         </div>
         {latestRun ? (
@@ -455,7 +457,7 @@ export function IssueRunLedgerContent({
             to={`/agents/${latestRun.agentId}/runs/${latestRun.runId}`}
             className="shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
           >
-            Latest run
+            {t("agents:run-ledger.latest-run")}
           </Link>
         ) : null}
       </div>
@@ -463,11 +465,19 @@ export function IssueRunLedgerContent({
       {children.total > 0 ? (
         <div className="rounded-md border border-border/70 px-3 py-2">
           <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-medium text-foreground">Child work</span>
+            <span className="font-medium text-foreground">{t("agents:run-ledger.child-work")}</span>
             <span className="text-muted-foreground">
               {children.active.length > 0
-                ? `${children.active.length} active, ${children.done} done, ${children.cancelled} cancelled`
-                : `all ${children.total} terminal (${children.done} done, ${children.cancelled} cancelled)`}
+                ? t("agents:run-ledger.child-summary-active", {
+                    active: children.active.length,
+                    done: children.done,
+                    cancelled: children.cancelled,
+                  })
+                : t("agents:run-ledger.child-summary-terminal", {
+                    total: children.total,
+                    done: children.done,
+                    cancelled: children.cancelled,
+                  })}
             </span>
           </div>
           {children.active.length > 0 ? (
@@ -485,7 +495,7 @@ export function IssueRunLedgerContent({
               ))}
               {children.active.length > 4 ? (
                 <span className="rounded-md border border-border px-2 py-1 text-[11px] text-muted-foreground">
-                  +{children.active.length - 4} more
+                  {t("agents:run-ledger.more-children", { count: children.active.length - 4 })}
                 </span>
               ) : null}
             </div>
