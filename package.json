@@ -7,6 +7,7 @@
     "setup": "node cli/node_modules/tsx/dist/cli.mjs scripts/setup.ts",
     "sync-agents": "node cli/node_modules/tsx/dist/cli.mjs scripts/sync-agents/sync.ts",
     "sync-skills": "node cli/node_modules/tsx/dist/cli.mjs scripts/sync-agents/sync-skills.ts",
+    "sync-instructions": "node cli/node_modules/tsx/dist/cli.mjs scripts/sync-agents/sync-instructions.ts",
     "preflight:workspace-links": "node cli/node_modules/tsx/dist/cli.mjs scripts/ensure-workspace-package-links.ts",
     "dev": "pnpm --filter @paperclipai/server exec tsx ../scripts/dev-runner.ts watch",
     "dev:watch": "pnpm --filter @paperclipai/server exec tsx ../scripts/dev-runner.ts watch",

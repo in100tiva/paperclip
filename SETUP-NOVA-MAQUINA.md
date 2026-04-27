@@ -126,25 +126,34 @@ O script checa em ordem (fail-fast):
 
 Se tudo passou, segue. Se algo falhou, o output mostra exatamente o que corrigir.
 
-## 7. Re-sincronizar skills (atualizar paths absolutos)
+## 7. Re-sincronizar skills E instruções dos agentes (paths absolutos por máquina)
 
-A tabela `company_skills` no Supabase guarda paths absolutos para os SKILL.md no FS local. Como você mudou de máquina, esses paths apontam pra `D:\projetos\ddd\...` da máquina antiga, que não existe na nova.
+Duas coisas guardam paths absolutos no banco do Supabase compartilhado: `company_skills.source_locator` (path para SKILL.md) e `agents.adapter_config.instructionsRootPath` (path para AGENTS.md). Os dois apontam pra `D:\projetos\ddd\...` ou `C:\Users\...` da máquina antiga, que não existem na nova.
 
-Roda uma vez:
+Roda os dois (na ordem):
 
 ```bash
 # Linux/macOS
-export $(grep -E "^DATABASE_URL=" .paperclip/.env | xargs)
+export $(grep -E "^DATABASE_URL=|^PAPERCLIP_INSTANCE_ID=" .paperclip/.env | xargs)
 pnpm sync-skills
-
-# Windows (PowerShell) — duas linhas
-Get-Content .paperclip\.env | Where-Object { $_ -match "^DATABASE_URL=" } | ForEach-Object { $env:DATABASE_URL = $_.Split('=',2)[1] }
-pnpm sync-skills
+pnpm sync-instructions
 ```
 
-Output esperado: `Updated: 3` (paperclip, company-creator, design-guide com path novo) + `Unchanged: 17` (attachments dos agentes não mudam — só os paths das skills).
+```powershell
+# Windows (PowerShell)
+Get-Content .paperclip\.env | Where-Object { $_ -match "^(DATABASE_URL|PAPERCLIP_INSTANCE_ID)=" } | ForEach-Object {
+  $kv = $_.Split('=', 2)
+  Set-Item -Path "Env:$($kv[0])" -Value $kv[1]
+}
+pnpm sync-skills
+pnpm sync-instructions
+```
 
-> **Não precisa rodar `pnpm sync-agents` de novo** — agentes não têm path local; o sync deles é puramente metadado.
+Output esperado:
+- `sync-skills`: 3 updated (paths das 3 skills atualizados)
+- `sync-instructions`: 18 created (AGENTS.md materializado no FS local) + adapter_config atualizado
+
+> **Não precisa rodar `pnpm sync-agents` de novo** — agentes em si não têm path local, só metadados (frameworkSlug, department, parallelismPolicy).
 
 ## 8. Subir o servidor
 
@@ -208,8 +217,9 @@ mkdir -p .paperclip
 cp /media/$USER/PENDRIVE/paperclip-env.txt .paperclip/.env
 pnpm install
 pnpm setup
-export $(grep -E "^DATABASE_URL=" .paperclip/.env | xargs)
+export $(grep -E "^DATABASE_URL=|^PAPERCLIP_INSTANCE_ID=" .paperclip/.env | xargs)
 pnpm sync-skills
+pnpm sync-instructions
 pnpm dev
 ```
 
@@ -223,8 +233,9 @@ New-Item -ItemType Directory -Force .paperclip | Out-Null
 Copy-Item E:\paperclip-env.txt .paperclip\.env
 pnpm install
 pnpm setup
-Get-Content .paperclip\.env | Where-Object { $_ -match "^DATABASE_URL=" } | ForEach-Object { $env:DATABASE_URL = $_.Split('=',2)[1] }
+Get-Content .paperclip\.env | Where-Object { $_ -match "^(DATABASE_URL|PAPERCLIP_INSTANCE_ID)=" } | ForEach-Object { $kv = $_.Split('=',2); Set-Item -Path "Env:$($kv[0])" -Value $kv[1] }
 pnpm sync-skills
+pnpm sync-instructions
 pnpm dev
 ```
 

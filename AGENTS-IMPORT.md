@@ -33,23 +33,39 @@ Este doc explica como o repositório mantém os 18 agentes em [.claude/agents/](
 
 ## Comandos
 
+Executar **na ordem**:
+
 ```bash
-# Importa/atualiza os 18 agentes (idempotente)
+# 1. Cria/atualiza os 18 agentes na in100tiva (DB only — sem files)
 pnpm sync-agents
 
-# Importa as 3 skills + anexa por cargo (idempotente)
+# 2. Cria as 3 skills como CompanySkill (DB + sourceLocator local)
 pnpm sync-skills
 
-# Dry-run mostra o que mudaria sem escrever no banco
-pnpm sync-agents --dry-run
-pnpm sync-skills --dry-run
-
-# Override da company alvo (para testes)
-pnpm sync-agents --company-id <uuid>
-pnpm sync-skills --company-id <uuid>
+# 3. Materializa AGENTS.md no FS local + popula adapter_config bundle
+#    (instructionsBundleMode/Root/EntryFile + paperclipSkillSync.desiredSkills)
+pnpm sync-instructions
 ```
 
-**Ordem importa:** `sync-agents` deve rodar antes de `sync-skills` — skills referenciam agentes por slug do framework e dependem da coluna `metadata.frameworkSlug` populada pelo sync-agents.
+Todas idempotentes — re-execução sem mudanças não toca em nada. Drift detection automático.
+
+**Flags úteis:**
+
+```bash
+pnpm sync-agents --dry-run          # mostra o que mudaria sem escrever
+pnpm sync-skills --dry-run
+pnpm sync-instructions --dry-run
+
+pnpm sync-agents --company-id <uuid>     # override do TARGET_COMPANY_ID
+pnpm sync-instructions --instance-id X   # override do PAPERCLIP_INSTANCE_ID
+```
+
+**Por que 3 scripts em vez de 1?**
+- `sync-agents` → DB only (insere agents).
+- `sync-skills` → DB + path local na coluna `sourceLocator` (paths absolutos por máquina; precisa rodar em cada PC).
+- `sync-instructions` → FS local (escreve `~/.paperclip/.../AGENTS.md`) + DB (popula `adapter_config.instructionsBundleMode`); precisa rodar em cada PC.
+
+Scripts 2 e 3 escrevem paths absolutos do FS no banco — quando você troca de máquina, roda os 3 de novo.
 
 ## Editando agentes ou skills e re-sincronizando
 
