@@ -17,7 +17,7 @@ Importar (one-shot) os 18 agentes do framework `.claude/agents/` e as 3 skills `
 - Fases decimais (12.1, 12.2): Inserções urgentes (marcadas com INSERIDA)
 
 - [x] **Phase 12: Mapping & Schema Decisions** - Define mapeamento canônico frontmatter→agents, atribui role/dept/parallelism_policy a cada agente, decide schema (coluna vs metadata JSON) e quem são os 4 Heads (completed 2026-04-27)
-- [ ] **Phase 13: Import Script Core (Agentes + Hierarquia)** - CLI idempotente `pnpm sync-agents` que cria/atualiza os 17 agentes na in100tiva com manager_agent_id apontando para Heads
+- [x] **Phase 13: Import Script Core (Agentes + Hierarquia)** - CLI idempotente `pnpm sync-agents` que cria/atualiza os 18 agentes na in100tiva com reports_to apontando para Heads (completed 2026-04-27)
 - [ ] **Phase 14: Skills Import & Attachment por Cargo** - Importa as 3 skills como CompanySkill local_path e anexa-as a agentes conforme mapeamento (paperclip→CEO+Heads+Architecture; company-creator→CEO; design-guide→UI roles)
 - [ ] **Phase 15: UI Surfacing & Hierarchy Validation** - Badge `parallelism_policy` no perfil do agente e organograma renderizando os 18 funcionários sob hierarquia correta
 - [ ] **Phase 16: Documentação & Idempotency UAT** - `AGENTS-IMPORT.md` operacional + procedimento HUMAN-UAT validando re-execução não duplica nem corrompe estado
@@ -93,7 +93,7 @@ As fases executam em ordem numérica: 12 → 13 → 14 → 15 → 16
 | Fase | Milestone | Planos Completos | Status | Concluída |
 |------|-----------|------------------|--------|-----------|
 | 12. Mapping & Schema Decisions | v1.2 | 1/1 | ✓ Complete | 2026-04-27 |
-| 13. Import Script Core (Agentes + Hierarquia) | v1.2 | 0/TBD | Not started | - |
+| 13. Import Script Core (Agentes + Hierarquia) | v1.2 | 1/1 | ✓ Complete | 2026-04-27 |
 | 14. Skills Import & Attachment por Cargo | v1.2 | 0/TBD | Not started | - |
 | 15. UI Surfacing & Hierarchy Validation | v1.2 | 0/TBD | Not started | - |
 | 16. Documentação & Idempotency UAT | v1.2 | 0/TBD | Not started | - |
