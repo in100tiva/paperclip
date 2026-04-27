@@ -70,33 +70,31 @@
 
 ## Rastreabilidade
 
-Vazio inicialmente, preenchido durante a criação do roadmap.
-
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| MAP-01 | TBD | Pending |
-| MAP-02 | TBD | Pending |
-| MAP-03 | TBD | Pending |
-| MAP-04 | TBD | Pending |
-| IMPORT-01 | TBD | Pending |
-| IMPORT-02 | TBD | Pending |
-| IMPORT-03 | TBD | Pending |
-| IMPORT-04 | TBD | Pending |
-| IMPORT-05 | TBD | Pending |
-| IMPORT-06 | TBD | Pending |
-| HIER-01 | TBD | Pending |
-| HIER-02 | TBD | Pending |
-| HIER-03 | TBD | Pending |
-| SKILL-01 | TBD | Pending |
-| SKILL-02 | TBD | Pending |
-| SKILL-03 | TBD | Pending |
-| DOCS-01 | TBD | Pending |
+| MAP-01 | Fase 12 | Pending |
+| MAP-02 | Fase 12 | Pending |
+| MAP-03 | Fase 12 | Pending |
+| MAP-04 | Fase 12 | Pending |
+| IMPORT-01 | Fase 13 | Pending |
+| IMPORT-02 | Fase 13 | Pending |
+| IMPORT-03 | Fase 14 | Pending |
+| IMPORT-04 | Fase 14 | Pending |
+| IMPORT-05 | Fase 13 | Pending |
+| IMPORT-06 | Fase 13 | Pending |
+| HIER-01 | Fase 13 | Pending |
+| HIER-02 | Fase 15 | Pending |
+| HIER-03 | Fase 15 | Pending |
+| SKILL-01 | Fase 14 | Pending |
+| SKILL-02 | Fase 14 | Pending |
+| SKILL-03 | Fase 14 | Pending |
+| DOCS-01 | Fase 16 | Pending |
 
 **Cobertura:**
 - Requisitos v1.2: 17 total
-- Mapeados para fases: 0 (preenchido pelo roadmap)
-- Não mapeados: 17 ⚠ (pré-roadmap)
+- Mapeados para fases: 17 (Fase 12: 4 · Fase 13: 5 · Fase 14: 5 · Fase 15: 2 · Fase 16: 1)
+- Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos: 2026-04-27*
-*Última atualização: 2026-04-27 após definição inicial do milestone v1.2*
+*Última atualização: 2026-04-27 após criação do roadmap v1.2 (5 fases, 17/17 requisitos mapeados)*
