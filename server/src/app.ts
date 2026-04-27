@@ -138,6 +138,29 @@ export async function createApp(
 ) {
   const app = express();
 
+  // Hard cap on per-request wall time. When the upstream Postgres pool (e.g.
+  // Supabase Supavisor) returns dead connections or stalls, individual
+  // queries can hang indefinitely client-side even with statement_timeout
+  // configured (the timeout only fires once the query reaches the server).
+  // Without this guard the browser sees an "eternal Loading..." with no
+  // signal. With it, the user gets a 504 in 45s and can retry / surface a
+  // clear error in the UI.
+  const REQUEST_TIMEOUT_MS = Number.parseInt(process.env.PAPERCLIP_REQUEST_TIMEOUT_MS ?? "45000", 10) || 45000;
+  app.use((req, res, next) => {
+    const timer = setTimeout(() => {
+      if (res.headersSent || res.writableEnded) return;
+      res.status(504).json({
+        error: "Request timed out on the server (likely a stalled database connection). Try again.",
+        code: "request_timeout",
+        path: req.originalUrl,
+        timeoutMs: REQUEST_TIMEOUT_MS,
+      });
+    }, REQUEST_TIMEOUT_MS);
+    res.on("finish", () => clearTimeout(timer));
+    res.on("close", () => clearTimeout(timer));
+    next();
+  });
+
   app.use(express.json({
     // Company import/export payloads can inline full portable packages.
     limit: "10mb",
