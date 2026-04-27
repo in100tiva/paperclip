@@ -75,7 +75,7 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 - [x] Infraestrutura i18n com fallback en-US e detector de chaves ausentes *(Fase 7 — i18next 26 + react-i18next 17, 8 namespaces, missing-keys CI)*
 - [x] UI completa traduzida (inbox, projects, settings, admin, navegação, formulários, erros) *(Fases 8+9 ✓ — UAT-08-01..05 + UAT-09-01..04 pendentes; ~1300 chaves traduzidas, server error codes contract)*
 - [x] Mensagens dos agentes ao usuário traduzidas (activity log, status, summaries, prompts UI) *(Fase 10 ✓ — UAT-10-01..03 pendentes; 201 chaves agents.json + tRef pattern)*
-- [ ] Skills/system prompts dos agentes em pt-BR quando idioma ativo *(Fase 11)*
+- [x] Skills/system prompts dos agentes em pt-BR quando idioma ativo *(Fase 11 ✓ — UAT-11-01..03 pendentes; resolveRunOwnerLocale + buildLanguageDirectiveBlock + 4 SKILL.pt-BR.md variants + bundle cache locale-aware)*
 - [x] Default pt-BR para novos usuários; fallback en-US para chaves não traduzidas *(Fase 7 — UAT-07-02 pendente)*
 
 **v1.0 (carry-over não-bloqueantes):**
@@ -139,4 +139,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-27 após Fase 10 (Mensagens dos Agentes) — complete-with-pending-UAT (UAT-10-01..03); painéis/summaries/toasts de agente em pt-BR; tRef pattern evita reconexão WebSocket em troca de idioma*
+*Última atualização: 2026-04-27 após Fase 11 (Skills + System Prompts) — complete-with-pending-UAT (UAT-11-01..03); milestone v1.1 entregue 26/26 reqs (16 pendentes UAT empíricos); pronto para audit → complete-milestone → cleanup*

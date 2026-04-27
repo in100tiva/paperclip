@@ -155,7 +155,7 @@ Plans:
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
 | 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete    | 2026-04-27 |
-| 11. Skills + System Prompts dos Agentes | 3/3 | Complete   | 2026-04-27 |
+| 11. Skills + System Prompts dos Agentes | 3/3 | Complete    | 2026-04-27 |
 
 ## Cobertura
 
