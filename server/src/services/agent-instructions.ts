@@ -2,6 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { notFound, unprocessable } from "../errors.js";
 import { resolveHomeAwarePath, resolvePaperclipInstanceRoot } from "../home-paths.js";
+import { buildLanguageDirectiveBlock } from "./agent-instructions-locale-directive.js";
+import type { RuntimeLocale } from "./heartbeat-locale.js";
 
 const ENTRY_FILE_DEFAULT = "AGENTS.md";
 const MODE_KEY = "instructionsBundleMode";
@@ -653,12 +655,20 @@ export function agentInstructionsService() {
     return { bundle, adapterConfig };
   }
 
-  async function exportFiles(agent: AgentLike): Promise<{
+  async function exportFiles(
+    agent: AgentLike,
+    options?: { locale?: RuntimeLocale },
+  ): Promise<{
     files: Record<string, string>;
     entryFile: string;
     warnings: string[];
   }> {
     const state = await recoverManagedBundleState(agent, deriveBundleState(agent));
+    // Compose the language directive once per call. Empty string (en-US default
+    // or option missing) is a no-op append. The directive is appended to the
+    // entry file content only — siblings (TOOLS.md etc.) are unaffected.
+    const directive = options?.locale ? buildLanguageDirectiveBlock(options.locale) : "";
+
     if (state.rootPath) {
       const stat = await statIfExists(state.rootPath);
       if (stat?.isDirectory()) {
@@ -669,14 +679,18 @@ export function agentInstructionsService() {
           return [relativePath, content] as const;
         })));
         if (Object.keys(files).length > 0) {
+          if (directive && state.entryFile in files) {
+            files[state.entryFile] = (files[state.entryFile] ?? "") + directive;
+          }
           return { files, entryFile: state.entryFile, warnings: state.warnings };
         }
       }
     }
 
     const legacyBody = await readLegacyInstructions(agent, state.config);
+    const fallbackBody = legacyBody || "_No AGENTS instructions were resolved from current agent config._";
     return {
-      files: { [state.entryFile]: legacyBody || "_No AGENTS instructions were resolved from current agent config._" },
+      files: { [state.entryFile]: fallbackBody + directive },
       entryFile: state.entryFile,
       warnings: state.warnings,
     };

@@ -358,4 +358,70 @@ describe("agent instructions service", () => {
     ]);
     expect(exported.files).toEqual({ "AGENTS.md": "# Managed Agent\n" });
   });
+
+  it("exportFiles({ locale: 'pt-BR' }) appends Portuguese directive to entry file content", async () => {
+    const externalRoot = await makeTempDir("paperclip-agent-instructions-pt-br-");
+    cleanupDirs.add(externalRoot);
+
+    await fs.writeFile(path.join(externalRoot, "AGENTS.md"), "# External Agent\n", "utf8");
+    await fs.mkdir(path.join(externalRoot, "docs"), { recursive: true });
+    await fs.writeFile(path.join(externalRoot, "docs", "TOOLS.md"), "## Tools\n", "utf8");
+
+    const svc = agentInstructionsService();
+    const agent = makeAgent({
+      instructionsBundleMode: "external",
+      instructionsRootPath: externalRoot,
+      instructionsEntryFile: "AGENTS.md",
+      instructionsFilePath: path.join(externalRoot, "AGENTS.md"),
+    });
+
+    const exported = await svc.exportFiles(agent, { locale: "pt-BR" });
+
+    expect(exported.entryFile).toBe("AGENTS.md");
+    expect(exported.files["AGENTS.md"]).toContain("# External Agent");
+    expect(exported.files["AGENTS.md"]).toContain("## Idioma de Resposta");
+    expect(exported.files["AGENTS.md"]).toContain("português brasileiro");
+    // Sibling files must NOT receive the directive — only the entry file.
+    expect(exported.files["docs/TOOLS.md"]).toBe("## Tools\n");
+  });
+
+  it("exportFiles({ locale: 'en-US' }) does not modify entry file content", async () => {
+    const externalRoot = await makeTempDir("paperclip-agent-instructions-en-us-");
+    cleanupDirs.add(externalRoot);
+
+    await fs.writeFile(path.join(externalRoot, "AGENTS.md"), "# External Agent\n", "utf8");
+
+    const svc = agentInstructionsService();
+    const agent = makeAgent({
+      instructionsBundleMode: "external",
+      instructionsRootPath: externalRoot,
+      instructionsEntryFile: "AGENTS.md",
+      instructionsFilePath: path.join(externalRoot, "AGENTS.md"),
+    });
+
+    const exported = await svc.exportFiles(agent, { locale: "en-US" });
+
+    expect(exported.files["AGENTS.md"]).toBe("# External Agent\n");
+    expect(exported.files["AGENTS.md"]).not.toContain("Idioma de Resposta");
+  });
+
+  it("exportFiles() without locale option preserves legacy behavior (no directive)", async () => {
+    const externalRoot = await makeTempDir("paperclip-agent-instructions-no-locale-");
+    cleanupDirs.add(externalRoot);
+
+    await fs.writeFile(path.join(externalRoot, "AGENTS.md"), "# External Agent\n", "utf8");
+
+    const svc = agentInstructionsService();
+    const agent = makeAgent({
+      instructionsBundleMode: "external",
+      instructionsRootPath: externalRoot,
+      instructionsEntryFile: "AGENTS.md",
+      instructionsFilePath: path.join(externalRoot, "AGENTS.md"),
+    });
+
+    const exported = await svc.exportFiles(agent);
+
+    expect(exported.files["AGENTS.md"]).toBe("# External Agent\n");
+    expect(exported.files["AGENTS.md"]).not.toContain("Idioma de Resposta");
+  });
 });
