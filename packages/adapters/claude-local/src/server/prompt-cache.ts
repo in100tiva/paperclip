@@ -143,6 +143,68 @@ async function ensureReadableFile(targetPath: string, contents: string): Promise
   }
 }
 
+/**
+ * Recursive directory copy used when a skill has a locale variant that must be
+ * materialized into the bundle. Copies regular files via fs.copyFile and recurses
+ * into subdirectories. Symlinks inside source are dereferenced via fs.copyFile
+ * (it follows links by default), which is fine for skill bundles that ship
+ * `references/*.md` next to the entry SKILL.md.
+ */
+async function copyDirRecursive(source: string, target: string): Promise<void> {
+  await fs.mkdir(target, { recursive: true });
+  const entries = await fs.readdir(source, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(source, entry.name);
+    const dstPath = path.join(target, entry.name);
+    if (entry.isDirectory()) {
+      await copyDirRecursive(srcPath, dstPath);
+    } else if (entry.isFile()) {
+      await fs.copyFile(srcPath, dstPath);
+    }
+    // Other entry types (symlinks, sockets, devices) are skipped — skill source
+    // dirs in the repo only contain regular files and directories.
+  }
+}
+
+/**
+ * Materialize a skill into the bundle target path according to the runtime locale.
+ *
+ * - When `locale === "pt-BR"` and `SKILL.pt-BR.md` exists in source: copy the
+ *   entire directory to target and rename `SKILL.pt-BR.md` -> `SKILL.md`,
+ *   replacing the English original at the destination only. Source dir is never
+ *   mutated (Anti-Pattern from 11-RESEARCH §"Anti-Patterns to Avoid").
+ * - When `locale === "en-US"` OR the variant file is absent: fall back to the
+ *   pre-existing symlink path (zero behavioral change vs. legacy).
+ *
+ * Source remains the canonical English skill directory in the repo;
+ * materialization always lands inside the per-bundle cache dir
+ * (`~/.paperclip/instances/.../claude-prompt-cache/{bundleKey}/.claude/skills/`).
+ */
+export async function materializeSkillForLocale(
+  source: string,
+  target: string,
+  locale: ClaudePromptBundleLocale,
+): Promise<void> {
+  if (locale === "en-US") {
+    await ensurePaperclipSkillSymlink(source, target);
+    return;
+  }
+  const variantPath = path.join(source, `SKILL.${locale}.md`);
+  const hasVariant = await fs
+    .access(variantPath)
+    .then(() => true)
+    .catch(() => false);
+  if (!hasVariant) {
+    await ensurePaperclipSkillSymlink(source, target);
+    return;
+  }
+  await copyDirRecursive(source, target);
+  await fs.rename(
+    path.join(target, `SKILL.${locale}.md`),
+    path.join(target, "SKILL.md"),
+  );
+}
+
 export async function prepareClaudePromptBundle(input: {
   companyId: string;
   skills: SkillEntry[];
@@ -163,7 +225,7 @@ export async function prepareClaudePromptBundle(input: {
   for (const entry of skills) {
     const target = path.join(skillsHome, entry.runtimeName);
     try {
-      await ensurePaperclipSkillSymlink(entry.source, target);
+      await materializeSkillForLocale(entry.source, target, locale);
     } catch (err) {
       await onLog(
         "stderr",
@@ -193,4 +255,5 @@ export async function prepareClaudePromptBundle(input: {
  */
 export const __testing__ = {
   buildClaudePromptBundleKey,
+  materializeSkillForLocale,
 };
