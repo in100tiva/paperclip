@@ -12,12 +12,83 @@
  * Decisions in 14-CONTEXT.md.
  */
 
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createDb, agents, companySkills, eq, and, sql } from '../../packages/db/src/index.js';
 import { SKILL_MAPPING } from './mapping.js';
 import { TARGET_COMPANY_ID, CEO_AGENT_ID, type SkillMapping } from './types.js';
+
+type InventoryKind = 'skill' | 'reference' | 'script' | 'asset' | 'markdown' | 'other';
+
+interface InventoryEntry {
+  path: string;
+  kind: InventoryKind;
+  exists: boolean;
+}
+
+const SCRIPT_EXT = new Set(['.sh', '.js', '.mjs', '.cjs', '.ts', '.py', '.rb', '.bash']);
+const ASSET_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.pdf', '.json', '.yml', '.yaml', '.toml', '.txt', '.csv']);
+
+/**
+ * Mirror of server's classifyInventoryKind so the script stays standalone but
+ * produces inventory entries the company-skills service understands.
+ */
+function classifyInventoryKind(relativePath: string): InventoryKind {
+  const normalized = relativePath.replaceAll(path.sep, '/').toLowerCase();
+  if (normalized === 'skill.md' || normalized.endsWith('/skill.md')) return 'skill';
+  if (normalized.startsWith('references/')) return 'reference';
+  if (normalized.startsWith('scripts/')) return 'script';
+  if (normalized.startsWith('assets/')) return 'asset';
+  if (normalized.endsWith('.md')) return 'markdown';
+  const ext = path.extname(normalized);
+  if (SCRIPT_EXT.has(ext)) return 'script';
+  if (ASSET_EXT.has(ext)) return 'asset';
+  return 'other';
+}
+
+/**
+ * Recursively walk a skill directory and return every file as a portable
+ * (POSIX-separator) relative path. Skips .git and node_modules.
+ */
+async function walkSkillFiles(skillDir: string): Promise<string[]> {
+  const out: string[] = [];
+  async function recurse(current: string) {
+    const entries = await readdir(current, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.name === '.git' || entry.name === 'node_modules') continue;
+      const absolute = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        await recurse(absolute);
+        continue;
+      }
+      if (!entry.isFile()) continue;
+      out.push(path.relative(skillDir, absolute).split(path.sep).join('/'));
+    }
+  }
+  await recurse(skillDir);
+  return out;
+}
+
+/**
+ * Build a full file inventory for a skill directory (SKILL.md + every
+ * reference / script / asset / extra markdown found by recursive scan).
+ * Matches the shape produced by the server's collectLocalSkillInventory in
+ * `mode: "full"` so the UI's file tree renders the complete skill bundle.
+ */
+async function buildSkillFileInventory(skillDir: string): Promise<InventoryEntry[]> {
+  const files = await walkSkillFiles(skillDir);
+  const all = new Set<string>(['SKILL.md', ...files]);
+  return Array.from(all)
+    .map((rel) => ({ path: rel, kind: classifyInventoryKind(rel), exists: true }))
+    .sort((left, right) => left.path.localeCompare(right.path));
+}
+
+function deriveTrustLevel(inventory: InventoryEntry[]): string {
+  if (inventory.some((entry) => entry.kind === 'script')) return 'scripts_executables';
+  if (inventory.some((entry) => entry.kind === 'asset' || entry.kind === 'other')) return 'assets';
+  return 'markdown_only';
+}
 
 type Args = { dryRun: boolean; companyId: string };
 
@@ -102,6 +173,7 @@ async function main() {
   for (const skill of SKILL_MAPPING) {
     const resolvedPath = await resolveSkillPath(repoRoot, skill.slug);
     const { markdown, description } = await readSkillMarkdown(resolvedPath);
+    const fileInventory = await buildSkillFileInventory(resolvedPath);
 
     const desired = {
       key: skill.slug,
@@ -112,9 +184,9 @@ async function main() {
       sourceType: 'local_path',
       sourceLocator: resolvedPath,
       sourceRef: null,
-      trustLevel: 'markdown_only',
+      trustLevel: deriveTrustLevel(fileInventory),
       compatibility: 'compatible',
-      fileInventory: [{ path: 'SKILL.md', exists: true }],
+      fileInventory,
       metadata: {
         importedBy: 'sync-skills',
         importedAt: new Date().toISOString(),
@@ -123,13 +195,25 @@ async function main() {
     };
 
     const existing = await db
-      .select({ id: companySkills.id, markdown: companySkills.markdown, sourceLocator: companySkills.sourceLocator })
+      .select({
+        id: companySkills.id,
+        markdown: companySkills.markdown,
+        sourceLocator: companySkills.sourceLocator,
+        fileInventory: companySkills.fileInventory,
+        trustLevel: companySkills.trustLevel,
+      })
       .from(companySkills)
       .where(and(eq(companySkills.companyId, args.companyId), eq(companySkills.key, skill.slug)))
       .then((rows) => rows[0] ?? null);
 
     if (existing) {
-      const drifted = existing.markdown !== desired.markdown || existing.sourceLocator !== desired.sourceLocator;
+      const inventoryDrift =
+        JSON.stringify(existing.fileInventory ?? []) !== JSON.stringify(desired.fileInventory);
+      const drifted =
+        existing.markdown !== desired.markdown
+        || existing.sourceLocator !== desired.sourceLocator
+        || existing.trustLevel !== desired.trustLevel
+        || inventoryDrift;
       if (drifted && !args.dryRun) {
         await db
           .update(companySkills)
@@ -139,21 +223,35 @@ async function main() {
             markdown: desired.markdown,
             sourceType: desired.sourceType,
             sourceLocator: desired.sourceLocator,
+            trustLevel: desired.trustLevel,
+            fileInventory: desired.fileInventory,
             metadata: desired.metadata,
             updatedAt: new Date(),
           })
           .where(eq(companySkills.id, existing.id));
       }
-      skillReport.push({ slug: skill.slug, status: drifted ? 'updated' : 'unchanged', detail: existing.id });
+      skillReport.push({
+        slug: skill.slug,
+        status: drifted ? 'updated' : 'unchanged',
+        detail: `${existing.id} (${desired.fileInventory.length} files)`,
+      });
     } else {
       if (args.dryRun) {
-        skillReport.push({ slug: skill.slug, status: 'created', detail: 'would-insert (dry-run)' });
+        skillReport.push({
+          slug: skill.slug,
+          status: 'created',
+          detail: `would-insert ${desired.fileInventory.length} files (dry-run)`,
+        });
       } else {
         const inserted = await db
           .insert(companySkills)
           .values({ companyId: args.companyId, ...desired })
           .returning({ id: companySkills.id });
-        skillReport.push({ slug: skill.slug, status: 'created', detail: inserted[0]!.id });
+        skillReport.push({
+          slug: skill.slug,
+          status: 'created',
+          detail: `${inserted[0]!.id} (${desired.fileInventory.length} files)`,
+        });
       }
     }
   }
