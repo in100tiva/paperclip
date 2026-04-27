@@ -1595,7 +1595,14 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
           contextSnapshot: heartbeatRuns.contextSnapshot,
         })
         .from(heartbeatRuns)
-        .where(inArray(heartbeatRuns.status, [...EXECUTION_PATH_HEARTBEAT_RUN_STATUSES])),
+        .where(inArray(heartbeatRuns.status, [...EXECUTION_PATH_HEARTBEAT_RUN_STATUSES]))
+        // Bound the cross-instance scan: without a LIMIT this can return tens
+        // of thousands of rows (every active run across every company), which
+        // saturates the pool's stream buffer and leaves connections in
+        // ClientRead wait_event for minutes — the symptom that wedged every
+        // browser request earlier today. 5000 covers any plausible active set
+        // while keeping the response payload small enough to drain quickly.
+        .limit(5000),
       db
         .select({
           companyId: issues.companyId,
@@ -1611,7 +1618,8 @@ export function recoveryService(db: Db, deps: { enqueueWakeup: RecoveryWakeup })
             notInArray(issues.originKind, [RECOVERY_ORIGIN_KINDS.issueGraphLivenessEscalation]),
             inArray(heartbeatRuns.status, [...EXECUTION_PATH_HEARTBEAT_RUN_STATUSES]),
           ),
-        ),
+        )
+        .limit(5000),
       db
         .select({
           companyId: agentWakeupRequests.companyId,
