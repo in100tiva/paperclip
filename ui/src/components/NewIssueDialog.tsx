@@ -26,6 +26,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
@@ -971,6 +972,10 @@ export function NewIssueDialog() {
           }
         }}
       >
+        {/* Accessible title — required by Radix DialogContent for screen
+            readers. The dialog has no visible heading by design (the "Issue
+            title" input is the natural focus), so we hide it visually only. */}
+        <DialogTitle className="sr-only">{isSubIssueMode ? "Create sub-issue" : "Create new issue"}</DialogTitle>
         {/* Header bar */}
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

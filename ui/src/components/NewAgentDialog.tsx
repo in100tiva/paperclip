@@ -10,6 +10,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -115,6 +116,7 @@ export function NewAgentDialog() {
         showCloseButton={false}
         className="sm:max-w-md p-0 gap-0 overflow-hidden"
       >
+        <DialogTitle className="sr-only">{t("agents:new-agent-dialog.header")}</DialogTitle>
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
           <span className="text-sm text-muted-foreground">{t("agents:new-agent-dialog.header")}</span>
