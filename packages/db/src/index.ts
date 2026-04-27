@@ -33,3 +33,7 @@ export {
 export { issueRelations } from "./schema/issue_relations.js";
 export { issueReferenceMentions } from "./schema/issue_reference_mentions.js";
 export * from "./schema/index.js";
+
+// Re-export drizzle-orm primitives so consumer scripts (scripts/sync-agents/)
+// outside the pnpm workspace can use them without their own drizzle dependency.
+export { eq, and, sql, inArray, not } from "drizzle-orm";
