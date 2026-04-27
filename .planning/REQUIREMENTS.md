@@ -40,7 +40,7 @@ Requisitos para o milestone v1.1. Cada um mapeia para fases do roadmap.
 - [x] **AGENT-MSG-01**: Status messages dos agentes ("em execução", "swap de conta", "aguardando aprovação", "step concluído") em pt-BR
 - [x] **AGENT-MSG-02**: Summaries e relatórios gerados por agentes apresentados em pt-BR quando idioma ativo
 - [x] **AGENT-MSG-03**: Prompts UI dos agentes (botões, headers, labels de painéis de agente) traduzidos
-- [ ] **AGENT-MSG-04**: Notificações e toasts de eventos de agente em pt-BR
+- [x] **AGENT-MSG-04**: Notificações e toasts de eventos de agente em pt-BR
 
 ### Agent Skills — System Prompts e Comportamento do Modelo
 
@@ -105,7 +105,7 @@ Quais fases cobrem quais requisitos. Atualizado durante a criação do roadmap.
 | AGENT-MSG-01 | Fase 10 | Complete |
 | AGENT-MSG-02 | Fase 10 | Complete |
 | AGENT-MSG-03 | Fase 10 | Complete |
-| AGENT-MSG-04 | Fase 10 | Pending |
+| AGENT-MSG-04 | Fase 10 | Complete |
 | AGENT-SKILL-01 | Fase 11 | Pending |
 | AGENT-SKILL-02 | Fase 11 | Pending |
 | AGENT-SKILL-03 | Fase 11 | Pending |

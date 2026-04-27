@@ -20,7 +20,7 @@ Fases 1-6 arquivadas em `.planning/milestones/v1.0-ROADMAP.md` como referência 
 - [x] **Phase 7: Foundation i18n + Toggle de Settings** — Schema de preferência de idioma, API de update, toggle UI em settings, biblioteca i18n integrada, dicionários pt-BR/en-US, fallback e detector de chaves ausentes (`complete-with-pending-UAT` — UAT-07-01/02 deferred)
 - [x] **Phase 8: Tradução UI Core** — Inbox, projects, settings, navegação/sidebar/header e activity log renderizados em pt-BR (`complete-with-pending-UAT` — UAT-08-01..05 deferred)
 - [x] **Phase 9: Tradução UI Admin + Auth + Mensagens Sistêmicas** — Telas admin/company, auth (login/signup/reset/invite), formulários, erros, validações, tooltips, modais e toasts traduzidos (`complete-with-pending-UAT` — UAT-09-01..04 deferred)
-- [ ] **Phase 10: Mensagens dos Agentes ao Usuário** — Status messages, summaries/relatórios, prompts UI de painéis de agente, notificações e toasts de eventos de agente em pt-BR
+- [x] **Phase 10: Mensagens dos Agentes ao Usuário** — Status messages, summaries/relatórios, prompts UI de painéis de agente, notificações e toasts de eventos de agente em pt-BR (completed 2026-04-27)
 - [ ] **Phase 11: Skills + System Prompts dos Agentes** — System prompts condicionais por locale, skills/templates traduzidos, propagação user → agent context → spawn e validação empírica de resposta em pt-BR
 
 ## Detalhes das Fases
@@ -121,7 +121,7 @@ Plans:
 Plans:
 - [x] 10-01-PLAN.md — Wave 1: Painéis + status + prompts UI (AGENT-MSG-01 + AGENT-MSG-03) — agents.json populated, StatusBadge refactor, AgentDetail/Agents/AgentConfigForm/NewAgentDialog/ActiveAgentsPanel migrated
 - [x] 10-02-PLAN.md — Wave 1: Summaries / relatórios (AGENT-MSG-02) — RunTranscriptView/RunChatSurface/LiveRunWidget/IssueRunLedger migrated, agents.json transcript/run-ledger/live-runs sub-trees
-- [ ] 10-03-PLAN.md — Wave 2: Notificações e toasts (AGENT-MSG-04) — LiveUpdatesProvider tRef refactor, 4 builders receive TFunction, common.json toast.agent/run/join-request/activity sub-trees
+- [x] 10-03-PLAN.md — Wave 2: Notificações e toasts (AGENT-MSG-04) — LiveUpdatesProvider tRef refactor, 4 builders receive TFunction, common.json toast.agent/run/join-request/activity sub-trees
 
 **UI hint**: yes
 
@@ -149,7 +149,7 @@ Plans:
 | 7. Foundation i18n + Toggle de Settings | 5/5 | Complete-with-pending-UAT | 2026-04-26 |
 | 8. Tradução UI Core | 1/5 | In Progress|  |
 | 9. Tradução UI Admin + Auth + Mensagens Sistêmicas | 0/5 | Não iniciada | - |
-| 10. Mensagens dos Agentes ao Usuário | 2/3 | In Progress|  |
+| 10. Mensagens dos Agentes ao Usuário | 3/3 | Complete   | 2026-04-27 |
 | 11. Skills + System Prompts dos Agentes | 0/0 | Não iniciada | - |
 
 ## Cobertura
