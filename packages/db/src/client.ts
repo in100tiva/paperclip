@@ -65,8 +65,13 @@ export function createDb(url: string) {
  *   - `prepare: false` is REQUIRED — pooler reuses connections across transactions,
  *     so prepared statements get orphaned. Without this, queries fail intermittently
  *     with "prepared statement does not exist" under concurrency.
- *   - Pool sized small (`max: 5`) because 5+ devs * 5 conns = 25, well below
- *     Supabase free-tier limit of ~60 shared connections.
+ *   - `max: 15` — sized to comfortably absorb the recovery scheduler's
+ *     6-query Promise.all *plus* 3-4 concurrent UI polls (sidebar-badges,
+ *     live-runs, budgets/overview, etc.) without exhausting the pool. Earlier
+ *     `max: 5` left zero headroom: when the periodic
+ *     reconcileIssueGraphLiveness Promise.all fired alongside a UI page load,
+ *     the pool deadlocked and every browser request 504'd at 45s. 15 stays
+ *     safely below Supavisor's per-tenant cap (~60).
  *
  * Supabase direct/session pooler (port 5432):
  *   - Pool config still applies (don't blow free-tier limit) but `prepare` can
@@ -109,7 +114,7 @@ export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1
     //   handle short-lived connections, so this is the right primitive here.
     return {
       prepare: false,
-      max: 5,
+      max: 15,
       idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
@@ -125,7 +130,7 @@ export function buildPostgresOptions(url: string): Parameters<typeof postgres>[1
     // of waiting for the kernel to notice (which can take 11+ minutes; see
     // 6543 comment).
     return {
-      max: 5,
+      max: 15,
       idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,

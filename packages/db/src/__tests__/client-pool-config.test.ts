@@ -29,7 +29,7 @@ describe("createDb pool config", () => {
     const url = "postgres://user:pwd@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
     expect(buildPostgresOptions(url)).toEqual({
       prepare: false,
-      max: 5,
+      max: 15,
       idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
@@ -39,7 +39,7 @@ describe("createDb pool config", () => {
     createDb(url);
     expect(vi.mocked(postgres).mock.calls[0][1]).toEqual({
       prepare: false,
-      max: 5,
+      max: 15,
       idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
@@ -51,7 +51,7 @@ describe("createDb pool config", () => {
   it("Test 2: session 5432 → idle_timeout:1 + keep_alive + statement_timeout (no prepare:false)", () => {
     const url = "postgres://user:pwd@aws-1-sa-east-1.pooler.supabase.com:5432/postgres";
     expect(buildPostgresOptions(url)).toEqual({
-      max: 5,
+      max: 15,
       idle_timeout: 1,
       max_lifetime: 60,
       connect_timeout: 10,
