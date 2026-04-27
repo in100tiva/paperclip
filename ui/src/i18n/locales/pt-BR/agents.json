@@ -173,5 +173,67 @@
       "max-concurrent-runs": "Número máximo de execuções de heartbeat simultâneas para este agente.",
       "budget-monthly-cents": "Limite mensal de gasto em centavos. 0 significa sem limite."
     }
+  },
+  "transcript": {
+    "user": "Usuário",
+    "executing-command": "Executando comando",
+    "executed-command": "Comando executado",
+    "executed-commands": "{{count}} comandos executados",
+    "tool-failed": "Ferramenta falhou",
+    "waiting-result": "Aguardando resultado",
+    "waiting-result-ellipsis": "Aguardando resultado…",
+    "completed": "Concluído",
+    "running": "Em execução",
+    "errored": "Com erro",
+    "run-failed": "Execução falhou",
+    "failed-with-exit": "Falhou com código de saída {{code}}",
+    "failed": "Falhou",
+    "command-failed": "Comando falhou",
+    "input-label": "Entrada",
+    "result-label": "Resultado",
+    "input-empty": "<vazio>",
+    "result-pending": "Aguardando resultado...",
+    "empty": "Ainda sem transcrição.",
+    "streaming": "Transmitindo",
+    "log-lines_one": "{{count}} linha de log",
+    "log-lines_other": "{{count}} linhas de log",
+    "log-lines": "{{count}} linhas de log",
+    "system-messages_one": "{{count}} mensagem do sistema",
+    "system-messages_other": "{{count}} mensagens do sistema",
+    "system-messages": "{{count}} mensagens do sistema",
+    "stdout": "stdout",
+    "using-tool": "Usando {{tool}}",
+    "used-tool": "{{tool}} utilizado",
+    "used-tool-multiple": "{{tool}} utilizado ({{count}} chamadas)",
+    "tools-multiple": "{{count}} ferramentas",
+    "aria": {
+      "collapse-tool": "Recolher detalhes da ferramenta",
+      "expand-tool": "Expandir detalhes da ferramenta",
+      "collapse-command": "Recolher detalhes do comando",
+      "expand-command": "Expandir detalhes do comando",
+      "collapse-stdout": "Recolher saída padrão",
+      "expand-stdout": "Expandir saída padrão"
+    }
+  },
+  "run-ledger": {
+    "title": "Registro de execuções",
+    "waiting-first-run": "Aguardando o primeiro registro de execução.",
+    "no-runs-linked": "Ainda não há execuções vinculadas.",
+    "latest-run": "Execução mais recente",
+    "child-work": "Trabalho derivado",
+    "child-summary-active": "{{active}} ativos, {{done}} concluídos, {{cancelled}} cancelados",
+    "child-summary-terminal": "todos {{total}} terminais ({{done}} concluídos, {{cancelled}} cancelados)",
+    "more-children": "+{{count}} a mais",
+    "more-children_one": "+{{count}} a mais",
+    "more-children_other": "+{{count}} a mais"
+  },
+  "live-runs": {
+    "title": "Execuções ao vivo",
+    "subtitle": "Usa a superfície de chat compartilhada da atividade da tarefa.",
+    "stop": "Parar",
+    "stopping": "Parando…",
+    "open-run": "Abrir execução",
+    "waiting-output": "Aguardando saída da execução…",
+    "no-output": "Nenhuma saída de execução capturada."
   }
 }

@@ -173,5 +173,67 @@
       "max-concurrent-runs": "Maximum number of heartbeat runs that can execute simultaneously for this agent.",
       "budget-monthly-cents": "Monthly spending limit in cents. 0 means no limit."
     }
+  },
+  "transcript": {
+    "user": "User",
+    "executing-command": "Executing command",
+    "executed-command": "Executed command",
+    "executed-commands": "Executed {{count}} commands",
+    "tool-failed": "Tool failed",
+    "waiting-result": "Waiting for result",
+    "waiting-result-ellipsis": "Waiting for result…",
+    "completed": "Completed",
+    "running": "Running",
+    "errored": "Errored",
+    "run-failed": "Run failed",
+    "failed-with-exit": "Failed with exit code {{code}}",
+    "failed": "Failed",
+    "command-failed": "Command failed",
+    "input-label": "Input",
+    "result-label": "Result",
+    "input-empty": "<empty>",
+    "result-pending": "Waiting for result...",
+    "empty": "No transcript yet.",
+    "streaming": "Streaming",
+    "log-lines_one": "{{count}} log line",
+    "log-lines_other": "{{count}} log lines",
+    "log-lines": "{{count}} log lines",
+    "system-messages_one": "{{count}} system message",
+    "system-messages_other": "{{count}} system messages",
+    "system-messages": "{{count}} system messages",
+    "stdout": "stdout",
+    "using-tool": "Using {{tool}}",
+    "used-tool": "Used {{tool}}",
+    "used-tool-multiple": "Used {{tool}} ({{count}} calls)",
+    "tools-multiple": "{{count}} tools",
+    "aria": {
+      "collapse-tool": "Collapse tool details",
+      "expand-tool": "Expand tool details",
+      "collapse-command": "Collapse command details",
+      "expand-command": "Expand command details",
+      "collapse-stdout": "Collapse stdout",
+      "expand-stdout": "Expand stdout"
+    }
+  },
+  "run-ledger": {
+    "title": "Run ledger",
+    "waiting-first-run": "Waiting for the first run record.",
+    "no-runs-linked": "No runs linked yet.",
+    "latest-run": "Latest run",
+    "child-work": "Child work",
+    "child-summary-active": "{{active}} active, {{done}} done, {{cancelled}} cancelled",
+    "child-summary-terminal": "all {{total}} terminal ({{done}} done, {{cancelled}} cancelled)",
+    "more-children": "+{{count}} more",
+    "more-children_one": "+{{count}} more",
+    "more-children_other": "+{{count}} more"
+  },
+  "live-runs": {
+    "title": "Live Runs",
+    "subtitle": "Uses the shared chat-style run surface from issue activity.",
+    "stop": "Stop",
+    "stopping": "Stopping…",
+    "open-run": "Open run",
+    "waiting-output": "Waiting for run output...",
+    "no-output": "No run output captured."
   }
 }
