@@ -114,7 +114,7 @@ Fases 17 e 18 executam em sequência. Fases 19 e 20 são paralelizáveis (ambas 
 | 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/3 | Complete    | 2026-04-28 |
 | 19. Pesquisadores Paralelos e QA | v1.3 | 0/? | Complete    | 2026-04-28 |
 | 20. Agentes Supabase | v1.3 | 0/? | Complete    | 2026-04-28 |
-| 21. Integração Notion e Gate de Produção | v1.3 | 0/? | Not started | - |
+| 21. Integração Notion e Gate de Produção | v1.3 | 0/? | Complete    | 2026-04-28 |
 | 22. Smoke e Validação End-to-End | v1.3 | 0/? | Not started | - |
 
 ## Histórico
