@@ -2,13 +2,13 @@
 state_version: 1.0
 milestone: v1.3
 milestone_name: Workflow de Manutenção Paralela
-status: Roadmap v1.3 criado — 6 fases (17-22), 31/31 requisitos mapeados, zero órfãos
-last_updated: "2026-04-28T10:55:00.304Z"
+status: Fase 17 completa — 3/3 planos concluídos (mapping + .md files + sync/verify). 7 agentes v1.3 criados na in100tiva com hierarquia verificada.
+last_updated: "2026-04-28T11:30:41Z"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 3
 ---
 
 # Estado do Projeto
@@ -18,14 +18,14 @@ progress:
 Ver: .planning/PROJECT.md (atualizado em 2026-04-28)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Milestone v1.3 (Workflow de Manutenção Paralela) — iniciado 2026-04-28, roadmap criado (fases 17-22), pronto para /planejar-fase 17.
+**Foco atual:** Milestone v1.3 (Workflow de Manutenção Paralela) — Fase 17 concluída (3/3 planos). Próxima fase: 18.
 
 ## Posição Atual
 
-Fase: 17 de 22 (Fundação dos Agentes) — **PENDING** (roadmap criado, planejamento não iniciado)
-Plano: — (aguardando /planejar-fase 17)
-Status: Roadmap v1.3 criado — 6 fases (17-22), 31/31 requisitos mapeados, zero órfãos
-Última atividade: 2026-04-28 — Roadmap v1.3 escrito (fases 17-22); REQUIREMENTS.md rastreabilidade preenchida; STATE.md atualizado
+Fase: 17 de 22 (Fundação dos Agentes) — **COMPLETE** (3/3 plans complete)
+Plano: 17-03 — concluído. Próxima ação: /planejar-fase 18
+Status: Fase 17 completa — 7 agentes v1.3 criados na in100tiva (orchestrator-maintenance, research-doc, code-analyzer, qa-loop, supabase-executor, supabase-diagnostician, doc-before-after) com hierarquia reports_to verificada em produção. Idempotência confirmada (run 3: 0 created, 25 unchanged). AGENT-03 + AGENT-04 satisfeitos.
+Última atividade: 2026-04-28 — Plano 17-03 concluído em ~32min (3 commits atomic — c00ee7f pré-flight + dry-run; 000128d apply sync 7 created + idempotência; 922de58 SQL hierarchy verification 7/7 PASSED). Decisão: total_agents=27 não 26 — CTO pré-existente (sem frameworkSlug) na empresa ignorado corretamente pelo sync; invariantes framework corretos (ceo=1, head=4, specialist=21). Verificação SQL via Drizzle/tsx (psql indisponível) — resultado equivalente. Self-check PASSED.
 
 ## Posição Anterior
 
