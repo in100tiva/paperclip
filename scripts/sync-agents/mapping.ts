@@ -18,7 +18,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   // ============================================================
   {
     slug: 'planner',
-    name: 'Planner',
+    name: 'Project Manager',
     title: 'Head of Architecture',
     role: 'head',
     department: 'architecture',
@@ -29,7 +29,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'roadmapper',
-    name: 'Roadmapper',
+    name: 'Roadmap Strategist',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -40,7 +40,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'project-researcher',
-    name: 'Project Researcher',
+    name: 'Senior Research Analyst',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -51,7 +51,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'phase-researcher',
-    name: 'Phase Researcher',
+    name: 'Domain Researcher',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -62,7 +62,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'advisor-researcher',
-    name: 'Advisor Researcher',
+    name: 'Technical Advisor',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -73,7 +73,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'assumptions-analyzer',
-    name: 'Assumptions Analyzer',
+    name: 'Risk Analyst',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -84,7 +84,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'codebase-mapper',
-    name: 'Codebase Mapper',
+    name: 'Code Architect',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -95,7 +95,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'plan-checker',
-    name: 'Plan Checker',
+    name: 'Plan Reviewer',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -106,7 +106,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'research-synthesizer',
-    name: 'Research Synthesizer',
+    name: 'Research Director',
     title: 'Architecture Specialist',
     role: 'specialist',
     department: 'architecture',
@@ -122,7 +122,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   // ============================================================
   {
     slug: 'executor',
-    name: 'Executor',
+    name: 'Lead Engineer',
     title: 'Head of Engineering',
     role: 'head',
     department: 'engineering',
@@ -133,7 +133,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'debugger',
-    name: 'Debugger',
+    name: 'Debug Specialist',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -144,7 +144,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'integration-checker',
-    name: 'Integration Checker',
+    name: 'Integration Engineer',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -155,7 +155,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'ui-researcher',
-    name: 'UI Researcher',
+    name: 'UI/UX Researcher',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -166,7 +166,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'orchestrator-maintenance',
-    name: 'Orchestrator Maintenance',
+    name: 'Maintenance Tech Lead',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -177,7 +177,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'research-doc',
-    name: 'Research Doc',
+    name: 'Documentation Researcher',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -188,7 +188,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'code-analyzer',
-    name: 'Code Analyzer',
+    name: 'Code Auditor',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -199,7 +199,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'supabase-executor',
-    name: 'Supabase Executor',
+    name: 'DevOps Engineer (Supabase)',
     title: 'Engineering Specialist',
     role: 'specialist',
     department: 'engineering',
@@ -214,7 +214,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   // ============================================================
   {
     slug: 'verifier',
-    name: 'Verifier',
+    name: 'QA Manager',
     title: 'Head of Quality',
     role: 'head',
     department: 'quality',
@@ -225,7 +225,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'nyquist-auditor',
-    name: 'Nyquist Auditor',
+    name: 'Validation Auditor',
     title: 'Quality Specialist',
     role: 'specialist',
     department: 'quality',
@@ -236,7 +236,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'ui-auditor',
-    name: 'UI Auditor',
+    name: 'UX Auditor',
     title: 'Quality Specialist',
     role: 'specialist',
     department: 'quality',
@@ -247,7 +247,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'ui-checker',
-    name: 'UI Checker',
+    name: 'UI QA Engineer',
     title: 'Quality Specialist',
     role: 'specialist',
     department: 'quality',
@@ -258,7 +258,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'qa-loop',
-    name: 'QA Loop',
+    name: 'QA Engineer',
     title: 'Quality Specialist',
     role: 'specialist',
     department: 'quality',
@@ -269,7 +269,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'supabase-diagnostician',
-    name: 'Supabase Diagnostician',
+    name: 'Site Reliability Engineer',
     title: 'Quality Specialist',
     role: 'specialist',
     department: 'quality',
@@ -284,7 +284,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   // ============================================================
   {
     slug: 'user-profiler',
-    name: 'User Profiler',
+    name: 'UX Researcher',
     title: 'Head of Analytics',
     role: 'head',
     department: 'analytics',
@@ -295,7 +295,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
   {
     slug: 'doc-before-after',
-    name: 'Doc Before After',
+    name: 'Technical Writer',
     title: 'Analytics Specialist',
     role: 'specialist',
     department: 'analytics',
