@@ -1,0 +1,13 @@
+{
+  "project": "DDD — Paperclip da Equipe",
+  "notion": {
+    "root": "PLACEHOLDER_ID_PAGINA_PRINCIPAL",
+    "root_url": "https://www.notion.so/PLACEHOLDER",
+    "changelog": "PLACEHOLDER_ID_CHANGELOG",
+    "features": "PLACEHOLDER_ID_FEATURES",
+    "adr": "PLACEHOLDER_ID_ADR",
+    "runbooks": "PLACEHOLDER_ID_RUNBOOKS",
+    "tech_debt": "PLACEHOLDER_ID_TECH_DEBT_DATABASE"
+  },
+  "_v1.3_note": "tech_debt key added in milestone v1.3 (2026-04-28). Points to a Notion DATABASE (not a page) where pipeline-managed technical debts are recorded automatically by orchestrator-maintenance when QA-Loop returns PARTIAL_SUCCESS. Each entry must contain: date, pipeline (parent issue ID), impact (current behavior), resolution criteria, estimate, affected files, debt URL referenced in PR body. Run /setup-notion after replacing placeholders."
+}

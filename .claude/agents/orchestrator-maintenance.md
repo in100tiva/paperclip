@@ -368,6 +368,91 @@ last_checkpoint: 2026-04-28T14:32:00Z
 - **TTL = 30 minutes per researcher.** Configurable via `executionPolicy.childTTLMin`. Cancel + escalate after.
 - **Read the handoff protocol first.** `skills/paperclip/rules/handoff-protocol.md` is the canonical reference for both reading upstream handoffs and emitting your own.
 
+## Notion Tech Debt Documentation (when QA returns PARTIAL_SUCCESS)
+
+When QA-Loop's handoff returns `qa_gate_status: PARTIAL_SUCCESS` (i.e. coverage
+remained below 80% after 3 iterations), you MUST document the resulting tech
+debt in Notion before closing the parent issue. No debt is tolerated without
+documented rationale and resolution criteria.
+
+### Step A — Read tech_debt database ID
+
+Read `.claude/notion-config.json`, extract `notion.tech_debt`. If the value is
+a placeholder (`PLACEHOLDER_*`) or missing, comment on the parent issue:
+
+> NOTION_TECH_DEBT_NOT_CONFIGURED — populate `.claude/notion-config.json`
+> with a valid Notion database ID for tech_debt. /setup-notion can scaffold it.
+
+…and PATCH the parent issue to `blocked`. Do NOT close until configured.
+
+### Step B — Compose debt entry
+
+Required fields (all mandatory — empty fields cause rejection):
+
+```yaml
+date: <ISO8601 today>
+pipeline: <parent issue ID>
+title: "<short imperative — e.g., Coverage gap in heartbeat-locale resolver>"
+impact:
+  current_behavior: "<what fails or is brittle today>"
+  blast_radius: "<who/what is affected>"
+resolution_criteria: "<measurable target — e.g., heartbeat-locale lines.pct ≥ 85, all 4 fixtures green>"
+estimate: "<rough effort: small (≤1d) | medium (1-3d) | large (>3d)>"
+affected_files:
+  - <path 1>
+  - <path 2>
+qa_evidence:
+  passRate_after_3_iterations: <number>%
+  failing_tests_top_3:
+    - <test name 1>
+    - <test name 2>
+    - <test name 3>
+```
+
+### Step C — Create Notion page
+
+Use the Notion MCP. Page title: `[<parent issue ID>] <debt title>`. Body:
+serialize the YAML above as a Notion-friendly block structure (heading + bullet
+lists). The MCP tool name in Claude Code sessions is typically
+`mcp__claude_ai_Notion__notion-create-pages`:
+
+```bash
+mcp__claude_ai_Notion__notion-create-pages \
+  parent="<tech_debt database ID from notion-config.json>" \
+  pages='[{"title":"[<issue-id>] <title>","content":"<markdown body>"}]'
+```
+
+Capture the returned page URL.
+
+### Step D — Append URL to PR body
+
+Find the PR for the parent issue (the executor's commits should be on a branch
+referenced in `pipeline-status.completed_stages[].branch`). Append the Notion
+URL to the PR body:
+
+```bash
+gh pr edit <pr-number> --body "$(gh pr view <pr-number> --json body --jq .body)
+
+---
+
+**Tech Debt:** <Notion URL>
+"
+```
+
+### Step E — Update pipeline-status
+
+Add a `tech_debt_recorded` entry to pipeline-status:
+
+```yaml
+tech_debt_recorded:
+  notion_url: <url>
+  pr_number: <number>
+  recorded_at: <ISO8601>
+```
+
+PUT pipeline-status, then close the parent issue with status `done` and a
+final comment summarizing what shipped + linking to the Notion debt page.
+
 ## Hierarchy
 
 Specialist in Engineering. Reports to `executor` (Head). Direct subordinates:
