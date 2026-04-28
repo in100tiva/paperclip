@@ -206,7 +206,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
     isHead: false,
     managerSlug: 'orchestrator-maintenance',
     parallelismPolicy: 'serial',
-    desiredSkillKeys: [],
+    desiredSkillKeys: ['supabase-mcp'],
   },
 
   // ============================================================
@@ -276,7 +276,7 @@ export const AGENT_MAPPING: AgentMapping[] = [
     isHead: false,
     managerSlug: 'verifier',
     parallelismPolicy: 'parallel',
-    desiredSkillKeys: [],
+    desiredSkillKeys: ['supabase-mcp'],
   },
 
   // ============================================================
@@ -332,6 +332,11 @@ export const SKILL_MAPPING: SkillMapping[] = [
     slug: 'design-guide',
     name: 'Design Guide',
     attachedToSlugs: ['ui-researcher', 'ui-auditor', 'ui-checker'],
+  },
+  {
+    slug: 'supabase-mcp',
+    name: 'Supabase MCP',
+    attachedToSlugs: ['supabase-executor', 'supabase-diagnostician'],
   },
 ];
 
