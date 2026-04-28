@@ -2,25 +2,26 @@
 
 ## Estado Atual
 
-**Versão entregue:** v1.1 — Internacionalização pt-BR (2026-04-27)
-**Milestone ativo:** v1.2 — in100tiva como Software House (iniciado 2026-04-27)
+**Versão entregue:** v1.2 — in100tiva como Software House (2026-04-27)
+**Milestone ativo:** v1.3 — Workflow de Manutenção Paralela (iniciado 2026-04-28)
 
-Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code, multi-company isolation, cost attribution e UI/agentes/skills 100% traduzidos pt-BR. v1.1 entregou 26 requisitos (16 UATs empíricos pendentes, não-bloqueantes).
+Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code, multi-company isolation, cost attribution, UI/agentes/skills 100% traduzidos pt-BR e 18 agentes + 3 skills importados na in100tiva com hierarquia software-house.
 
-**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.{0,1}-*.md` para arquivos detalhados.
+**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.{0,1,2}-*.md` para arquivos detalhados.
 
-## Milestone Atual: v1.2 in100tiva como Software House
+## Milestone Atual: v1.3 Workflow de Manutenção Paralela
 
-**Objetivo:** Importar (one-shot) os 18 agentes do framework `.claude/agents/` e as 3 skills `.claude/skills/` para a empresa `in100tiva` no paperclip, organizados como uma software house real — Architecture (gate sequencial) → Engineering (parallel) → Quality (gate pós-eng) — para visualização no organograma e atribuição de issues, mantendo o framework Claude Code rodando local como hoje (paperclip é vitrine/registro).
+**Objetivo:** Redesenhar a hierarquia da in100tiva no Paperclip para suportar um pipeline de manutenção real com paralelismo — pesquisa paralela (doc/repo + análise de código) → orquestrador distribui execução → QA em loop → gate 80% → PR com débito técnico documentado no Notion — com 2 agentes Supabase especializados (executor + diagnosticador) e handoff de contexto obrigatório entre todos os agentes.
 
 **Funcionalidades alvo:**
-- Script idempotente de importação (`pnpm sync-agents` ou equivalente) que cria os 17 novos agentes + 3 skills na in100tiva com hierarquia, role, descrição, adapterType `claude_local`, prompts derivados dos `.md`
-- Hierarquia software-house: CEO → 4 Heads (Architecture, Engineering, Quality, Analytics) → especialistas
-- Metadado `parallelism_policy` em cada agente (`serial` para Architecture/DB; `parallel` para Engineering; `serial-gate` para Quality) — UI mostra badge
-- 3 skills importadas como CompanySkill (`sourceType: local_path` apontando pra `.claude/skills/*`)
-- Mapeamento skill→agente por cargo: `paperclip` (governança em todos os Heads), `company-creator` (CEO), `design-guide` (UI-researcher + UI-checker + UI-auditor)
-- Idempotente: re-rodar não duplica nem quebra estado existente
-- Documentação `AGENTS-IMPORT.md` explicando reimportação após editar arquivos do framework
+- Reestruturação do org-chart da in100tiva: 1 orquestrador central distribuindo tarefas com hierarquia clara e paralelismo controlado
+- 2 agentes de pesquisa paralela: Research-Doc (docs oficiais / repo GitHub) + Code-Analyzer (análise de código para encontrar falhas)
+- Orquestrador coleta os 2 resultados e distribui correções para agentes de execução
+- Agentes de QA: criam/executam testes, detectam falhas, devolvem para correção em loop até gate 80%
+- 2 agentes Supabase especializados (CRÍTICO): Supabase-Executor (deploys via MCP + CLI, solicita access token) + Supabase-Diagnostician (monitora logs, verifica versões em produção)
+- Agentes de documentação: registram estado antes/depois em cada etapa do pipeline
+- Handoff de contexto obrigatório: todo agente emite handoff estruturado ao passar tarefa para o próximo
+- Gate de produção 80%: débitos técnicos tolerados apenas se documentados no Notion com link no PR
 
 ---
 
@@ -70,15 +71,27 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.2 — in100tiva como Software House (em andamento):**
+**v1.3 — Workflow de Manutenção Paralela (✅ Fases 17-22 concluídas, smoke E2E pendente HUMAN-UAT):**
 
-- [ ] Importar 17 agentes (planner, executor, debugger, etc.) na in100tiva via script idempotente
-- [ ] Hierarquia software-house: CEO → Heads (Architecture, Engineering, Quality, Analytics) → especialistas
-- [ ] Metadado `parallelism_policy` (`serial` / `parallel` / `serial-gate`) refletido na UI do paperclip
-- [ ] Importar 3 skills (`paperclip`, `company-creator`, `design-guide`) como CompanySkill local_path
-- [ ] Mapeamento skill→agente por cargo (paperclip nos Heads; company-creator no CEO; design-guide no time UI)
-- [ ] Re-execução do script é idempotente (não duplica, não quebra estado existente)
-- [ ] Documentação `AGENTS-IMPORT.md` cobrindo reimportação
+- [x] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara — Fase 17 (7 novos agentes, mapping 25/4/21, SQL 7/7 PASS, professional display names)
+- [x] 2 agentes de pesquisa paralela: Research-Doc + Code-Analyzer — Fases 17 (registro) + 19 (bodies operacionais read-only)
+- [x] Orquestrador coleta resultados paralelos e distribui execução — Fase 18 (orchestrator-maintenance: 364-line operational body, fan-out 2 children, wake via issue_children_completed, disjoint scopes, TTL 30min, checkpointing)
+- [x] Agentes de QA em loop (testes, detecção de falhas, correção, redocumentação) — Fase 19 (qa-loop: gate objetivo Lines ≥ 80%, 3-iteration cap, PARTIAL_SUCCESS exit; doc-before-after: state-before/after por etapa)
+- [x] Supabase-Executor: deploys via MCP + CLI com solicitação de access token — Fase 20 (token via env-only, checkpoint:human-action mandatório)
+- [x] Supabase-Diagnostician: monitora logs e verifica versões em produção via MCP — Fase 20 (read-only verification: schema, migrations, functions, logs, advisors)
+- [x] Handoff de contexto estruturado emitido por todos os agentes ao passar tarefas — Fase 18 (5-field schema canônico em skills/paperclip/rules/handoff-protocol.md, persistido via issue_documents key=pipeline-handoff, seção "Handoff at completion" em todos os 7 agentes)
+- [x] Gate de produção 80% com tolerância a débitos técnicos documentados — Fases 19 + 21 (passRate via pnpm test --coverage --reporter=json; débito automático no Notion quando PARTIAL_SUCCESS)
+- [x] Integração Notion: débitos técnicos com link da página no PR — Fase 21 (notion-config.json com tech_debt key + procedimento Steps A-E em orchestrator-maintenance: criar página → gh pr edit → registrar em pipeline-status)
+- [x] Documentação do estado antes/depois em cada etapa do pipeline — Fase 19 (doc-before-after captura state-before-{stage} e state-after-{stage} via git show <commit>:<file> em issue_documents)
+- [x] Skill compartilhada `supabase-mcp` reutilizável entre Executor e Diagnostician — Fase 20
+
+**v1.3 (carry-over UAT — smoke E2E pendente):**
+
+- [ ] HUMAN-UAT pendentes: UAT-22-01..05 (smoke pipeline E2E exige paperclip dev + Supabase + Notion configurado, executado pelo operador)
+
+**v1.2 (carry-over UAT não-bloqueantes):**
+
+- [ ] HUMAN-UAT pendentes: UAT-15-01..02, UAT-16-01..05 (convergência via uso real)
 
 **v1.1 (carry-over não-bloqueantes):**
 
@@ -145,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-27 ao iniciar milestone v1.2 (in100tiva como Software House) — escopo: importar 18 agentes + 3 skills do framework como funcionários da in100tiva com hierarquia software-house e parallelism_policy*
+*Última atualização: 2026-04-28 após conclusão das Fases 17-22 do milestone v1.3 — pipeline de manutenção paralela completo: 7 novos agentes (Maintenance Tech Lead, Documentation Researcher, Code Auditor, QA Engineer, DevOps Engineer Supabase, Site Reliability Engineer, Technical Writer) operacionais com hierarquia em 4 departamentos; protocolo de handoff canônico (5 campos via issue_documents); orquestrador com fan-out 2 paralelos + checkpointing + TTL 30min; gate 80% objetivo via pnpm test --coverage; 2 agentes Supabase com skill supabase-mcp compartilhada e access token via env exclusivamente; integração Notion para débitos técnicos com URL no PR. Smoke E2E (Fase 22) pronto para execução humana via 22-HUMAN-UAT.md (5 procedimentos).*
