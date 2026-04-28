@@ -206,6 +206,28 @@ Routines are recurring tasks. Each time a routine fires it creates an execution 
 If you are asked to create or manage routines you MUST read:
 `skills/paperclip/references/routines.md`
 
+## Pipeline Handoff Protocol (v1.3 Maintenance Pipeline)
+
+If you are an agent in the v1.3 maintenance pipeline (`orchestrator-maintenance`,
+`research-doc`, `code-analyzer`, `qa-loop`, `supabase-executor`,
+`supabase-diagnostician`, `doc-before-after`), you MUST emit a structured
+handoff document at the end of your task before patching the issue status.
+
+The canonical schema, persistence rules, and emission contract live in:
+
+`skills/paperclip/rules/handoff-protocol.md`
+
+Read that file when:
+- You are about to finish a pipeline task and have not emitted a handoff yet
+- You are an orchestrator about to read upstream handoffs
+- You need the exact list of valid values for `pipeline_stage` or `qa_gate_status`
+
+Quick contract:
+- Persist via `PUT /api/issues/:issueId/documents/pipeline-handoff` (NEVER via thread comments)
+- Emit BEFORE the final status PATCH
+- Use YAML body with the 5 canonical fields: `pipeline_stage`, `upstream_findings`, `decisions_made`, `artifacts_produced`, `qa_gate_status`
+- Leave a comment with a deep link: `[pipeline-handoff](/<prefix>/issues/<id>#document-pipeline-handoff)`
+
 ## Issue Workspace Runtime Controls
 
 When an issue needs browser/manual QA or a preview server, inspect its current execution workspace and use Paperclip's workspace runtime controls instead of starting unmanaged background servers yourself.
