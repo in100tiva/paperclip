@@ -111,7 +111,7 @@ Fases 17 e 18 executam em sequência. Fases 19 e 20 são paralelizáveis (ambas 
 | Fase | Milestone | Planos Completos | Status | Concluída |
 |------|-----------|------------------|--------|-----------|
 | 17. Fundação dos Agentes | v1.3 | 3/3 | Complete    | 2026-04-28 |
-| 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/3 | In progress | - |
+| 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/3 | Complete    | 2026-04-28 |
 | 19. Pesquisadores Paralelos e QA | v1.3 | 0/? | Not started | - |
 | 20. Agentes Supabase | v1.3 | 0/? | Not started | - |
 | 21. Integração Notion e Gate de Produção | v1.3 | 0/? | Not started | - |
