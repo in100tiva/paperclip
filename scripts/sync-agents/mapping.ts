@@ -1,16 +1,16 @@
 import type { AgentMapping, SkillMapping } from './types.js';
 
 /**
- * Canonical mapping of all 18 framework agents in `.claude/agents/*.md`
+ * Canonical mapping of all 25 framework agents in `.claude/agents/*.md`
  * to their paperclip employee identity in the in100tiva company.
  *
  * Decisions captured in `.planning/phases/12-mapping-schema-decisions/12-CONTEXT.md`:
  * - 4 Heads = existing agents (planner / executor / verifier / user-profiler).
- * - 14 specialists distributed: architecture=8, engineering=3, quality=3, analytics=0.
- * - Concurrency: architecture=serial, engineering=parallel, quality=serial_gate, analytics=parallel.
+ * - 21 specialists distributed: architecture=8, engineering=7, quality=5, analytics=1.
+ * - Concurrency: architecture=serial, engineering=mixed, quality=mixed, analytics=parallel.
  * - The pre-existing CEO (id `d64a9f21-...`) is NOT in this list and must not be touched by sync.
  *
- * Total: 4 Heads + 14 specialists = 18 entries (matches `ls .claude/agents/`).
+ * Total: 4 Heads + 21 specialists = 25 entries (18 from v1.2 + 7 from v1.3 maintenance pipeline).
  */
 export const AGENT_MAPPING: AgentMapping[] = [
   // ============================================================
@@ -117,7 +117,8 @@ export const AGENT_MAPPING: AgentMapping[] = [
   },
 
   // ============================================================
-  // ENGINEERING (Head: executor) — 1 head + 3 specialists, parallel
+  // ENGINEERING (Head: executor) — 1 head + 7 specialists
+  // (mixed policies — orchestrator-maintenance manages 3 sub-specialists)
   // ============================================================
   {
     slug: 'executor',
@@ -163,9 +164,53 @@ export const AGENT_MAPPING: AgentMapping[] = [
     parallelismPolicy: 'parallel',
     desiredSkillKeys: ['design-guide'],
   },
+  {
+    slug: 'orchestrator-maintenance',
+    name: 'Orchestrator Maintenance',
+    title: 'Engineering Specialist',
+    role: 'specialist',
+    department: 'engineering',
+    isHead: false,
+    managerSlug: 'executor',
+    parallelismPolicy: 'serial',
+    desiredSkillKeys: [],
+  },
+  {
+    slug: 'research-doc',
+    name: 'Research Doc',
+    title: 'Engineering Specialist',
+    role: 'specialist',
+    department: 'engineering',
+    isHead: false,
+    managerSlug: 'orchestrator-maintenance',
+    parallelismPolicy: 'parallel',
+    desiredSkillKeys: [],
+  },
+  {
+    slug: 'code-analyzer',
+    name: 'Code Analyzer',
+    title: 'Engineering Specialist',
+    role: 'specialist',
+    department: 'engineering',
+    isHead: false,
+    managerSlug: 'orchestrator-maintenance',
+    parallelismPolicy: 'parallel',
+    desiredSkillKeys: [],
+  },
+  {
+    slug: 'supabase-executor',
+    name: 'Supabase Executor',
+    title: 'Engineering Specialist',
+    role: 'specialist',
+    department: 'engineering',
+    isHead: false,
+    managerSlug: 'orchestrator-maintenance',
+    parallelismPolicy: 'serial',
+    desiredSkillKeys: [],
+  },
 
   // ============================================================
-  // QUALITY (Head: verifier) — 1 head + 3 specialists, serial_gate
+  // QUALITY (Head: verifier) — 1 head + 5 specialists (mixed policies)
   // ============================================================
   {
     slug: 'verifier',
@@ -211,9 +256,31 @@ export const AGENT_MAPPING: AgentMapping[] = [
     parallelismPolicy: 'serial_gate',
     desiredSkillKeys: ['design-guide'],
   },
+  {
+    slug: 'qa-loop',
+    name: 'QA Loop',
+    title: 'Quality Specialist',
+    role: 'specialist',
+    department: 'quality',
+    isHead: false,
+    managerSlug: 'verifier',
+    parallelismPolicy: 'serial_gate',
+    desiredSkillKeys: [],
+  },
+  {
+    slug: 'supabase-diagnostician',
+    name: 'Supabase Diagnostician',
+    title: 'Quality Specialist',
+    role: 'specialist',
+    department: 'quality',
+    isHead: false,
+    managerSlug: 'verifier',
+    parallelismPolicy: 'parallel',
+    desiredSkillKeys: [],
+  },
 
   // ============================================================
-  // ANALYTICS (Head: user-profiler) — solo, parallel
+  // ANALYTICS (Head: user-profiler) — 1 head + 1 specialist (doc-before-after), parallel
   // ============================================================
   {
     slug: 'user-profiler',
@@ -225,6 +292,17 @@ export const AGENT_MAPPING: AgentMapping[] = [
     managerSlug: 'ceo',
     parallelismPolicy: 'parallel',
     desiredSkillKeys: ['paperclip'],
+  },
+  {
+    slug: 'doc-before-after',
+    name: 'Doc Before After',
+    title: 'Analytics Specialist',
+    role: 'specialist',
+    department: 'analytics',
+    isHead: false,
+    managerSlug: 'user-profiler',
+    parallelismPolicy: 'parallel',
+    desiredSkillKeys: [],
   },
 ];
 
@@ -302,29 +380,35 @@ export function validateMapping(): void {
     }
   }
 
-  if (AGENT_MAPPING.length !== 18) {
-    throw new Error(`Expected 18 entries, got ${AGENT_MAPPING.length}`);
+  if (AGENT_MAPPING.length !== 25) {
+    throw new Error(`Expected 25 entries, got ${AGENT_MAPPING.length}`);
   }
   if (headCount !== 4) {
     throw new Error(`Expected 4 Heads, got ${headCount}`);
   }
-  if (specialistCount !== 14) {
-    throw new Error(`Expected 14 specialists, got ${specialistCount}`);
+  if (specialistCount !== 21) {
+    throw new Error(`Expected 21 specialists, got ${specialistCount}`);
   }
 
-  // Specialists must report to a Head in the same department.
+  // Specialists must report to a Head in the same department,
+  // OR to orchestrator-maintenance (the single specialist-manager allowed in v1.3).
+  const ALLOWED_SPECIALIST_MANAGER = 'orchestrator-maintenance';
   for (const entry of AGENT_MAPPING) {
     if (entry.isHead) continue;
-    const head = AGENT_MAPPING.find((e) => e.slug === entry.managerSlug);
-    if (!head) {
+    const manager = AGENT_MAPPING.find((e) => e.slug === entry.managerSlug);
+    if (!manager) {
       throw new Error(`Specialist ${entry.slug} has unknown managerSlug ${entry.managerSlug}`);
     }
-    if (!head.isHead) {
-      throw new Error(`Specialist ${entry.slug} reports to non-Head ${head.slug}`);
-    }
-    if (head.department !== entry.department) {
+    const managerIsHead = manager.isHead;
+    const managerIsAllowedSpecialist = manager.slug === ALLOWED_SPECIALIST_MANAGER;
+    if (!managerIsHead && !managerIsAllowedSpecialist) {
       throw new Error(
-        `Specialist ${entry.slug} (${entry.department}) reports to Head in ${head.department}`,
+        `Specialist ${entry.slug} reports to non-Head ${manager.slug} (only Heads or '${ALLOWED_SPECIALIST_MANAGER}' allowed)`,
+      );
+    }
+    if (manager.department !== entry.department) {
+      throw new Error(
+        `Specialist ${entry.slug} (${entry.department}) reports to manager in ${manager.department}`,
       );
     }
   }
