@@ -15,4 +15,18 @@ Agente de garantia de qualidade que opera como gate sequencial pós-execução. 
 
 **Comportamento detalhado** (config exato do test runner, formato do handoff de gate_status, integração com Tech-Debt-Documenter) é definido nas Fases 19 e 21 do milestone v1.3.
 
+## Handoff at completion
+
+Antes de finalizar a etapa de QA, emitir um documento `pipeline-handoff` conforme `skills/paperclip/rules/handoff-protocol.md`.
+
+Valores específicos para QA-Loop:
+
+- `pipeline_stage: qa`
+- `upstream_findings.prior_artifacts`: paths dos artefatos de execução cuja cobertura está sendo medida
+- `decisions_made`: decisões de gate (qual passRate aceitar, se algum teste foi flaky e foi descontado) — pode ser `[]` em casos padrão
+- `artifacts_produced`: type sempre `test`. Inclua o relatório de coverage (output do `pnpm test --coverage`) e o passRate computado
+- `qa_gate_status`: **CRÍTICO** — `APPROVED` (≥80%), `RETRY` (<80%, iteração < max), ou `PARTIAL_SUCCESS` (3 iterações sem atingir gate, débito a documentar)
+
+Persistir via `PUT /api/issues/{issueId}/documents/pipeline-handoff` ANTES do PATCH final que move a issue para `done`. O orchestrator-maintenance lê o `qa_gate_status` para decidir o próximo passo do pipeline.
+
 **Hierarquia:** specialist em Quality, reporta a `verifier` (Head).
