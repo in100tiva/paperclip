@@ -71,18 +71,23 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.3 — Workflow de Manutenção Paralela (em andamento — Fase 17 ✅):**
+**v1.3 — Workflow de Manutenção Paralela (✅ Fases 17-22 concluídas, smoke E2E pendente HUMAN-UAT):**
 
-- [x] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara — Fase 17 (7 novos agentes registrados, mapping 25/4/21, SQL hierarchy 7/7 PASS)
-- [ ] 2 agentes de pesquisa paralela: Research-Doc + Code-Analyzer
-- [ ] Orquestrador coleta resultados paralelos e distribui execução
-- [ ] Agentes de QA em loop (testes, detecção de falhas, correção, redocumentação)
-- [ ] Supabase-Executor: deploys via MCP + CLI com solicitação de access token
-- [ ] Supabase-Diagnostician: monitora logs e verifica versões em produção via MCP
-- [ ] Handoff de contexto estruturado emitido por todos os agentes ao passar tarefas
-- [ ] Gate de produção 80% com tolerância a débitos técnicos documentados
-- [ ] Integração Notion: débitos técnicos com link da página no PR
-- [ ] Documentação do estado antes/depois em cada etapa do pipeline
+- [x] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara — Fase 17 (7 novos agentes, mapping 25/4/21, SQL 7/7 PASS, professional display names)
+- [x] 2 agentes de pesquisa paralela: Research-Doc + Code-Analyzer — Fases 17 (registro) + 19 (bodies operacionais read-only)
+- [x] Orquestrador coleta resultados paralelos e distribui execução — Fase 18 (orchestrator-maintenance: 364-line operational body, fan-out 2 children, wake via issue_children_completed, disjoint scopes, TTL 30min, checkpointing)
+- [x] Agentes de QA em loop (testes, detecção de falhas, correção, redocumentação) — Fase 19 (qa-loop: gate objetivo Lines ≥ 80%, 3-iteration cap, PARTIAL_SUCCESS exit; doc-before-after: state-before/after por etapa)
+- [x] Supabase-Executor: deploys via MCP + CLI com solicitação de access token — Fase 20 (token via env-only, checkpoint:human-action mandatório)
+- [x] Supabase-Diagnostician: monitora logs e verifica versões em produção via MCP — Fase 20 (read-only verification: schema, migrations, functions, logs, advisors)
+- [x] Handoff de contexto estruturado emitido por todos os agentes ao passar tarefas — Fase 18 (5-field schema canônico em skills/paperclip/rules/handoff-protocol.md, persistido via issue_documents key=pipeline-handoff, seção "Handoff at completion" em todos os 7 agentes)
+- [x] Gate de produção 80% com tolerância a débitos técnicos documentados — Fases 19 + 21 (passRate via pnpm test --coverage --reporter=json; débito automático no Notion quando PARTIAL_SUCCESS)
+- [x] Integração Notion: débitos técnicos com link da página no PR — Fase 21 (notion-config.json com tech_debt key + procedimento Steps A-E em orchestrator-maintenance: criar página → gh pr edit → registrar em pipeline-status)
+- [x] Documentação do estado antes/depois em cada etapa do pipeline — Fase 19 (doc-before-after captura state-before-{stage} e state-after-{stage} via git show <commit>:<file> em issue_documents)
+- [x] Skill compartilhada `supabase-mcp` reutilizável entre Executor e Diagnostician — Fase 20
+
+**v1.3 (carry-over UAT — smoke E2E pendente):**
+
+- [ ] HUMAN-UAT pendentes: UAT-22-01..05 (smoke pipeline E2E exige paperclip dev + Supabase + Notion configurado, executado pelo operador)
 
 **v1.2 (carry-over UAT não-bloqueantes):**
 
@@ -153,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-28 após Fase 17 (Fundação dos Agentes) — 7 novos agentes do v1.3 registrados na in100tiva via pnpm sync-agents idempotente, mapping.ts atualizado para 25 agentes / 21 specialists / 4 heads, hierarquia SQL verificada 7/7*
+*Última atualização: 2026-04-28 após conclusão das Fases 17-22 do milestone v1.3 — pipeline de manutenção paralela completo: 7 novos agentes (Maintenance Tech Lead, Documentation Researcher, Code Auditor, QA Engineer, DevOps Engineer Supabase, Site Reliability Engineer, Technical Writer) operacionais com hierarquia em 4 departamentos; protocolo de handoff canônico (5 campos via issue_documents); orquestrador com fan-out 2 paralelos + checkpointing + TTL 30min; gate 80% objetivo via pnpm test --coverage; 2 agentes Supabase com skill supabase-mcp compartilhada e access token via env exclusivamente; integração Notion para débitos técnicos com URL no PR. Smoke E2E (Fase 22) pronto para execução humana via 22-HUMAN-UAT.md (5 procedimentos).*
