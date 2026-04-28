@@ -71,9 +71,9 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.3 — Workflow de Manutenção Paralela (em andamento):**
+**v1.3 — Workflow de Manutenção Paralela (em andamento — Fase 17 ✅):**
 
-- [ ] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara
+- [x] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara — Fase 17 (7 novos agentes registrados, mapping 25/4/21, SQL hierarchy 7/7 PASS)
 - [ ] 2 agentes de pesquisa paralela: Research-Doc + Code-Analyzer
 - [ ] Orquestrador coleta resultados paralelos e distribui execução
 - [ ] Agentes de QA em loop (testes, detecção de falhas, correção, redocumentação)
@@ -153,4 +153,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-28 ao iniciar milestone v1.3 (Workflow de Manutenção Paralela) — escopo: pipeline de manutenção paralela com orquestrador, 2 agentes Supabase especializados, handoff obrigatório entre agentes, gate 80% e Notion para débitos técnicos*
+*Última atualização: 2026-04-28 após Fase 17 (Fundação dos Agentes) — 7 novos agentes do v1.3 registrados na in100tiva via pnpm sync-agents idempotente, mapping.ts atualizado para 25 agentes / 21 specialists / 4 heads, hierarquia SQL verificada 7/7*
