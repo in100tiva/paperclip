@@ -50,7 +50,10 @@ Redesenhar a hierarquia da in100tiva para suportar um pipeline de manutenção r
   3. Após Research-Doc e Code-Analyzer completarem, orquestrador acorda automaticamente via evento `issue_children_completed` sem polling manual
   4. Orquestrador distribui correções com escopos de arquivo disjuntos para agentes de execução, prevenindo colisão de edição simultânea
   5. Documento `pipeline-status` em `issue_documents` é atualizado após cada etapa do pipeline e persiste o estado mesmo após interrupção e swap de conta Claude
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 18-01-handoff-protocol-skill-rule-PLAN.md — Cria rules/handoff-protocol.md com schema canônico e atualiza SKILL.md
+  - [ ] 18-02-orchestrator-maintenance-instructions-PLAN.md — Substitui corpo do orchestrator-maintenance.md por instruções operacionais completas
+  - [ ] 18-03-emit-handoff-in-six-agents-PLAN.md — Adiciona seção Handoff at completion aos 6 agentes do pipeline
 
 ### Phase 19: Pesquisadores Paralelos e QA
 **Goal**: Research-Doc e Code-Analyzer executam simultaneamente como child issues read-only, QA-Loop mede cobertura com critério de parada explícito e aciona documentação de débito quando o gate não é atingido — sem loops infinitos, sem subjetividade no gate.
@@ -108,7 +111,7 @@ Fases 17 e 18 executam em sequência. Fases 19 e 20 são paralelizáveis (ambas 
 | Fase | Milestone | Planos Completos | Status | Concluída |
 |------|-----------|------------------|--------|-----------|
 | 17. Fundação dos Agentes | v1.3 | 3/3 | Complete    | 2026-04-28 |
-| 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/? | Not started | - |
+| 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/3 | In progress | - |
 | 19. Pesquisadores Paralelos e QA | v1.3 | 0/? | Not started | - |
 | 20. Agentes Supabase | v1.3 | 0/? | Not started | - |
 | 21. Integração Notion e Gate de Produção | v1.3 | 0/? | Not started | - |
