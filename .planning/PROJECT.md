@@ -2,25 +2,26 @@
 
 ## Estado Atual
 
-**Versão entregue:** v1.1 — Internacionalização pt-BR (2026-04-27)
-**Milestone ativo:** v1.2 — in100tiva como Software House (iniciado 2026-04-27)
+**Versão entregue:** v1.2 — in100tiva como Software House (2026-04-27)
+**Milestone ativo:** v1.3 — Workflow de Manutenção Paralela (iniciado 2026-04-28)
 
-Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code, multi-company isolation, cost attribution e UI/agentes/skills 100% traduzidos pt-BR. v1.1 entregou 26 requisitos (16 UATs empíricos pendentes, não-bloqueantes).
+Fork hard do paperclip operacional sobre Supabase compartilhado, com pool multi-account Claude Code, multi-company isolation, cost attribution, UI/agentes/skills 100% traduzidos pt-BR e 18 agentes + 3 skills importados na in100tiva com hierarquia software-house.
 
-**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.{0,1}-*.md` para arquivos detalhados.
+**Histórico:** Ver `.planning/MILESTONES.md` para resumo completo e `.planning/milestones/v1.{0,1,2}-*.md` para arquivos detalhados.
 
-## Milestone Atual: v1.2 in100tiva como Software House
+## Milestone Atual: v1.3 Workflow de Manutenção Paralela
 
-**Objetivo:** Importar (one-shot) os 18 agentes do framework `.claude/agents/` e as 3 skills `.claude/skills/` para a empresa `in100tiva` no paperclip, organizados como uma software house real — Architecture (gate sequencial) → Engineering (parallel) → Quality (gate pós-eng) — para visualização no organograma e atribuição de issues, mantendo o framework Claude Code rodando local como hoje (paperclip é vitrine/registro).
+**Objetivo:** Redesenhar a hierarquia da in100tiva no Paperclip para suportar um pipeline de manutenção real com paralelismo — pesquisa paralela (doc/repo + análise de código) → orquestrador distribui execução → QA em loop → gate 80% → PR com débito técnico documentado no Notion — com 2 agentes Supabase especializados (executor + diagnosticador) e handoff de contexto obrigatório entre todos os agentes.
 
 **Funcionalidades alvo:**
-- Script idempotente de importação (`pnpm sync-agents` ou equivalente) que cria os 17 novos agentes + 3 skills na in100tiva com hierarquia, role, descrição, adapterType `claude_local`, prompts derivados dos `.md`
-- Hierarquia software-house: CEO → 4 Heads (Architecture, Engineering, Quality, Analytics) → especialistas
-- Metadado `parallelism_policy` em cada agente (`serial` para Architecture/DB; `parallel` para Engineering; `serial-gate` para Quality) — UI mostra badge
-- 3 skills importadas como CompanySkill (`sourceType: local_path` apontando pra `.claude/skills/*`)
-- Mapeamento skill→agente por cargo: `paperclip` (governança em todos os Heads), `company-creator` (CEO), `design-guide` (UI-researcher + UI-checker + UI-auditor)
-- Idempotente: re-rodar não duplica nem quebra estado existente
-- Documentação `AGENTS-IMPORT.md` explicando reimportação após editar arquivos do framework
+- Reestruturação do org-chart da in100tiva: 1 orquestrador central distribuindo tarefas com hierarquia clara e paralelismo controlado
+- 2 agentes de pesquisa paralela: Research-Doc (docs oficiais / repo GitHub) + Code-Analyzer (análise de código para encontrar falhas)
+- Orquestrador coleta os 2 resultados e distribui correções para agentes de execução
+- Agentes de QA: criam/executam testes, detectam falhas, devolvem para correção em loop até gate 80%
+- 2 agentes Supabase especializados (CRÍTICO): Supabase-Executor (deploys via MCP + CLI, solicita access token) + Supabase-Diagnostician (monitora logs, verifica versões em produção)
+- Agentes de documentação: registram estado antes/depois em cada etapa do pipeline
+- Handoff de contexto obrigatório: todo agente emite handoff estruturado ao passar tarefa para o próximo
+- Gate de produção 80%: débitos técnicos tolerados apenas se documentados no Notion com link no PR
 
 ---
 
@@ -70,15 +71,22 @@ A equipe inteira opera sobre um único estado compartilhado (Supabase remoto), e
 
 ### Ativos
 
-**v1.2 — in100tiva como Software House (em andamento):**
+**v1.3 — Workflow de Manutenção Paralela (em andamento):**
 
-- [ ] Importar 17 agentes (planner, executor, debugger, etc.) na in100tiva via script idempotente
-- [ ] Hierarquia software-house: CEO → Heads (Architecture, Engineering, Quality, Analytics) → especialistas
-- [ ] Metadado `parallelism_policy` (`serial` / `parallel` / `serial-gate`) refletido na UI do paperclip
-- [ ] Importar 3 skills (`paperclip`, `company-creator`, `design-guide`) como CompanySkill local_path
-- [ ] Mapeamento skill→agente por cargo (paperclip nos Heads; company-creator no CEO; design-guide no time UI)
-- [ ] Re-execução do script é idempotente (não duplica, não quebra estado existente)
-- [ ] Documentação `AGENTS-IMPORT.md` cobrindo reimportação
+- [ ] Reestruturação do org-chart da in100tiva com orquestrador central e hierarquia clara
+- [ ] 2 agentes de pesquisa paralela: Research-Doc + Code-Analyzer
+- [ ] Orquestrador coleta resultados paralelos e distribui execução
+- [ ] Agentes de QA em loop (testes, detecção de falhas, correção, redocumentação)
+- [ ] Supabase-Executor: deploys via MCP + CLI com solicitação de access token
+- [ ] Supabase-Diagnostician: monitora logs e verifica versões em produção via MCP
+- [ ] Handoff de contexto estruturado emitido por todos os agentes ao passar tarefas
+- [ ] Gate de produção 80% com tolerância a débitos técnicos documentados
+- [ ] Integração Notion: débitos técnicos com link da página no PR
+- [ ] Documentação do estado antes/depois em cada etapa do pipeline
+
+**v1.2 (carry-over UAT não-bloqueantes):**
+
+- [ ] HUMAN-UAT pendentes: UAT-15-01..02, UAT-16-01..05 (convergência via uso real)
 
 **v1.1 (carry-over não-bloqueantes):**
 
@@ -145,4 +153,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Última atualização: 2026-04-27 ao iniciar milestone v1.2 (in100tiva como Software House) — escopo: importar 18 agentes + 3 skills do framework como funcionários da in100tiva com hierarquia software-house e parallelism_policy*
+*Última atualização: 2026-04-28 ao iniciar milestone v1.3 (Workflow de Manutenção Paralela) — escopo: pipeline de manutenção paralela com orquestrador, 2 agentes Supabase especializados, handoff obrigatório entre agentes, gate 80% e Notion para débitos técnicos*

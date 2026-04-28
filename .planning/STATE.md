@@ -1,11 +1,11 @@
 ---
 state_version: 1.0
-milestone: v1.2
-milestone_name: in100tiva como Software House
+milestone: v1.3
+milestone_name: Workflow de Manutenção Paralela
 status: planning
-last_updated: "2026-04-27T06:00:00.000Z"
+last_updated: "2026-04-28T00:00:00.000Z"
 progress:
-  total_phases: 5
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -15,17 +15,17 @@ progress:
 
 ## Referência do Projeto
 
-Ver: .planning/PROJECT.md (atualizado em 2026-04-27)
+Ver: .planning/PROJECT.md (atualizado em 2026-04-28)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Milestone v1.2 (in100tiva como Software House) — roadmap criado em 2026-04-27 com 5 fases (12-16) cobrindo 17/17 requisitos sem órfãos. Aguardando /planejar-fase 12 (Mapping & Schema Decisions).
+**Foco atual:** Milestone v1.3 (Workflow de Manutenção Paralela) — iniciado 2026-04-28, requisitos sendo definidos.
 
 ## Posição Atual
 
-Fase: 12 de 16 (Mapping & Schema Decisions) — **PENDING** (aguardando /planejar-fase 12)
-Plano: — (aguardando decomposição em planos)
-Status: Roadmap criado, pronto para planejar primeira fase
-Última atividade: 2026-04-27 — Roadmap v1.2 escrito por /roadmap. 5 fases derivadas dos 17 requisitos: Fase 12 Mapping & Schema (4 reqs MAP-01..04), Fase 13 Import Script Core + Hierarchy (5 reqs IMPORT-01/02/05/06 + HIER-01), Fase 14 Skills Import & Attachment (5 reqs IMPORT-03/04 + SKILL-01..03), Fase 15 UI Surfacing (2 reqs HIER-02/03), Fase 16 Docs & Idempotency UAT (1 req DOCS-01). Cobertura 17/17 ✓ zero órfãos. Numeração continua de v1.1 (terminou em fase 11). REQUIREMENTS.md tabela de Rastreabilidade preenchida com fases. Próxima ação: /planejar-fase 12.
+Fase: Não iniciada (definindo requisitos)
+Plano: —
+Status: Definindo requisitos para milestone v1.3
+Última atividade: 2026-04-28 — Milestone v1.3 iniciado (Workflow de Manutenção Paralela)
 
 ## Posição Anterior
 
