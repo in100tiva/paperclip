@@ -4,106 +4,119 @@
 
 - ✅ **v1.0 Fork + Multi-Account** — Fases 1-6 (entregue 2026-04-26, 45/45 requisitos, arquivado em `.planning/milestones/v1.0-*`)
 - ✅ **v1.1 Internacionalização pt-BR** — Fases 7-11 (entregue 2026-04-27, 26/26 requisitos, arquivado em `.planning/milestones/v1.1-*`)
-- 🚧 **v1.2 in100tiva como Software House** — Fases 12-16 (em andamento, 17 requisitos)
+- ✅ **v1.2 in100tiva como Software House** — Fases 12-16 (entregue 2026-04-27, 17/17 requisitos, arquivado em `.planning/milestones/v1.2-*`)
+- 🚧 **v1.3 Workflow de Manutenção Paralela** — Fases 17-22 (em andamento, 31 requisitos)
 
 ## Visão Geral
 
-Importar (one-shot) os 18 agentes do framework `.claude/agents/` e as 3 skills `.claude/skills/` para a empresa `in100tiva` no paperclip, organizados como software house real — Architecture (gate sequencial) → Engineering (parallel) → Quality (gate pós-eng) → Analytics — para visualização no organograma e atribuição de issues, mantendo o framework Claude Code rodando local como hoje (paperclip é vitrine/registro). CEO existente (`d64a9f21-3ad0-4ca5-b7e8-58dbefb55b75`) e issue INTA-1 preservados intactos.
+Redesenhar a hierarquia da in100tiva para suportar um pipeline de manutenção real com paralelismo — 7 novos agentes especializados (orchestrator-maintenance, research-doc, code-analyzer, qa-loop, supabase-executor, supabase-diagnostician, doc-before-after) coordenando pesquisa simultânea (doc/repo + análise de código), orquestrador distribuindo execução com escopos disjuntos, QA em loop até gate 80%, 2 agentes Supabase especializados para deploy e diagnóstico, e débitos técnicos documentados no Notion com link no PR — com handoff de contexto estruturado obrigatório entre todos os agentes.
 
 ## Fases
 
 **Numeração de Fases:**
-- Fases inteiras (12, 13, ...): Trabalho planejado do milestone v1.2 (continua de v1.1 que terminou em fase 11)
-- Fases decimais (12.1, 12.2): Inserções urgentes (marcadas com INSERIDA)
+- Fases inteiras (17, 18, ...): Trabalho planejado do milestone v1.3 (continua de v1.2 que terminou em fase 16)
+- Fases decimais (17.1, 17.2): Inserções urgentes (marcadas com INSERIDA)
 
-- [x] **Phase 12: Mapping & Schema Decisions** - Define mapeamento canônico frontmatter→agents, atribui role/dept/parallelism_policy a cada agente, decide schema (coluna vs metadata JSON) e quem são os 4 Heads (completed 2026-04-27)
-- [x] **Phase 13: Import Script Core (Agentes + Hierarquia)** - CLI idempotente `pnpm sync-agents` que cria/atualiza os 18 agentes na in100tiva com reports_to apontando para Heads (completed 2026-04-27)
-- [x] **Phase 14: Skills Import & Attachment por Cargo** - Importa as 3 skills como CompanySkill local_path e anexa-as a agentes conforme mapeamento (paperclip→CEO+Heads+Architecture; company-creator→CEO; design-guide→UI roles) (completed 2026-04-27)
-- [x] **Phase 15: UI Surfacing & Hierarchy Validation** - Badge `parallelism_policy` no perfil do agente e organograma renderizando os 18 funcionários sob hierarquia correta (complete-with-pending-UAT 2026-04-27 — UAT-15-01..02)
-- [x] **Phase 16: Documentação & Idempotency UAT** - `AGENTS-IMPORT.md` operacional + procedimento HUMAN-UAT validando re-execução não duplica nem corrompe estado (complete-with-pending-UAT 2026-04-27 — UAT-16-01..05)
+- [ ] **Phase 17: Fundação dos Agentes** - Registra os 7 novos agentes em `mapping.ts` com `parallelismPolicy` e `department` corretos, atualiza invariantes 18→25 e sincroniza na in100tiva via `pnpm sync-agents`
+- [ ] **Phase 18: Protocolo de Handoff e Orquestrador** - Define o schema canônico `pipeline-handoff`, implementa o Orchestrator-Maintenance com criação de child issues paralelas, checkpointing por etapa e TTL para pesquisadores travados
+- [ ] **Phase 19: Pesquisadores Paralelos e QA** - Cria Research-Doc (read-only docs/repos), Code-Analyzer (read-only análise de falhas), QA-Loop (gate 80% via `pnpm test --coverage`, máx 3 iterações) e Doc-Before-After (estado antes/depois por etapa)
+- [ ] **Phase 20: Agentes Supabase** - Cria Supabase-Executor (deploys via MCP + CLI, approval gate para access token) e Supabase-Diagnostician (diagnóstico read-only pós-deploy), com skill `supabase-mcp` compartilhada
+- [ ] **Phase 21: Integração Notion e Gate de Produção** - Configura `notion-config.json` com database de débitos, cria página automática de débito técnico quando `passRate < 80%` com campos obrigatórios e link no PR
+- [ ] **Phase 22: Smoke e Validação End-to-End** - Executa o pipeline completo com uma issue real, valida paralelismo Research-Doc/Code-Analyzer, loop QA, gate 80%, handoffs estruturados e rastreabilidade Notion
 
 ## Detalhes das Fases
 
-### Phase 12: Mapping & Schema Decisions
-**Goal**: Produzir os artefatos declarativos e decisões de schema necessários para o script de importação rodar — sem decisões pendentes ao iniciar Phase 13.
-**Depends on**: Nada (primeira fase do milestone)
-**Requirements**: MAP-01, MAP-02, MAP-03, MAP-04
+### Phase 17: Fundação dos Agentes
+**Goal**: Os 7 novos agentes existem na in100tiva com hierarquia correta, políticas de paralelismo adequadas e invariantes do mapping atualizadas — base sobre a qual as fases seguintes definem comportamentos.
+**Depends on**: Nada (primeira fase do milestone v1.3; continua a numeração de v1.2)
+**Requirements**: AGENT-01, AGENT-02, AGENT-03, AGENT-04
 **Success Criteria** (o que deve ser VERDADEIRO):
-  1. Operador consegue abrir um arquivo (ex.: `.planning/phases/12-*/AGENT-MAPPING.md` ou `scripts/sync-agents/mapping.ts`) e ler, para cada um dos 18 cargos (CEO + 4 Heads + 13 specialists), os campos canônicos: `name`, `role`, `dept` (Architecture/Engineering/Quality/Analytics), `parallelism_policy` (`serial`/`parallel`/`serial-gate`), agente upstream `.md` (ou `synthetic` para Heads inventados), e skills atribuídas
-  2. Decisão sobre persistência de `parallelism_policy` está registrada explicitamente (coluna nova em `agents` via migration vs campo em `runtime_config`/`adapter_config` JSON) com justificativa e plano de fallback se schema mudar mid-milestone
-  3. Decisão sobre identidade dos 4 Heads está registrada (sintéticos novos vs reusar agentes existentes como `planner`/`executor`/`verifier`/`user-profiler`) com nomes/slugs definitivos
-  4. Mapping skill→cargo está em arquivo versionado consultável pelo script (paperclip→CEO+4 Heads+todos Architecture; company-creator→apenas CEO; design-guide→ui-researcher+ui-checker+ui-auditor)
-  5. Verificação confirmada de que `manager_agent_id` já existe na tabela `agents` (ou planejada migration se ausente)
-**Plans**: A definir
+  1. Desenvolvedor abre `scripts/sync-agents/mapping.ts` e encontra 7 novas entradas (orchestrator-maintenance, research-doc, code-analyzer, qa-loop, supabase-executor, supabase-diagnostician, doc-before-after) com `parallelismPolicy` e `department` corretos conforme tabela de arquitetura
+  2. `validateMapping()` executa sem lançar erro de invariante com o novo total de 25 agentes e 21 specialists
+  3. `pnpm sync-agents` termina exit 0 reportando 7 created (primeira execução) e 0 created / 7 unchanged (re-execução — idempotência)
+  4. Query SQL confirma `reports_to` correto para cada novo agente: orchestrator-maintenance → executor Head; research-doc e code-analyzer → orchestrator-maintenance; qa-loop → verifier Head; supabase-executor → orchestrator-maintenance; supabase-diagnostician → verifier Head; doc-before-after → user-profiler Head
+**Plans**: TBD
 
-### Phase 13: Import Script Core (Agentes + Hierarquia)
-**Goal**: Operador roda um único comando e os 17 agentes não-CEO aparecem na in100tiva com hierarquia correta (4 Heads → CEO; 13 specialists → respectivos Heads), sem tocar no CEO existente nem na issue INTA-1.
-**Depends on**: Phase 12
-**Requirements**: IMPORT-01, IMPORT-02, IMPORT-05, IMPORT-06, HIER-01
+### Phase 18: Protocolo de Handoff e Orquestrador
+**Goal**: Todo agente do pipeline emite handoff estruturado ao terminar uma etapa, e o Orchestrator-Maintenance coordena pesquisa paralela com checkpointing e proteção contra travamento — pipeline recuperável após swap de conta Claude.
+**Depends on**: Phase 17
+**Requirements**: HAND-01, HAND-02, HAND-03, HAND-04, ORCH-01, ORCH-02, ORCH-03, ORCH-04, ORCH-05
 **Success Criteria** (o que deve ser VERDADEIRO):
-  1. Operador roda `pnpm sync-agents` (ou comando equivalente) com companyId resolvido por env/flag e o script termina exit 0 com relatório textual listando criados/atualizados/inalterados/pulados
-  2. Após primeira execução, query SQL `SELECT count(*) FROM agents WHERE company_id = '4b0a1c03-b502-4f28-acfd-dfd646cd5cf6'` retorna 18 (1 CEO preexistente + 4 Heads + 13 specialists)
-  3. Query SQL confirma `manager_agent_id` populado: cada specialist aponta para seu Head, cada Head aponta para o CEO existente (`d64a9f21-3ad0-4ca5-b7e8-58dbefb55b75`); CEO em si tem `manager_agent_id IS NULL`
-  4. Issue INTA-1 e o agente CEO existente permanecem intactos (campos byte-for-byte iguais ao pré-execução; verificável via diff SQL)
-  5. Re-execução imediata do script (sem mudanças em `.claude/agents/*.md`) reporta 0 created, 0 updated, 18 unchanged — idempotência preservada
-  6. Script falha cedo com mensagem acionável quando company não existe, prompt do agente está malformado, ou env vars críticas estão ausentes (validável via dry-run com input quebrado)
-**Plans**: A definir
+  1. Desenvolvedor consulta `issue_documents` de qualquer issue processada pelo pipeline e encontra documento com key `pipeline-handoff` contendo os campos canônicos: `pipeline_stage`, `upstream_findings`, `decisions_made`, `artifacts_produced`, `qa_gate_status`
+  2. Orchestrator-Maintenance cria exatamente 2 child issues com `parallelismPolicy: parallel` (Research-Doc e Code-Analyzer) ao iniciar uma tarefa de manutenção
+  3. Após Research-Doc e Code-Analyzer completarem, orquestrador acorda automaticamente via evento `issue_children_completed` sem polling manual
+  4. Orquestrador distribui correções com escopos de arquivo disjuntos para agentes de execução, prevenindo colisão de edição simultânea
+  5. Documento `pipeline-status` em `issue_documents` é atualizado após cada etapa do pipeline e persiste o estado mesmo após interrupção e swap de conta Claude
+**Plans**: TBD
 
-### Phase 14: Skills Import & Attachment por Cargo
-**Goal**: As 3 skills do framework aparecem como CompanySkill na in100tiva com `sourceType: local_path`, e cada agente tem anexada apenas a(s) skill(s) que correspondem ao seu cargo.
-**Depends on**: Phase 13
-**Requirements**: IMPORT-03, IMPORT-04, SKILL-01, SKILL-02, SKILL-03
+### Phase 19: Pesquisadores Paralelos e QA
+**Goal**: Research-Doc e Code-Analyzer executam simultaneamente como child issues read-only, QA-Loop mede cobertura com critério de parada explícito e aciona documentação de débito quando o gate não é atingido — sem loops infinitos, sem subjetividade no gate.
+**Depends on**: Phase 18
+**Requirements**: PIPE-01, PIPE-02, PIPE-03, PIPE-04, PIPE-05, PIPE-06, PIPE-07
 **Success Criteria** (o que deve ser VERDADEIRO):
-  1. Após executar o script estendido, query na tabela `company_skills` (ou equivalente) retorna 3 entries para a in100tiva: `paperclip`, `company-creator`, `design-guide` — cada uma com `sourceType: local_path` apontando para `.claude/skills/{slug}/`
-  2. Skill `paperclip` aparece anexada ao CEO + 4 Heads + todos os agentes do dept Architecture (verificável via query JOIN agents↔skill-attachments)
-  3. Skill `company-creator` aparece anexada **apenas** ao CEO (zero attachments para outros 17 agentes)
-  4. Skill `design-guide` aparece anexada **apenas** a `ui-researcher`, `ui-checker`, `ui-auditor` (zero attachments para outros 15 agentes)
-  5. Re-execução do script é idempotente sobre skills+attachments (não duplica entries, não cria attachment órfão, não remove attachment válido)
-**Plans**: A definir
-**UI hint**: yes
+  1. Research-Doc e Code-Analyzer aparecem como child issues ativas simultaneamente (parallelismPolicy: parallel) e nenhum dos dois faz escrita em arquivos do repositório
+  2. QA-Loop executa `pnpm test --coverage` e extrai o campo `Lines: X%` do relatório como único critério objetivo do gate — nenhuma avaliação subjetiva
+  3. Se cobertura ≥ 80%, QA-Loop encerra com `APPROVED` no campo `qa_gate_status` do handoff; se < 80%, retorna tarefa para correção
+  4. Após 3 iterações sem atingir 80%, QA-Loop encerra com `PARTIAL_SUCCESS` e passa execução para Doc-Before-After (não entra em loop infinito)
+  5. Doc-Before-After persiste documentos `state-before-{stage}` e `state-after-{stage}` em `issue_documents` para cada etapa do pipeline onde houve modificação
+**Plans**: TBD
 
-### Phase 15: UI Surfacing & Hierarchy Validation
-**Goal**: Operador abre a UI do paperclip e vê a in100tiva renderizada como software house — organograma com 18 funcionários sob hierarquia correta + badge `parallelism_policy` em cada perfil.
-**Depends on**: Phase 14
-**Requirements**: HIER-02, HIER-03
+### Phase 20: Agentes Supabase
+**Goal**: Supabase-Executor realiza deploys de forma auditável com aprovação humana obrigatória antes de qualquer operação destrutiva, e Supabase-Diagnostician verifica o estado pós-deploy em modo estritamente read-only — access token nunca exposto via comentário de issue.
+**Depends on**: Phase 18
+**Requirements**: SUPA-01, SUPA-02, SUPA-03, SUPA-04, SUPA-05, SUPA-06, SUPA-07
 **Success Criteria** (o que deve ser VERDADEIRO):
-  1. Operador navega ao perfil de qualquer agente importado e vê badge textual com a política (ex.: "Serial", "Parallel", "Gate") com cor/estilo consistente
-  2. Operador abre a página de organograma da in100tiva e vê árvore hierárquica com 4 níveis: CEO no topo → 4 Heads (Architecture/Engineering/Quality/Analytics) no segundo nível → 13 specialists distribuídos sob seus respectivos Heads
-  3. Total de 18 nós renderizados (CEO + 4 + 13); zero nós órfãos (sem manager_agent_id resolvido) ou duplicados
-  4. RTL test cobre que o badge renderiza valor correto baseado em prop/data field do agente (probe-component pt-BR + en-US dada as variants do milestone v1.1)
-**Plans**: A definir
-**UI hint**: yes
+  1. Supabase-Executor usa `mcp__supabase__apply_migration` (e ferramentas equivalentes) para deploys, caindo para CLI Supabase (`functions deploy`, etc.) apenas quando MCP não cobre a operação
+  2. Access token é obtido via `company_secrets` ou variável de ambiente `SUPABASE_ACCESS_TOKEN` — as instruções do agente proíbem explicitamente solicitar token via comentário de issue
+  3. Desenvolvedor observa checkpoint `checkpoint:human-action` antes de qualquer deploy: orquestrador para e aguarda confirmação humana explícita antes de continuar
+  4. Supabase-Diagnostician, após deploy, verifica schema version atual e lê logs pós-deploy sem escrever nada no banco
+  5. Quando Supabase-Diagnostician detecta versão errada em produção, reporta ao orquestrador com dados concretos (versão esperada vs encontrada)
+  6. Skill `supabase-mcp` está declarada no frontmatter YAML de ambos Supabase-Executor e Supabase-Diagnostician (reutilização via adapter_config.desiredSkillKeys)
+**Plans**: TBD
 
-### Phase 16: Documentação & Idempotency UAT
-**Goal**: Equipe consegue editar `.claude/agents/*.md` ou `.claude/skills/*` no FS e re-sincronizar com confiança — `AGENTS-IMPORT.md` cobre o ciclo completo e UAT empírico valida a invariante de idempotência sob mutação.
-**Depends on**: Phase 15
-**Requirements**: DOCS-01
+### Phase 21: Integração Notion e Gate de Produção
+**Goal**: Quando o pipeline encerra com passRate < 80%, uma página Notion de débito técnico é criada automaticamente com campos padronizados e o URL da página aparece no corpo do PR correspondente — nenhum débito tolerado sem documentação rastreável.
+**Depends on**: Phases 19, 20
+**Requirements**: NOTI-01, NOTI-02, NOTI-03, NOTI-04
 **Success Criteria** (o que deve ser VERDADEIRO):
-  1. `AGENTS-IMPORT.md` existe na raiz do repo (pt-BR, alinhado com convenção de docs do projeto desde Phase 3) e cobre: pré-requisitos, comando exato, comportamento idempotente, como editar arquivos do framework e re-sincronizar, troubleshooting (ao menos 3 cenários: company missing, prompt malformado, skill path quebrado)
-  2. UAT manual procedure documentado (ex.: `16-HUMAN-UAT.md`): operador edita um campo (ex.: description) em `.claude/agents/planner.md`, roda script, observa report mostrando 1 updated; depois roda novamente sem editar e observa 0 updated
-  3. UAT cobre cenário de skill: operador edita SKILL.md content, roda script, observa skill atualizada (drift resolvido) sem perder attachments existentes
-  4. Documentação roteada para HUMAN-UAT validation (precedente Phases 3-11) com `status: pending` no frontmatter; phase fecha como `complete-with-pending-UAT` se UAT não executado pelo executor Claude
-**Plans**: A definir
+  1. `notion-config.json` contém a chave `tech_debt` apontando para o database ID correto de débitos técnicos no Notion
+  2. Quando o pipeline encerra com `PARTIAL_SUCCESS` (passRate < 80%), uma página Notion é criada automaticamente no database configurado — sem intervenção manual
+  3. A página Notion criada contém os campos obrigatórios: data, nome do pipeline, impacto atual, critério de resolução, estimativa de esforço e lista de arquivos afetados
+  4. O corpo do PR gerado ao final do pipeline inclui o URL da página Notion correspondente quando há débito técnico documentado
+**Plans**: TBD
+
+### Phase 22: Smoke e Validação End-to-End
+**Goal**: O pipeline completo executa de ponta a ponta com uma issue real — paralelismo funcionando, handoffs estruturados em cada etapa, QA-Loop operacional, agentes Supabase com gate de aprovação, e rastreabilidade Notion — validando que todos os componentes das fases 17-21 se integram corretamente.
+**Depends on**: Phases 19, 20, 21
+**Requirements**: (cobertura integrada — todos os 31 requisitos v1.3 já mapeados nas fases 17-21; esta fase é de validação end-to-end)
+**Success Criteria** (o que deve ser VERDADEIRO):
+  1. Desenvolvedor dispara o pipeline via Orchestrator-Maintenance com uma issue real e observa Research-Doc + Code-Analyzer executando simultaneamente como child issues
+  2. Orquestrador acorda após `issue_children_completed`, distribui correções com escopos de arquivo disjuntos e o pipeline progride sem intervenção manual
+  3. QA-Loop executa `pnpm test --coverage` ao final das correções, exibe passRate objetivo e encerra dentro de ≤ 3 iterações (gate atingido ou `PARTIAL_SUCCESS`)
+  4. Cada transição entre agentes gera documento `pipeline-handoff` em `issue_documents` com os 5 campos canônicos preenchidos
+  5. Se passRate < 80%, página Notion de débito técnico está criada e o URL aparece no PR; se ≥ 80%, PR é criado sem link Notion
+**Plans**: TBD
 
 ## Progresso
 
 **Ordem de Execução:**
-As fases executam em ordem numérica: 12 → 13 → 14 → 15 → 16
+Fases 17 e 18 executam em sequência. Fases 19 e 20 são paralelizáveis (ambas dependem de 18, não uma da outra). Fase 21 aguarda 19 e 20. Fase 22 aguarda 19, 20 e 21.
 
 | Fase | Milestone | Planos Completos | Status | Concluída |
 |------|-----------|------------------|--------|-----------|
-| 12. Mapping & Schema Decisions | v1.2 | 1/1 | ✓ Complete | 2026-04-27 |
-| 13. Import Script Core (Agentes + Hierarquia) | v1.2 | 1/1 | ✓ Complete | 2026-04-27 |
-| 14. Skills Import & Attachment por Cargo | v1.2 | 1/1 | ✓ Complete | 2026-04-27 |
-| 15. UI Surfacing & Hierarchy Validation | v1.2 | 1/1 | ✓ Complete (UAT pending) | 2026-04-27 |
-| 16. Documentação & Idempotency UAT | v1.2 | 1/1 | ✓ Complete (UAT pending) | 2026-04-27 |
+| 17. Fundação dos Agentes | v1.3 | 0/? | Not started | - |
+| 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/? | Not started | - |
+| 19. Pesquisadores Paralelos e QA | v1.3 | 0/? | Not started | - |
+| 20. Agentes Supabase | v1.3 | 0/? | Not started | - |
+| 21. Integração Notion e Gate de Produção | v1.3 | 0/? | Not started | - |
+| 22. Smoke e Validação End-to-End | v1.3 | 0/? | Not started | - |
 
 ## Histórico
 
 <details>
-<summary>✅ v1.0 Fork + Multi-Account (Fases 1-6) — ENTREGUE 2026-04-26</summary>
+<summary>✅ v1.2 in100tiva como Software House (Fases 12-16) — ENTREGUE 2026-04-27</summary>
 
-Fork hard do paperclip + Supabase compartilhado + multi-account Claude Code com swap automático em exhaustão de tokens. 6 fases, 32 planos. Detalhes em `.planning/milestones/v1.0-ROADMAP.md`.
+18 agentes do framework `.claude/agents/*.md` + 3 skills importados para a in100tiva como software house real — 4 Heads (planner/executor/verifier/user-profiler) + 14 specialists em 4 departamentos. Mapping canônico TS-typed em `scripts/sync-agents/mapping.ts` com `validateMapping()` runtime-checked. `ParallelismBadge` componente novo wired no AgentDetail header. `AGENTS-IMPORT.md` operacional. 5 fases, 17 requisitos, DB live verificado: 18 agentes criados com hierarquia correta. Detalhes em `.planning/milestones/v1.2-*`.
 
 </details>
 
@@ -111,5 +124,12 @@ Fork hard do paperclip + Supabase compartilhado + multi-account Claude Code com 
 <summary>✅ v1.1 Internacionalização pt-BR (Fases 7-11) — ENTREGUE 2026-04-27</summary>
 
 Tradução completa do paperclip para pt-BR — toggle de idioma persistido por usuário, UI inteira (~1700 chaves), mensagens de agentes (tRef pattern para evitar reconexão WS) e system prompts dos modelos LLM (directive injection + 4 SKILL.pt-BR.md variants). 5 fases, 19 planos. 16 UATs empíricos rastreados em `*-HUMAN-UAT.md`. Detalhes em `.planning/milestones/v1.1-ROADMAP.md`.
+
+</details>
+
+<details>
+<summary>✅ v1.0 Fork + Multi-Account (Fases 1-6) — ENTREGUE 2026-04-26</summary>
+
+Fork hard do paperclip + Supabase compartilhado + multi-account Claude Code com swap automático em exhaustão de tokens. 6 fases, 32 planos. Detalhes em `.planning/milestones/v1.0-ROADMAP.md`.
 
 </details>

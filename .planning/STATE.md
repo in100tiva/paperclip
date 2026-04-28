@@ -3,9 +3,9 @@ state_version: 1.0
 milestone: v1.3
 milestone_name: Workflow de Manutenção Paralela
 status: planning
-last_updated: "2026-04-28T00:00:00.000Z"
+last_updated: "2026-04-28T12:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,14 +18,14 @@ progress:
 Ver: .planning/PROJECT.md (atualizado em 2026-04-28)
 
 **Valor central:** Equipe inteira opera sobre estado compartilhado (Supabase remoto) e agentes nunca param por exhaustão de token — basta trocar conta e continuar.
-**Foco atual:** Milestone v1.3 (Workflow de Manutenção Paralela) — iniciado 2026-04-28, requisitos sendo definidos.
+**Foco atual:** Milestone v1.3 (Workflow de Manutenção Paralela) — iniciado 2026-04-28, roadmap criado (fases 17-22), pronto para /planejar-fase 17.
 
 ## Posição Atual
 
-Fase: Não iniciada (definindo requisitos)
-Plano: —
-Status: Definindo requisitos para milestone v1.3
-Última atividade: 2026-04-28 — Milestone v1.3 iniciado (Workflow de Manutenção Paralela)
+Fase: 17 de 22 (Fundação dos Agentes) — **PENDING** (roadmap criado, planejamento não iniciado)
+Plano: — (aguardando /planejar-fase 17)
+Status: Roadmap v1.3 criado — 6 fases (17-22), 31/31 requisitos mapeados, zero órfãos
+Última atividade: 2026-04-28 — Roadmap v1.3 escrito (fases 17-22); REQUIREMENTS.md rastreabilidade preenchida; STATE.md atualizado
 
 ## Posição Anterior
 
@@ -103,7 +103,7 @@ Status: Milestone v1.0 declared ready com 45/45 requisitos Complete + 7 UATs reg
 
 Última atividade anterior: 2026-04-26 — Plano 05-04 concluído em ~25min (commits `2f7de6f` RED test errors, `27f3ddc` GREEN errors, `6255a21` service+tests) (commits `3d9527f` HUMAN-UAT, `f4fe4c1` FINDINGS): server/src/errors.ts ganha 2 classes (NoAccountsAvailableError com props companyId/agentId, CredentialDirMissingError com props configDirSlug/expectedPath). server/src/services/claude-accounts.ts (515 linhas) implementa factory com 7 métodos: listAccounts, selectActiveAccount (advisory lock pg_advisory_xact_lock(hashtextextended(agentId,0)) dentro de db.transaction; respeita sticky/manual quando live; lazy cooldown sweep; round-robin lastUsedAt ASC; throw NoAccountsAvailableError em pool vazio), rotateOnQuotaExhausted (W1 fix: NÃO emite activity log; retorna RotationOutcome={rotationId, newAccount}; registra PendingRotation in-memory com TTL 10min), recordSwapOutcome (consome rotationId, emite logActivity claude_account_rotated com swapStrategy efetivo + swapStatus, deleta pending entry — idempotência-by-id), resolveCredentialDir (path.join $HOME/.paperclip/claude-accounts/<slug>; throw CredentialDirMissingError em ENOENT/non-dir), recordStepExecution (insert append-only), markCooldownPassed (narrow update). Helpers: computeMaxExhaustion = MAX(windows), defaultExhaustionFallback (rpm/tpm 1min, daily 24h, weekly 7d, 5h, org_tier 5min). server/src/services/claude-accounts.test.ts (554 linhas) com 21 vitest cases cobrindo lock, ordering, sticky-respect, sticky-fallback, cooldown filter, no-accounts error, binding-create, W1 invariants (returns rotationOutcome + does NOT emit logActivity), windows update, MAX recomputation, recordSwapOutcome (emit + unknown id throw + idempotency), resolveCredentialDir (3 paths), recordStepExecution append-only, markCooldownPassed. server/src/errors.test.ts (40 linhas) com 4 cases para os 2 errors. 25/25 tests pass; pnpm tsc --noEmit exit 0. Desvios: Regra 3 path errado no plan frontmatter (server/src/services/errors.ts inexistente → fix: usar server/src/errors.ts existente); Regra 2 idempotency-by-id em recordSwapOutcome + TTL safety valve. MULTI-04 satisfeito.
 
-Progresso: [█████████░] 95% (21/22 plans — milestone v1.1 in progress; Phase 11 2/3)
+Progresso: [░░░░░░░░░░] 0% (0/? plans — milestone v1.3 iniciado; Phase 17 pending; fases v1.2 12-16 todas completas)
 
 ## Métricas de Performance
 

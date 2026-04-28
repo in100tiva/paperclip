@@ -81,47 +81,45 @@
 
 ## Rastreabilidade
 
-Preenchida durante criação do roadmap.
-
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| AGENT-01 | — | Pending |
-| AGENT-02 | — | Pending |
-| AGENT-03 | — | Pending |
-| AGENT-04 | — | Pending |
-| HAND-01 | — | Pending |
-| HAND-02 | — | Pending |
-| HAND-03 | — | Pending |
-| HAND-04 | — | Pending |
-| ORCH-01 | — | Pending |
-| ORCH-02 | — | Pending |
-| ORCH-03 | — | Pending |
-| ORCH-04 | — | Pending |
-| ORCH-05 | — | Pending |
-| PIPE-01 | — | Pending |
-| PIPE-02 | — | Pending |
-| PIPE-03 | — | Pending |
-| PIPE-04 | — | Pending |
-| PIPE-05 | — | Pending |
-| PIPE-06 | — | Pending |
-| PIPE-07 | — | Pending |
-| SUPA-01 | — | Pending |
-| SUPA-02 | — | Pending |
-| SUPA-03 | — | Pending |
-| SUPA-04 | — | Pending |
-| SUPA-05 | — | Pending |
-| SUPA-06 | — | Pending |
-| SUPA-07 | — | Pending |
-| NOTI-01 | — | Pending |
-| NOTI-02 | — | Pending |
-| NOTI-03 | — | Pending |
-| NOTI-04 | — | Pending |
+| AGENT-01 | Phase 17 | Pending |
+| AGENT-02 | Phase 17 | Pending |
+| AGENT-03 | Phase 17 | Pending |
+| AGENT-04 | Phase 17 | Pending |
+| HAND-01 | Phase 18 | Pending |
+| HAND-02 | Phase 18 | Pending |
+| HAND-03 | Phase 18 | Pending |
+| HAND-04 | Phase 18 | Pending |
+| ORCH-01 | Phase 18 | Pending |
+| ORCH-02 | Phase 18 | Pending |
+| ORCH-03 | Phase 18 | Pending |
+| ORCH-04 | Phase 18 | Pending |
+| ORCH-05 | Phase 18 | Pending |
+| PIPE-01 | Phase 19 | Pending |
+| PIPE-02 | Phase 19 | Pending |
+| PIPE-03 | Phase 19 | Pending |
+| PIPE-04 | Phase 19 | Pending |
+| PIPE-05 | Phase 19 | Pending |
+| PIPE-06 | Phase 19 | Pending |
+| PIPE-07 | Phase 19 | Pending |
+| SUPA-01 | Phase 20 | Pending |
+| SUPA-02 | Phase 20 | Pending |
+| SUPA-03 | Phase 20 | Pending |
+| SUPA-04 | Phase 20 | Pending |
+| SUPA-05 | Phase 20 | Pending |
+| SUPA-06 | Phase 20 | Pending |
+| SUPA-07 | Phase 20 | Pending |
+| NOTI-01 | Phase 21 | Pending |
+| NOTI-02 | Phase 21 | Pending |
+| NOTI-03 | Phase 21 | Pending |
+| NOTI-04 | Phase 21 | Pending |
 
 **Cobertura:**
 - Requisitos v1.3: 31 total
-- Mapeados para fases: 0 (aguardando roadmap)
-- Não mapeados: 31 ⚠️
+- Mapeados para fases: 31 ✓
+- Não mapeados: 0 ✓
 
 ---
 *Requisitos definidos: 2026-04-28*
-*Última atualização: 2026-04-28 — definição inicial do milestone v1.3*
+*Última atualização: 2026-04-28 — rastreabilidade preenchida (roadmap v1.3 criado, fases 17-22)*
