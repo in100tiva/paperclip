@@ -197,6 +197,76 @@ Error:     0
 | 2 apply | 7 | 0 | 18 | 0 |
 | 3 idempotent | 0 | 0 | 25 | 0 |
 
-## Verificação SQL de hierarquia (preenchida na Tarefa 3)
+## Verificação SQL de hierarquia
 
-{a preencher}
+### Consulta executada
+
+Consulta executada via Node.js/Drizzle (tsx) contra Supavisor pooler — mesmo mecanismo do `sync.ts` (psql não disponível na máquina, mas o resultado é idêntico por usar a mesma conexão Postgres).
+
+### Resultado da query de hierarquia
+
+```
+=== Hierarchy Query Results ===
+
+slug                     | role        | department  | policy      | reports_to_slug          | reports_to_id
+-------------------------|-------------|-------------|-------------|--------------------------|--------------------------------------
+code-analyzer            | specialist  | engineering | parallel    | orchestrator-maintenance  | d7835a62-e76a-4c21-a9fd-8a0d13046986
+doc-before-after         | specialist  | analytics   | parallel    | user-profiler             | 80a4ad34-2808-4d3e-b2e4-1676f0da7b79
+orchestrator-maintenance | specialist  | engineering | serial      | executor                  | d7af1e4a-dea3-4c64-9a69-98cf881b0c4b
+qa-loop                  | specialist  | quality     | serial_gate | verifier                  | fa6a4fc9-2d13-42d6-8beb-d4585e7a0c5f
+research-doc             | specialist  | engineering | parallel    | orchestrator-maintenance  | d7835a62-e76a-4c21-a9fd-8a0d13046986
+supabase-diagnostician   | specialist  | quality     | parallel    | verifier                  | fa6a4fc9-2d13-42d6-8beb-d4585e7a0c5f
+supabase-executor        | specialist  | engineering | serial      | orchestrator-maintenance  | d7835a62-e76a-4c21-a9fd-8a0d13046986
+```
+
+### Tabela de validação por slug
+
+| slug | reports_to esperado | reports_to real | status |
+|------|---------------------|-----------------|--------|
+| code-analyzer | orchestrator-maintenance | orchestrator-maintenance | ✓ |
+| doc-before-after | user-profiler | user-profiler | ✓ |
+| orchestrator-maintenance | executor | executor | ✓ |
+| qa-loop | verifier | verifier | ✓ |
+| research-doc | orchestrator-maintenance | orchestrator-maintenance | ✓ |
+| supabase-diagnostician | verifier | verifier | ✓ |
+| supabase-executor | orchestrator-maintenance | orchestrator-maintenance | ✓ |
+
+**Resultado: 7/7 PASSED**
+
+### Resultado da query de contagem
+
+```
+=== Count Query Results ===
+
+total_agents | ceo_count | head_count | specialist_count
+-------------|-----------|------------|------------------
+27           | 1         | 4          | 21
+```
+
+### Nota sobre total_agents = 27
+
+O plano previa `total_agents = 26` (1 CEO + 4 Heads + 21 specialists). O banco retorna 27 porque há um agente pré-existente `CTO` (role=`cto`, id=`7f398adc-dd71-4ecd-a086-dc7bdc78d006`, sem `frameworkSlug`) que não estava no mapping v1.2 e não foi tocado pelo sync. Framework agents = 26 (conforme esperado); total da empresa = 27 por conta do CTO legado.
+
+Os invariantes do framework estão corretos:
+- ceo_count = 1 ✓
+- head_count = 4 ✓
+- specialist_count = 21 ✓
+- 7 novos agentes com reports_to correto ✓
+
+### Validações executadas
+
+```
+✓ code-analyzer: reports_to_slug=orchestrator-maintenance (expected orchestrator-maintenance)
+✓ doc-before-after: reports_to_slug=user-profiler (expected user-profiler)
+✓ orchestrator-maintenance: reports_to_slug=executor (expected executor)
+✓ qa-loop: reports_to_slug=verifier (expected verifier)
+✓ research-doc: reports_to_slug=orchestrator-maintenance (expected orchestrator-maintenance)
+✓ supabase-diagnostician: reports_to_slug=verifier (expected verifier)
+✓ supabase-executor: reports_to_slug=orchestrator-maintenance (expected orchestrator-maintenance)
+
+✓ ceo_count = 1 (expected 1)
+✓ head_count = 4 (expected 4)
+✓ specialist_count = 21 (expected 21)
+```
+
+**HIERARCHY-VERIFIED** (7/7 reports_to corretos; discrepância total_agents=27 documentada — CTO pré-existente não gerenciado pelo sync)
