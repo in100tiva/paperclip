@@ -8,8 +8,8 @@
 
 ### Fundação dos Agentes (AGENT)
 
-- [ ] **AGENT-01**: Desenvolvedor pode registrar os 7 novos agentes em `mapping.ts` com `parallelismPolicy` e `department` corretos
-- [ ] **AGENT-02**: `validateMapping()` é atualizado de 18→25 agentes e 14→21 specialists (sem lançar erro de invariante)
+- [x] **AGENT-01**: Desenvolvedor pode registrar os 7 novos agentes em `mapping.ts` com `parallelismPolicy` e `department` corretos
+- [x] **AGENT-02**: `validateMapping()` é atualizado de 18→25 agentes e 14→21 specialists (sem lançar erro de invariante)
 - [ ] **AGENT-03**: `pnpm sync-agents` idempotente registra os 7 novos agentes na in100tiva com hierarquia correta
 - [ ] **AGENT-04**: Cada novo agente tem `reports_to` apontando para o Head correto (executor / verifier / user-profiler)
 
@@ -83,8 +83,8 @@
 
 | Requisito | Fase | Status |
 |-----------|------|--------|
-| AGENT-01 | Phase 17 | Pending |
-| AGENT-02 | Phase 17 | Pending |
+| AGENT-01 | Phase 17 | Complete |
+| AGENT-02 | Phase 17 | Complete |
 | AGENT-03 | Phase 17 | Pending |
 | AGENT-04 | Phase 17 | Pending |
 | HAND-01 | Phase 18 | Pending |

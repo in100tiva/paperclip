@@ -36,7 +36,7 @@ Redesenhar a hierarquia da in100tiva para suportar um pipeline de manutenção r
   3. `pnpm sync-agents` termina exit 0 reportando 7 created (primeira execução) e 0 created / 7 unchanged (re-execução — idempotência)
   4. Query SQL confirma `reports_to` correto para cada novo agente: orchestrator-maintenance → executor Head; research-doc e code-analyzer → orchestrator-maintenance; qa-loop → verifier Head; supabase-executor → orchestrator-maintenance; supabase-diagnostician → verifier Head; doc-before-after → user-profiler Head
 **Plans**: 3 plans
-  - [ ] 17-01-mapping-and-invariants-PLAN.md — Estende mapping.ts com 7 entradas v1.3 e atualiza validateMapping para invariantes 25/4/21
+  - [x] 17-01-mapping-and-invariants-PLAN.md — Estende mapping.ts com 7 entradas v1.3 e atualiza validateMapping para invariantes 25/4/21
   - [ ] 17-02-agent-md-files-PLAN.md — Cria 7 arquivos .md mínimos em .claude/agents/ (frontmatter + corpo curto)
   - [ ] 17-03-sync-and-verify-PLAN.md — Executa pnpm sync-agents idempotente e verifica reports_to via SQL
 
@@ -107,7 +107,7 @@ Fases 17 e 18 executam em sequência. Fases 19 e 20 são paralelizáveis (ambas 
 
 | Fase | Milestone | Planos Completos | Status | Concluída |
 |------|-----------|------------------|--------|-----------|
-| 17. Fundação dos Agentes | v1.3 | 0/3 | Planned    |  |
+| 17. Fundação dos Agentes | v1.3 | 1/3 | In Progress|  |
 | 18. Protocolo de Handoff e Orquestrador | v1.3 | 0/? | Not started | - |
 | 19. Pesquisadores Paralelos e QA | v1.3 | 0/? | Not started | - |
 | 20. Agentes Supabase | v1.3 | 0/? | Not started | - |
